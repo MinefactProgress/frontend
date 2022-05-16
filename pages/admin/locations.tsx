@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   Button,
   NumberInput,
   Paper,
@@ -7,10 +8,10 @@ import {
   TextInput,
   useMantineTheme,
 } from "@mantine/core";
+import { Pin, Trash } from "tabler-icons-react";
 
 import Map from "../../components/Map";
 import Page from "../../components/Page";
-import { Pin } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
 import useSWR from "swr";
 import { useState } from "react";
@@ -18,9 +19,10 @@ import useUser from "../../utils/hooks/useUser";
 
 const LocationsPage = () => {
   const [block, setBlock] = useState(1);
+  const [district, setDistrict] = useState("");
   const [loc, setLoc] = useState("");
   const theme = useMantineTheme();
-  const [selected, setSelected] = useState({ uid: null, area: "[[],[]]" });
+  const [selected, setSelected] = useState({ uid: null, area: "[[],[]]",id:null });
   const [user, setUser] = useUser();
   const { data } = useSWR("http://142.44.137.53:8080/api/blocks/get", {
     revalidateOnFocus: true,
@@ -36,7 +38,7 @@ const LocationsPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           key: "e9299168-9a87-4a44-801b-4214449e46be",
-          district: e.target.district.value,
+          district: district,
           blockID: block,
           location: loc,
         }),
@@ -44,13 +46,57 @@ const LocationsPage = () => {
     )
       .then((res) => res.json())
       .then((res) => {
-        setLoc("");
+        if(res.error) {
+          showNotification({
+            title:"Error Adding Location",
+            message: res.message,
+            color:"red"
+          });
+        }else {
+          setLoc("");
         showNotification({
           title: "Location Added",
           message: "The Location of block " + block + " has been added",
           color: "green",
           icon: <Pin />,
         });
+        }
+        
+      });
+  };
+  const handleDelete = (e: any, i: number) => {
+    e.preventDefault();
+    fetch(
+      "http://localhost:8080/api/blocks/removeLocation?key=e9299168-9a87-4a44-801b-4214449e46be",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          key: "e9299168-9a87-4a44-801b-4214449e46be",
+          uid: selected.uid,
+          index: i,
+        }),
+      }
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.error) {
+          showNotification({
+            title: "Error Deleting Location",
+            message: res.message,
+            color: "red",
+            icon: <Trash />,
+          });
+        } else {
+          setLoc("");
+          showNotification({
+            title: "Location Deleted",
+            message:
+              "The Location " + (i+1) + " of block " + block + " has been deleted",
+            color: "green",
+            icon: <Pin />,
+          });
+        }
       });
   };
   return (
@@ -143,20 +189,23 @@ const LocationsPage = () => {
             </Text>
             {selected
               ? JSON.parse(selected?.area).map((point: any, i: number) => (
-                  <Text
-                    key={i}
-                    color="gray"
-                    onClick={() => {
-                      setLoc(point.join(", "));
-                      showNotification({
-                        message: "Coordinates Copied and Pasted",
-                        color: "lime",
-                      });
-                    }}
-                  >
-                    {i + 1}. {point.join(", ")}
-                    <br />
-                  </Text>
+                  <SimpleGrid key={i} cols={2}>
+                    <Text
+                      color="gray"
+                      onClick={() => {
+                        setLoc(point.join(", "));
+                        showNotification({
+                          message: "Coordinates Copied and Pasted",
+                          color: "lime",
+                        });
+                      }}
+                    >
+                      {i + 1}. {point.join(", ")}
+                    </Text>
+                    <ActionIcon onClick={(e: any) => handleDelete(e, i)}>
+                      <Trash color={theme.colors.red[7]} />
+                    </ActionIcon>
+                  </SimpleGrid>
                 ))
               : null}
           </div>
@@ -169,7 +218,14 @@ const LocationsPage = () => {
         style={{ height: "100%", marginTop: theme.spacing.md }}
       >
         <form onSubmit={handleSubmit}>
-          <TextInput label="District" name="district" />
+          <TextInput
+            label="District"
+            name="district"
+            value={district}
+            onChange={(e: any) => {
+              setDistrict(e.currentTarget.value);
+            }}
+          />
           <TextInput
             label="Location"
             name="location"
