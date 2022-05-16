@@ -1,8 +1,10 @@
 import {
   ActionIcon,
   Button,
+  Group,
   NumberInput,
   Paper,
+  Progress,
   SimpleGrid,
   Text,
   TextInput,
@@ -22,13 +24,28 @@ const LocationsPage = () => {
   const [district, setDistrict] = useState("");
   const [loc, setLoc] = useState("");
   const theme = useMantineTheme();
-  const [selected, setSelected] = useState({ uid: null, area: "[[],[]]",id:null });
+  const [selected, setSelected] = useState({
+    uid: null,
+    area: "[[],[]]",
+    id: null,
+  });
   const [user, setUser] = useUser();
   const { data } = useSWR("http://142.44.137.53:8080/api/blocks/get", {
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
   });
-  console.log(user.apikey);
+  var doneElem = 0;
+  var totalElem = 0;
+  console.log(data);
+  for (var i = 0; i < data.length; i++) {
+    const elem = data[i];
+    totalElem++;
+    if (elem.area != "[]") {
+      doneElem++;
+    }
+  }
+
+  const progress = (doneElem / totalElem) * 100;
   const handleSubmit = (e: any) => {
     e.preventDefault();
     fetch(
@@ -46,22 +63,21 @@ const LocationsPage = () => {
     )
       .then((res) => res.json())
       .then((res) => {
-        if(res.error) {
+        if (res.error) {
           showNotification({
-            title:"Error Adding Location",
+            title: "Error Adding Location",
             message: res.message,
-            color:"red"
+            color: "red",
           });
-        }else {
+        } else {
           setLoc("");
-        showNotification({
-          title: "Location Added",
-          message: "The Location of block " + block + " has been added",
-          color: "green",
-          icon: <Pin />,
-        });
+          showNotification({
+            title: "Location Added",
+            message: "The Location of block " + block + " has been added",
+            color: "green",
+            icon: <Pin />,
+          });
         }
-        
       });
   };
   const handleDelete = (e: any, i: number) => {
@@ -92,7 +108,11 @@ const LocationsPage = () => {
           showNotification({
             title: "Location Deleted",
             message:
-              "The Location " + (i+1) + " of block " + block + " has been deleted",
+              "The Location " +
+              (i + 1) +
+              " of block " +
+              block +
+              " has been deleted",
             color: "green",
             icon: <Pin />,
           });
@@ -101,7 +121,24 @@ const LocationsPage = () => {
   };
   return (
     <Page>
-      <Paper withBorder radius="md" p="xs" style={{ height: "20vh" }}>
+      <Paper withBorder radius="md" p="xs" style={{ height: "8vh" }}>
+        <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
+          Progress of adding Locations
+        </Text>
+        <Progress
+          value={progress}
+          color={progress < 50 ? "red" : progress < 100 ? "orange" : "green"}
+        />
+        <Text>
+          {doneElem}/{totalElem} ({Math.floor(progress * 10) / 10}%)
+        </Text>
+      </Paper>
+      <Paper
+        withBorder
+        radius="md"
+        p="xs"
+        style={{ height: "20vh", marginTop: theme.spacing.md }}
+      >
         <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
           How to
         </Text>
@@ -126,7 +163,7 @@ const LocationsPage = () => {
         withBorder
         radius="md"
         p="xs"
-        style={{ height: "38vh", marginTop: theme.spacing.md }}
+        style={{ height: "35vh", marginTop: theme.spacing.md }}
       >
         <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
           Map
@@ -218,14 +255,25 @@ const LocationsPage = () => {
         style={{ height: "100%", marginTop: theme.spacing.md }}
       >
         <form onSubmit={handleSubmit}>
-          <TextInput
-            label="District"
-            name="district"
-            value={district}
-            onChange={(e: any) => {
-              setDistrict(e.currentTarget.value);
-            }}
-          />
+          <Group position="center" grow>
+            <TextInput
+              label="District"
+              name="district"
+              value={district}
+              onChange={(e: any) => {
+                setDistrict(e.currentTarget.value);
+              }}
+            />
+            <NumberInput
+              label="Block"
+              placeholder="Block"
+              name="blockID"
+              value={block}
+              onChange={(e: any) => {
+                setBlock(parseInt(e));
+              }}
+            />
+          </Group>
           <TextInput
             label="Location"
             name="location"
@@ -234,15 +282,7 @@ const LocationsPage = () => {
               setLoc(e.currentTarget.value);
             }}
           />
-          <NumberInput
-            label="Block"
-            placeholder="Block"
-            name="blockID"
-            value={block}
-            onChange={(e: any) => {
-              setBlock(parseInt(e));
-            }}
-          />
+
           <Button
             type="submit"
             style={{ marginTop: theme.spacing.md }}
