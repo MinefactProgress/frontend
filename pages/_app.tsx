@@ -44,7 +44,13 @@ function MyApp({ Component, pageProps }: AppProps) {
                   "?key=" +
                   JSON.parse(window.localStorage.getItem("auth") || "{}")
                     .apikey,
-            init
+            {
+              headers: {
+                "Access-Control-Allow-Origin": "*",
+                ...init?.headers,
+              },
+              ...init,
+            }
           ).then((res) => res.json()),
         shouldRetryOnError: false,
         revalidateIfStale: false,

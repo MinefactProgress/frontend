@@ -108,6 +108,7 @@ const UsersPage = () => {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
             },
             body: JSON.stringify({
               uid: id,
@@ -144,6 +145,7 @@ const UsersPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify(form.values),
       }
@@ -186,6 +188,7 @@ const UsersPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify({ uid: formEdit.values.uid, values: values }),
       }
