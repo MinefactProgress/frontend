@@ -67,7 +67,7 @@ const LocationsPage = () => {
   const handleDelete = (e: any, i: number) => {
     e.preventDefault();
     fetch(
-      "http://localhost:8080/api/blocks/removeLocation?key=e9299168-9a87-4a44-801b-4214449e46be",
+      "http://142.44.137.53:8080/api/blocks/removeLocation?key=e9299168-9a87-4a44-801b-4214449e46be",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
