@@ -37,7 +37,7 @@ const LocationsPage = () => {
   var doneElem = 0;
   var totalElem = 0;
   console.log(data);
-  for (var i = 0; i < data.length; i++) {
+  for (var i = 0; i < data?.length; i++) {
     const elem = data[i];
     totalElem++;
     if (elem.area != "[]") {
