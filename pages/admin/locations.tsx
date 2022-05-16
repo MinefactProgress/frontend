@@ -22,7 +22,7 @@ const LocationsPage = () => {
   const theme = useMantineTheme();
   const [selected, setSelected] = useState({ uid: null, area: "[]" });
   const [user, setUser] = useUser();
-  const { data } = useSWR("http://142.44.137.5:8080/api/blocks/get",{
+  const { data } = useSWR("http://142.44.137.53:8080/api/blocks/get",{
     refreshInterval: 20000,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
@@ -31,7 +31,7 @@ const LocationsPage = () => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     fetch(
-      "http://142.44.137.5:8080/api/blocks/addLocation?key=e9299168-9a87-4a44-801b-4214449e46be",
+      "http://142.44.137.53:8080/api/blocks/addLocation?key=e9299168-9a87-4a44-801b-4214449e46be",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
