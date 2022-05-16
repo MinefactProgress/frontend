@@ -143,13 +143,10 @@ const LocationsPage = () => {
             </Text>
             {selected
               ? JSON.parse(selected?.area).map((point: any, i: number) => (
-                  <Button
+                  <Text
                     key={i}
-                    fullWidth
-                    variant="subtle"
                     color="gray"
                     onClick={() => {
-                      navigator.clipboard.writeText(point.join(", "));
                       setLoc(point.join(", "));
                       showNotification({
                         message: "Coordinates Copied and Pasted",
@@ -159,7 +156,7 @@ const LocationsPage = () => {
                   >
                     {i + 1}. {point.join(", ")}
                     <br />
-                  </Button>
+                  </Text>
                 ))
               : null}
           </div>
