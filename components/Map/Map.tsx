@@ -46,7 +46,9 @@ const Map = (props: any) => {
                 key={component.id}
                 positions={component.positions}
                 pathOptions={component.options}
+                eventHandlers={component.eventHandlers}
                 {...component}
+
               >
                 {component.tooltip && (
                   <Tooltip>
@@ -59,6 +61,7 @@ const Map = (props: any) => {
           if (component.type === "marker") {
             return (
               <Marker key={component.id} position={component.position}
+              eventHandlers={component.eventHandlers}
               {...component}>
                 {component.tooltip && (
                   <Tooltip>
@@ -79,6 +82,7 @@ const Map = (props: any) => {
                 key={component.id}
                 center={component.center}
                 pathOptions={component.options}
+                eventHandlers={component.eventHandlers}
                 // @ts-ignore
                 radius={component.radius || 10}
                 {...component}
