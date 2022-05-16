@@ -43,7 +43,7 @@ const pages = [
     color: "cyan",
     label: "Map Locations",
     href: "/admin/locations",
-    permission: 4,
+    permission: 1,
   },
   // Admin
   {

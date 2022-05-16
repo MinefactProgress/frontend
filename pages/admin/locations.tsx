@@ -20,9 +20,9 @@ const LocationsPage = () => {
   const [block, setBlock] = useState(1);
   const [loc, setLoc] = useState("");
   const theme = useMantineTheme();
-  const [selected, setSelected] = useState({ uid: null, area: "[]" });
+  const [selected, setSelected] = useState({ uid: null, area: "[[],[]]" });
   const [user, setUser] = useUser();
-  const { data } = useSWR("http://142.44.137.53:8080/api/blocks/get",{
+  const { data } = useSWR("http://142.44.137.53:8080/api/blocks/get", {
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
   });
@@ -72,7 +72,8 @@ const LocationsPage = () => {
           <br />
           5. Once the location box is cleared add the next point.
           <br />
-          You can click on a Block on the map and choose a edge point to add it to your current block.
+          You can click on a Block on the map and choose a edge point to add it
+          to your current block.
         </Text>
       </Paper>
       <Paper
@@ -89,32 +90,47 @@ const LocationsPage = () => {
             width="100%"
             height="100%"
             polygon={{ data: data?.area || [] }}
-            components={data?.map((block: any) =>
-              block.location != "[]"
-                ? {
-                    type: "polygon",
-                    positions: JSON.parse(block.area),
-                    options: {
-                      color: `rgba(${
-                        block.progress == 0
-                          ? "194, 76, 60"
-                          : block.progress < 100
-                          ? "216, 108, 50"
-                          : "106, 186, 97"
-                      })`,
-                      opacity: block.uid == selected.uid ? 1 : 0.1,
-                    },
-                    radius: 15,
-                    tooltip: "Block #" + block.id,
-                    eventHandlers: {
-                      click: () => {
-                        setSelected(block);
+            components={data
+              ?.map((block: any) =>
+                block.location != "[]"
+                  ? {
+                      type: "polygon",
+                      positions: JSON.parse(block.area),
+                      options: {
+                        color: `rgba(${
+                          block.progress == 0
+                            ? "194, 76, 60"
+                            : block.progress < 100
+                            ? "216, 108, 50"
+                            : "106, 186, 97"
+                        })`,
+                        opacity: block.uid == selected.uid ? 1 : 0.1,
                       },
-                    },
-                  }
-                : null
-            )}
-          ></Map>
+                      radius: 15,
+                      tooltip: "Block #" + block.id,
+                      eventHandlers: {
+                        click: () => {
+                          setSelected(block);
+                        },
+                      },
+                    }
+                  : null
+              )
+              .concat(
+                selected.uid != null
+                  ? JSON.parse(selected.area).map((block: any, i: number) =>
+                      block
+                        ? {
+                            type: "marker",
+                            position: block,
+                            tooltip: "Point " + (i + 1),
+                          }
+                        : null
+                    )
+                  : null
+              )}
+          />
+
           <div>
             <Text
               color="dimmed"
@@ -149,7 +165,6 @@ const LocationsPage = () => {
           </div>
         </SimpleGrid>
       </Paper>
-
       <Paper
         withBorder
         radius="md"
