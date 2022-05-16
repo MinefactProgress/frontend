@@ -4,6 +4,7 @@ import {
   Database,
   Hierarchy,
   List,
+  MapPins,
   Settings,
   Users
 } from "tabler-icons-react";
@@ -11,7 +12,7 @@ import {
 const pages = [
   {
     icon: <ChartBar size={16} />,
-    color: "blue",
+    color: "yellow",
     label: "Progress Overview",
     href: "/",
     badge: "",
@@ -19,17 +20,30 @@ const pages = [
   },
   {
     icon: <List size={16} />,
-    color: "teal",
+    color: "yellow",
     label: "Project List",
     href: "/projects",
     permission: 1,
   },
   {
     icon: <Hierarchy size={16} />,
-    color: "violet",
+    color: "yellow",
     label: "Network Status",
     href: "/network",
     permission: 1,
+  },
+  // Moderators
+  {
+    label: "Moderation",
+    divider: true,
+    permission: 3,
+  },
+  {
+    icon: <MapPins size={16} />,
+    color: "cyan",
+    label: "Map Locations",
+    href: "/admin/locations",
+    permission: 4,
   },
   // Admin
   {
