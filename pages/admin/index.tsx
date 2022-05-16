@@ -44,7 +44,7 @@ ChartJS.register(
 
 const AdminPage: NextPage = () => {
   const [user] = useUser();
-  const { data, error } = useSWR("http://localhost:8080/api/admin/status", {
+  const { data, error } = useSWR("http://142.44.137.53:8080/api/admin/status", {
     refreshInterval: 60000,
     shouldRetryOnError: true,
   });

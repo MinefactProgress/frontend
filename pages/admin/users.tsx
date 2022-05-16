@@ -75,7 +75,7 @@ const UsersPage = () => {
     validate: {},
   });
   const SECONDARY_COL_HEIGHT = PRIMARY_COL_HEIGHT / 2 - theme.spacing.md / 2;
-  const { data } = useSWR("http://localhost:8080/api/users/get");
+  const { data } = useSWR("http://142.44.137.53:8080/api/users/get");
   const handleDeleteUser = (id: string) => {
     const userD = data?.find((user: any) => user.uid === id);
     modals.openConfirmModal({
@@ -103,7 +103,7 @@ const UsersPage = () => {
       },
       onConfirm: async () => {
         const result = await fetch(
-          "http://localhost:8080/api/users/delete?key=" + user.apikey,
+          "http://142.44.137.53:8080/api/users/delete?key=" + user.apikey,
           {
             method: "POST",
             headers: {
@@ -139,7 +139,7 @@ const UsersPage = () => {
   };
   const handleAddUser = async (e: any) => {
     const result = await fetch(
-      "http://localhost:8080/api/users/create?key=" + user.apikey,
+      "http://142.44.137.53:8080/api/users/create?key=" + user.apikey,
       {
         method: "POST",
         headers: {
@@ -181,7 +181,7 @@ const UsersPage = () => {
     };
     const values = removeEmptyOrNull(formEdit.values);
     const result = await fetch(
-      "http://localhost:8080/api/users/update?key=" + user.apikey,
+      "http://142.44.137.53:8080/api/users/update?key=" + user.apikey,
       {
         method: "POST",
         headers: {
