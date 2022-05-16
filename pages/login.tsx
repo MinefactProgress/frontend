@@ -4,7 +4,7 @@ import {
   PasswordInput,
   TextInput,
   Title,
-  createStyles
+  createStyles,
 } from "@mantine/core";
 import useUser, { useAuth } from "../utils/hooks/useUser";
 
@@ -70,6 +70,7 @@ const Login = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
         username: values.username,
@@ -123,19 +124,19 @@ const Login = () => {
             Submit
           </Button>
         </form>
-          {auth && (
-            <Button
-              fullWidth
-              mt="xl"
-              size="md"
-              type="submit"
-              onClick={() => {
-                setUser({ uid: 0 });
-              }}
-            >
-              Log out instead
-            </Button>
-          )}
+        {auth && (
+          <Button
+            fullWidth
+            mt="xl"
+            size="md"
+            type="submit"
+            onClick={() => {
+              setUser({ uid: 0 });
+            }}
+          >
+            Log out instead
+          </Button>
+        )}
       </Paper>
     </div>
   );
