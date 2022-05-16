@@ -23,9 +23,8 @@ const LocationsPage = () => {
   const [selected, setSelected] = useState({ uid: null, area: "[]" });
   const [user, setUser] = useUser();
   const { data } = useSWR("http://142.44.137.53:8080/api/blocks/get",{
-    refreshInterval: 20000,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
   });
   console.log(user.apikey);
   const handleSubmit = (e: any) => {
