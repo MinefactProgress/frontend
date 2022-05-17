@@ -161,7 +161,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
                 },
                 radius: 15,
                 tooltip:
-                  districts[block.district - 1].name +
+                  (districts ? districts[block.district - 1].name : "") +
                   " #" +
                   block.id +
                   " | " +
