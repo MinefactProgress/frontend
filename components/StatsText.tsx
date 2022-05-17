@@ -54,12 +54,13 @@ interface StatsGridProps {
   diff?: number;
   subtitle?: string;
   style?: any;
+  showIcon?:boolean;
   onClick?: () => void;
 }
 
 const StatsText = (stat: StatsGridProps) => {
   const { classes } = useStyles();
-  const DiffIcon = stat.diff || 0 > 0 ? ArrowUpRight : ArrowDownRight;
+  const DiffIcon = stat.icon||(stat.diff || 0 > 0 ? ArrowUpRight : ArrowDownRight);
 
   return (
     <Paper withBorder p="md" radius="md" key={stat.title} style={stat.style} onClick={stat.onClick}>
@@ -80,7 +81,6 @@ const StatsText = (stat: StatsGridProps) => {
             className={classes.diff}
           >
             <span>{stat.diff}%</span>
-            <DiffIcon size={16} />
           </Text>
         )}
       </Group>

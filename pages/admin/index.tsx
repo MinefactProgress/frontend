@@ -56,7 +56,6 @@ const AdminPage: NextPage = () => {
   return (
     <PermissionWrapper permission={4}>
       <Page>
-        {" "}
         <SimpleGrid
           cols={2}
           spacing="md"
