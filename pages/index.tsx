@@ -1,15 +1,16 @@
-import {} from "tabler-icons-react";
-
 import {
+  ActionIcon,
   Badge,
   Button,
   Group,
   Modal,
   Paper,
   Text,
-  useMantineTheme,
+  Tooltip,
+  useMantineTheme
 } from "@mantine/core";
 import { Circle, LayerGroup, LayersControl, Polygon } from "react-leaflet";
+import { ClearAll, X } from "tabler-icons-react";
 
 import Map from "../components/Map";
 import type { NextPage } from "next";
@@ -93,6 +94,34 @@ const Home: NextPage = ({ user, setUser }: any) => {
         >
           Completed
         </Badge>
+        {selectedBlock.uid != 0 && (
+          <Tooltip label="Clear selection" withArrow
+          placement="start"position="bottom">
+          <ActionIcon
+            size="sm"
+            radius="xl"
+            variant="outline"
+            style={{
+              backgroundColor: theme.colorScheme === "dark" ? "black" : "white",
+            }}
+            onClick={() => {
+              setSelectedBlock({
+                uid: 0,
+                id: 0,
+                district: 1,
+                status: 1,
+                progress: 0,
+                details: false,
+                builder: "",
+                completionDate: null,
+                area: "[]",
+              });
+            }}
+          >
+            <X size={16} />
+          </ActionIcon>
+          </Tooltip>
+        )}
       </Group>
       <Group
         style={{
