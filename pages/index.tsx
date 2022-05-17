@@ -3,19 +3,26 @@ import {
   Badge,
   Button,
   Group,
-  Modal,
   Paper,
+  SimpleGrid,
   Text,
+  Title,
   Tooltip,
-  useMantineTheme
+  useMantineTheme,
 } from "@mantine/core";
-import { Circle, LayerGroup, LayersControl, Polygon } from "react-leaflet";
-import { ClearAll, X } from "tabler-icons-react";
+import {
+  Backhoe,
+  BuildingCommunity,
+  Calendar,
+  ChartBubble,
+  Users,
+  X,
+} from "tabler-icons-react";
 
 import Map from "../components/Map";
 import type { NextPage } from "next";
 import Page from "../components/Page";
-import nyc from "../utils/nycLocation";
+import StatsText from "../components/StatsText";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { useState } from "react";
@@ -39,6 +46,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
     "http://142.44.137.53:8080/api/districts/get"
   );
   const { data: progress } = useSWR("http://142.44.137.53:8080/api/progress");
+  console.log(progress);
   return (
     <Page noMargin style={{ position: "relative" }}>
       <Group
@@ -95,31 +103,36 @@ const Home: NextPage = ({ user, setUser }: any) => {
           Completed
         </Badge>
         {selectedBlock.uid != 0 && (
-          <Tooltip label="Clear selection" withArrow
-          placement="start"position="bottom">
-          <ActionIcon
-            size="sm"
-            radius="xl"
-            variant="outline"
-            style={{
-              backgroundColor: theme.colorScheme === "dark" ? "black" : "white",
-            }}
-            onClick={() => {
-              setSelectedBlock({
-                uid: 0,
-                id: 0,
-                district: 1,
-                status: 1,
-                progress: 0,
-                details: false,
-                builder: "",
-                completionDate: null,
-                area: "[]",
-              });
-            }}
+          <Tooltip
+            label="Clear selection"
+            withArrow
+            placement="start"
+            position="bottom"
           >
-            <X size={16} />
-          </ActionIcon>
+            <ActionIcon
+              size="sm"
+              radius="xl"
+              variant="outline"
+              style={{
+                backgroundColor:
+                  theme.colorScheme === "dark" ? "black" : "white",
+              }}
+              onClick={() => {
+                setSelectedBlock({
+                  uid: 0,
+                  id: 0,
+                  district: 1,
+                  status: 1,
+                  progress: 0,
+                  details: false,
+                  builder: "",
+                  completionDate: null,
+                  area: "[]",
+                });
+              }}
+            >
+              <X size={16} />
+            </ActionIcon>
           </Tooltip>
         )}
       </Group>
@@ -205,9 +218,64 @@ const Home: NextPage = ({ user, setUser }: any) => {
             : null
         )}
       ></Map>
-      <Paper>
-        <Text id="bInfo">hi</Text>
-      </Paper>
+      <div style={{ margin: theme.spacing.md }}>
+        <Paper
+          withBorder
+          radius="md"
+          p="xs"
+          style={{
+            marginTop: theme.spacing.md,
+            marginBottom: theme.spacing.md,
+          }}
+        >
+          <Title>Minefact Progress Tracking</Title>
+          <Text>
+            We are tracking the Progress made on the Minefact New York City
+            building Project.
+          </Text>
+        </Paper>
+        <SimpleGrid cols={5} spacing="md" sx={{ marginTop: theme.spacing.md }}>
+          <StatsText
+            title="Tracking since"
+            style={{ height: "100%" }}
+            icon={<Calendar />}
+          >
+            {Math.floor(
+              (new Date().getTime() - new Date("2020-04-13").getTime()) /
+                (1000 * 3600 * 24)
+            )}{" "}
+            Days
+          </StatsText>
+          <StatsText
+            title="Total Progress"
+            style={{ height: "100%" }}
+            icon={<ChartBubble />}
+          >
+            {Math.round(progress?.progress)}%
+          </StatsText>
+          <StatsText
+            title="Helping hands"
+            style={{ height: "100%" }}
+            icon={<Users />}
+          >
+            {progress?.builders.length} Builders
+          </StatsText>
+          <StatsText
+            title="In-Progress Blocks"
+            style={{ height: "100%" }}
+            icon={<Backhoe />}
+          >
+            {progress?.blocksCount.building} Blocks
+          </StatsText>
+          <StatsText
+            title="Total Blocks"
+            style={{ height: "100%" }}
+            icon={<BuildingCommunity />}
+          >
+            {progress?.blocksCount.total} Blocks
+          </StatsText>
+        </SimpleGrid>
+      </div>
     </Page>
   );
 };
