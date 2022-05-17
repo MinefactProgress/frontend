@@ -37,7 +37,7 @@ const Map = (props: any) => {
       >
       <LayersControl
         // @ts-ignore
-        position="bottomleft"
+        position="topleft"
       >
         <LayersControl.BaseLayer checked name={theme.colorScheme}>
           <TileLayer
