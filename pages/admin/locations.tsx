@@ -252,7 +252,7 @@ const LocationsPage = () => {
         withBorder
         radius="md"
         p="xs"
-        style={{ height: "100%", marginTop: theme.spacing.md }}
+        style={{ marginTop: theme.spacing.md }}
       >
         <form onSubmit={handleSubmit}>
           <Group position="center" grow>

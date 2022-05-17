@@ -6,15 +6,18 @@ import {
   MantineProvider,
   MantineThemeOverride,
 } from "@mantine/core";
+import { Home, JewishStar, Search } from "tabler-icons-react";
 import jwt, { sign, verify } from "../utils/jwt";
 import { useEffect, useState } from "react";
 import { useHotkeys, useLocalStorage } from "@mantine/hooks";
 
 import type { AppProps } from "next/app";
-import { JewishStar } from "tabler-icons-react";
 import { ModalsProvider } from "@mantine/modals";
 import { NotificationsProvider } from "@mantine/notifications";
 import { SWRConfig } from "swr";
+import { SpotlightProvider } from "@mantine/spotlight";
+import pages from "../components/routes";
+import { useRouter } from "next/router";
 import useUser from "../utils/hooks/useUser";
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -25,7 +28,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   });
   // Authentication
   const [user, setUser] = useUser();
-
+const router = useRouter()
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
 
@@ -67,11 +70,23 @@ function MyApp({ Component, pageProps }: AppProps) {
           withGlobalStyles
           withNormalizeCSS
         >
-          <ModalsProvider>
-            <NotificationsProvider>
-              <Component {...pageProps} user={user} setUser={setUser} />
-            </NotificationsProvider>
-          </ModalsProvider>
+          <SpotlightProvider
+            actions={pages.map((page) => ({
+              icon: page.icon,
+              title: page.label,
+              onTrigger: () => router.push(page.href||"/"),
+              })).filter((page,i) => page.icon && pages[i].permission <= (user.permission||0))}
+            searchIcon={<Search size={18} />}
+            searchPlaceholder="Search..."
+            shortcut="ctrl + K"
+            nothingFoundMessage="Nothing found..."
+          >
+            <ModalsProvider>
+              <NotificationsProvider>
+                <Component {...pageProps} user={user} setUser={setUser} />
+              </NotificationsProvider>
+            </ModalsProvider>
+          </SpotlightProvider>
         </MantineProvider>
       </ColorSchemeProvider>
     </SWRConfig>

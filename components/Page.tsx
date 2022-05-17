@@ -5,12 +5,14 @@ import {
   AppShell,
   Avatar,
   Box,
+  Burger,
   Center,
   Divider,
   Group,
   Header,
   Indicator,
   Loader,
+  MediaQuery,
   Menu,
   Navbar,
   ScrollArea,
@@ -22,9 +24,10 @@ import {
   useMantineTheme
 } from "@mantine/core";
 import {
-  ArrowsLeftRight,
   ChevronLeft,
   ChevronRight,
+  Login,
+  Logout,
   MoonStars,
   Refresh,
   Search,
@@ -41,12 +44,15 @@ import useUser from "../utils/hooks/useUser";
 export default function Page(props: {
   children: React.ReactNode;
   scroll?: boolean;
+  noMargin?: boolean;
+  style?: any;
 }) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [loading, setLoading] = useState(true);
+  const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();
   const router = useRouter();
-  const [user] = useUser();
+  const [user, setUser] = useUser();
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
@@ -61,13 +67,27 @@ export default function Page(props: {
   }
   return (
     <AppShell
-      padding="md"
+      padding={props.noMargin ? 0 : "md"}
+      navbarOffsetBreakpoint="sm"
+      asideOffsetBreakpoint="sm"
+      fixed
       navbar={
         <Navbar
-          width={{ base: 300 }}
+          width={{
+            // When viewport is larger than theme.breakpoints.sm, Navbar width will be 300
+            sm: 200,
+
+            // When viewport is larger than theme.breakpoints.lg, Navbar width will be 400
+            lg: 300,
+
+            // When other breakpoints do not match base width is used, defaults to 100%
+            base: 200,
+          }}
           p="xs"
           fixed
           position={{ top: 0, left: 0 }}
+          hiddenBreakpoint="sm"
+          hidden={!opened}
         >
           <Navbar.Section grow mt="xs">
             {/* Page Navigation */}
@@ -181,43 +201,62 @@ export default function Page(props: {
                     </UnstyledButton>
                   }
                 >
-                  <Menu.Label>Application</Menu.Label>
-                  <Menu.Item icon={<Settings size={14} />}>Settings</Menu.Item>
-                  <Menu.Item
-                    icon={
-                      colorScheme === "dark" ? (
-                        <Sun size={14} />
-                      ) : (
-                        <MoonStars size={14} />
-                      )
-                    }
-                    onClick={() => toggleColorScheme()}
-                    rightSection={
-                      <Text size="xs" color="dimmed">
-                        ⌘ J
-                      </Text>
-                    }
-                  >
-                    {colorScheme === "dark" ? "Lightmode" : "Darkmode"}
-                  </Menu.Item>
-                  <Menu.Item
-                    icon={<Search size={14} />}
-                    rightSection={
-                      <Text size="xs" color="dimmed">
-                        ⌘ K
-                      </Text>
-                    }
-                  >
-                    Search
-                  </Menu.Item>
-                  <Divider />
-                  <Menu.Label>Contact</Menu.Label>
-                  <Menu.Item icon={<ArrowsLeftRight size={14} />}>
-                    Transfer my data
-                  </Menu.Item>
-                  <Menu.Item color="red" icon={<Trash size={14} />}>
-                    Delete my account
-                  </Menu.Item>
+                  {user.uid != 0 ? (
+                    <>
+                      <Menu.Label>Application</Menu.Label>
+                      <Menu.Item icon={<Settings size={14} />}>
+                        Settings
+                      </Menu.Item>
+                      <Menu.Item
+                        icon={
+                          colorScheme === "dark" ? (
+                            <Sun size={14} />
+                          ) : (
+                            <MoonStars size={14} />
+                          )
+                        }
+                        onClick={() => toggleColorScheme()}
+                        rightSection={
+                          <Text size="xs" color="dimmed">
+                            ⌘ J
+                          </Text>
+                        }
+                      >
+                        {colorScheme === "dark" ? "Lightmode" : "Darkmode"}
+                      </Menu.Item>
+                      <Menu.Item
+                        icon={<Search size={14} />}
+                        rightSection={
+                          <Text size="xs" color="dimmed">
+                            ⌘ K
+                          </Text>
+                        }
+                      >
+                        Search
+                      </Menu.Item>
+                      <Divider />
+                      <Menu.Label>Danger Zone</Menu.Label>
+                      <Menu.Item
+                        icon={<Logout size={14} />}
+                        onClick={() => {
+                          setUser({ uid: 0 });
+                          router.push("/");
+                        }}
+                      >
+                        Log Out
+                      </Menu.Item>
+                      <Menu.Item color="red" icon={<Trash size={14} />}>
+                        Delete my account
+                      </Menu.Item>
+                    </>
+                  ) : (
+                    <Menu.Item
+                      icon={<Login size={14} />}
+                      onClick={() => router.push("/login")}
+                    >
+                      Log in
+                    </Menu.Item>
+                  )}
                 </Menu>
               </Box>
             )}
@@ -227,9 +266,8 @@ export default function Page(props: {
       header={
         <Header
           height={60}
-          fixed
           position={{ top: 0, left: 0 }}
-          sx={{ width: "100vw" }}
+          sx={{ width: "100vw", position: "fixed" }}
         >
           <Group sx={{ height: "100%" }} px={20} position="apart">
             <Group style={{ height: "100%" }}>
@@ -237,27 +275,36 @@ export default function Page(props: {
               <Title sx={{ color: colorScheme === "dark" ? "white" : "black" }}>
                 Progress
               </Title>
+              <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+                <Burger
+                  opened={opened}
+                  onClick={() => setOpened((o) => !o)}
+                  size="sm"
+                  color={theme.colors.gray[6]}
+                  mr="xl"
+                />
+              </MediaQuery>
             </Group>
             <Group style={{ height: "100%" }}>
-            <ActionIcon
-              variant="default"
-              onClick={() => router.reload()}
-              size={30}
-            >
-              <Refresh size={16} />
-            </ActionIcon> <ActionIcon
-              variant="default"
-              onClick={() => toggleColorScheme()}
-              size={30}
-            >
-              {colorScheme === "dark" ? (
-                <Sun size={16} />
-              ) : (
-                <MoonStars size={16} />
-              )}
-            </ActionIcon>
+              <ActionIcon
+                variant="default"
+                onClick={() => router.reload()}
+                size={30}
+              >
+                <Refresh size={16} />
+              </ActionIcon>{" "}
+              <ActionIcon
+                variant="default"
+                onClick={() => toggleColorScheme()}
+                size={30}
+              >
+                {colorScheme === "dark" ? (
+                  <Sun size={16} />
+                ) : (
+                  <MoonStars size={16} />
+                )}
+              </ActionIcon>
             </Group>
-           
           </Group>
         </Header>
       }
@@ -271,7 +318,13 @@ export default function Page(props: {
       })}
     >
       <Box
-        sx={{ marginLeft: 300, marginTop: 60, minHeight: "calc(100vh - 92px)" }}
+        sx={{
+          height: "calc(100vh - 60px)",
+          width: "100%",
+          overflow: "auto",
+          overflowX: "hidden",
+          ...props.style
+        }}
       >
         {props.scroll ? (
           <ScrollArea type="scroll">{props.children}</ScrollArea>
