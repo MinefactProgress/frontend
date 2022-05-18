@@ -5,6 +5,7 @@ import {
   NumberInput,
   Paper,
   Progress,
+  ScrollArea,
   SimpleGrid,
   Text,
   TextInput,
@@ -214,7 +215,7 @@ const LocationsPage = () => {
               )}
           />
 
-          <div>
+          <ScrollArea>
             <Text
               color="dimmed"
               size="xs"
@@ -245,7 +246,7 @@ const LocationsPage = () => {
                   </SimpleGrid>
                 ))
               : null}
-          </div>
+          </ScrollArea>
         </SimpleGrid>
       </Paper>
       <Paper
