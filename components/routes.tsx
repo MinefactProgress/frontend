@@ -3,10 +3,11 @@ import {
   ChartInfographic,
   Database,
   Hierarchy,
+  Link,
   List,
   MapPins,
   Settings,
-  Users
+  Users,
 } from "tabler-icons-react";
 
 const pages = [
@@ -30,6 +31,19 @@ const pages = [
     color: "yellow",
     label: "Network Status",
     href: "/network",
+    permission: 1,
+  },
+  // Builders
+  {
+    label: "Staff",
+    divider: true,
+    permission: 1,
+  },
+  {
+    icon: <Link size={16} />,
+    color: "lime",
+    label: "Usefull Links",
+    href: "/links",
     permission: 1,
   },
   // Moderators

@@ -37,6 +37,7 @@ import {
 } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
+import Head from "next/head";
 import pages from "../components/routes";
 import { useRouter } from "next/router";
 import useUser from "../utils/hooks/useUser";
@@ -65,6 +66,7 @@ export default function Page(props: {
       </Center>
     );
   }
+  console.log(router.pathname);
   return (
     <AppShell
       padding={props.noMargin ? 0 : "md"}
@@ -317,6 +319,9 @@ export default function Page(props: {
         },
       })}
     >
+      <Head>
+        <title>Progress | {pages.find((el : any) => el.href==router.pathname)?.label}</title>
+      </Head>
       <Box
         sx={{
           height: "calc(100vh - 60px)",
