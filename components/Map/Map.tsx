@@ -25,7 +25,7 @@ const Map = (props: any) => {
         center={props.center || [40.748457795121574, -73.98565062177646]}
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors &copy; | <a href="https://carto.com/">CARTO</a>'
         zoom={props.zoom || 12}
-        scrollWheelZoom={true}
+        scrollWheelZoom={!props.noScroll}
         style={{ height: "100%", width: "100%", border: "none",...props.mapStyle }}
         mapPlaceholder={
           <p>

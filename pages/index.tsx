@@ -11,6 +11,19 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import {
+  ArcElement,
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Title as ChartTitle,
+  Tooltip as ChartTooltip,
+  Filler,
+  Legend,
+  LineElement,
+  LinearScale,
+  PointElement,
+} from "chart.js";
+import {
   Backhoe,
   BuildingCommunity,
   Calendar,
@@ -18,6 +31,7 @@ import {
   Users,
   X,
 } from "tabler-icons-react";
+import { Bar, Line, Pie } from "react-chartjs-2";
 
 import Map from "../components/Map";
 import type { NextPage } from "next";
@@ -26,6 +40,19 @@ import StatsText from "../components/StatsText";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { useState } from "react";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  ChartTitle,
+  ChartTooltip,
+  Legend,
+  Filler,
+  ArcElement,
+  BarElement
+);
 
 const Home: NextPage = ({ user, setUser }: any) => {
   const router = useRouter();
@@ -46,9 +73,26 @@ const Home: NextPage = ({ user, setUser }: any) => {
     "http://142.44.137.53:8080/api/districts/get"
   );
   const { data: progress } = useSWR("http://142.44.137.53:8080/api/progress");
-  console.log(progress);
+  const { data: playersRw } = useSWR(
+    "http://142.44.137.53:8080/api/playerstats/get"
+  );
+  const { data: projectsRw } = useSWR(
+    "http://142.44.137.53:8080/api/projects/get"
+  );
+  var projects: any = { labels: [], datasets: [] };
+  var players: any = { labels: [], datasets: [] };
+  projectsRw?.slice(-30).forEach((element: any) => {
+    projects.labels.push(new Date(element.date).toLocaleDateString());
+    projects.datasets.push(element.projects);
+  });
+  playersRw?.slice(-30).forEach((element: any) => {
+    players.labels.push(new Date(element.date).toLocaleDateString());
+    players.datasets.push(element.averages.total);
+  });
+
   return (
     <Page noMargin style={{ position: "relative" }}>
+      {/* Head Map */}
       <Group
         style={{
           position: "absolute",
@@ -179,6 +223,8 @@ const Home: NextPage = ({ user, setUser }: any) => {
       <Map
         width="100%"
         height="100%"
+        noScroll
+        zoom={13}
         polygon={{ data: data?.area || [] }}
         mapStyle={{ zIndex: 0 }}
         components={data?.map((block: any) =>
@@ -218,7 +264,8 @@ const Home: NextPage = ({ user, setUser }: any) => {
             : null
         )}
       ></Map>
-      <div style={{ margin: theme.spacing.md }}>
+      {/* Content */}
+      <div style={{ margin: theme.spacing.md }} id="i">
         <Paper
           withBorder
           radius="md"
@@ -275,6 +322,219 @@ const Home: NextPage = ({ user, setUser }: any) => {
             {progress?.blocksCount.total} Blocks
           </StatsText>
         </SimpleGrid>
+        <Paper
+          withBorder
+          radius="md"
+          p="xs"
+          style={{ marginTop: theme.spacing.md }}
+        >
+          <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
+            Progress of the project
+          </Text>
+          <Bar
+            options={{
+              indexAxis: "y" as const,
+              elements: {
+                bar: {
+                  borderWidth: 1,
+                  backgroundColor: "#9848d5",
+                },
+              },
+              responsive: true,
+              plugins: {
+                legend: {
+                  display: false,
+                },
+                title: {
+                  display: false,
+                },
+                tooltip: {
+                  enabled: true,
+                  callbacks: {
+                    label: function (tooltipItem) {
+                      return Math.round(tooltipItem.parsed.x * 10) / 10 + "%";
+                    },
+                  },
+                },
+              },
+
+              scales: {
+                x: {
+                  grid: {
+                    display: true,
+                    color: "#9848d533",
+                    drawBorder: false,
+                    z: 1,
+                  },
+                  min: 0,
+                  max: 100,
+                },
+                y: {
+                  grid: {
+                    drawBorder: false,
+                    color: "#ffffff00",
+                  },
+                },
+              },
+            }}
+            height={"38px"}
+            data={{
+              labels: [
+                progress?.name,
+                progress?.children[0].name,
+                progress?.children[1].name,
+              ],
+              datasets: [
+                {
+                  label: "Progress",
+                  data: progress
+                    ? [
+                        progress?.progress,
+                        progress?.children[0].progress,
+                        progress?.children[1].progress,
+                      ]
+                    : [],
+                  borderColor: function (context) {
+                    const index = context.dataIndex;
+                    const value = context.dataset.data[index];
+                    return value >= 10
+                      ? value == 100
+                        ? "rgba(55, 178, 77, 1)"
+                        : "rgba(255, 212, 59, 1)"
+                      : "rgba(240, 62, 62, 1)";
+                  },
+                  barThickness: 25,
+                  minBarLength: 2,
+                  backgroundColor: function (context) {
+                    const index = context.dataIndex;
+                    const value = context.dataset.data[index];
+                    return value >= 10
+                      ? value == 100
+                        ? "rgba(55, 178, 77, 0.06)"
+                        : "rgba(255, 212, 59, 0.06)"
+                      : "rgba(240, 62, 62, 0.06)";
+                  },
+                },
+              ],
+            }}
+          />
+        </Paper>{" "}
+        <Paper
+          withBorder
+          radius="md"
+          p="xs"
+          style={{ marginTop: theme.spacing.md }}
+        >
+          <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
+            Projects on Building servers
+          </Text>
+          <Line
+            options={{
+              responsive: true,
+              scales: {
+                x: {
+                  grid: {
+                    display: true,
+                    color: "#ae3ec933",
+                    drawBorder: false,
+                    z: 1,
+                  },
+                },
+                y: {
+                  grid: {
+                    drawBorder: false,
+                    color: "#ffffff00",
+                  },
+                },
+              },
+
+              plugins: {
+                legend: {
+                  display: false,
+                },
+                title: {
+                  display: false,
+                },
+                tooltip: {
+                  enabled: true,
+                },
+              },
+            }}
+            height={"50px"}
+            data={{
+              labels: projects.labels,
+              datasets: [
+                {
+                  label: projects ? "Projects" : "",
+                  data: projects.datasets,
+                  borderColor: "#ae3ec9",
+                  tension: 0.1,
+                  fill: true,
+                  backgroundColor: "#ae3ec910",
+                  borderWidth: 2,
+                },
+              ],
+            }}
+          />
+        </Paper>
+        <Paper
+          withBorder
+          radius="md"
+          p="xs"
+          style={{ marginTop: theme.spacing.md }}
+        >
+          <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
+            Players on the Network
+          </Text>
+          <Line
+            options={{
+              responsive: true,
+              scales: {
+                x: {
+                  grid: {
+                    display: true,
+                    color: "#1098ad33",
+                    drawBorder: false,
+                    z: 1,
+                  },
+                },
+                y: {
+                  grid: {
+                    drawBorder: false,
+                    color: "#ffffff00",
+                  },
+                },
+              },
+
+              plugins: {
+                legend: {
+                  display: false,
+                },
+                title: {
+                  display: false,
+                },
+                tooltip: {
+                  enabled: true,
+                },
+              },
+            }}
+            height={"50px"}
+            data={{
+              labels: players.labels,
+              datasets: [
+                {
+                  label: players ? "Average Players" : "",
+                  data: players.datasets,
+                  borderColor: "#1098ad",
+                  tension: 0.1,
+                  fill: true,
+                  backgroundColor: "#1098ad10",
+                  borderWidth: 2,
+                },
+              ],
+            }}
+          />
+        </Paper>
       </div>
     </Page>
   );
