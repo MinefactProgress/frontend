@@ -305,11 +305,11 @@ const AdminPage: NextPage = () => {
             visible={!data}
           >
             <StatsText
-              title="database version"
+              title="database"
               style={{ height: "100%" }}
               onClick={() => setOpened(true)}
             >
-              v{data?.database.version}
+              {data?.database.status[0]}
             </StatsText>
             <Modal
               opened={opened}
@@ -318,12 +318,7 @@ const AdminPage: NextPage = () => {
               size="lg"
               overflow="inside"
             >
-              {data?.database.status.map((e: any, i: number) => (
-                <Text key={i}>
-                  {e}
-                  <br />
-                </Text>
-              ))}
+              <Text>Version: v{data?.database.version}</Text>
             </Modal>
 
             <Group position="center"></Group>
