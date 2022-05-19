@@ -8,7 +8,7 @@ import {
   Text,
   Title,
   Tooltip,
-  useMantineTheme,
+  useMantineTheme
 } from "@mantine/core";
 import {
   ArcElement,
@@ -21,7 +21,7 @@ import {
   Legend,
   LineElement,
   LinearScale,
-  PointElement,
+  PointElement
 } from "chart.js";
 import {
   Backhoe,
@@ -29,9 +29,9 @@ import {
   Calendar,
   ChartBubble,
   Users,
-  X,
+  X
 } from "tabler-icons-react";
-import { Bar, Line, Pie } from "react-chartjs-2";
+import { Bar, Line } from "react-chartjs-2";
 
 import Map from "../components/Map";
 import type { NextPage } from "next";
