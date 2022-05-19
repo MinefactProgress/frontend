@@ -61,7 +61,18 @@ const AdminPage: NextPage = () => {
           spacing="md"
           breakpoints={[{ maxWidth: "sm", cols: 1 }]}
         >
-          <Skeleton height={PRIMARY_COL_HEIGHT} radius="md" animate={false} />
+          <StatsText title="Backend Statistics">
+            <Text color="dimmed">
+              Total Requests:
+              <Text>
+                {data?.stats.total_requests}<br />
+              </Text>
+              <br />Failed Requests:
+              <Text color="">
+                {data?.stats.total_requests-data?.stats.successful_requests}
+              </Text>
+            </Text>
+          </StatsText>
           <Grid gutter="md">
             <Grid.Col>
               <Skeleton
