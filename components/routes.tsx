@@ -8,6 +8,7 @@ import {
   MapPins,
   Settings,
   Users,
+  Map
 } from "tabler-icons-react";
 
 const pages = [
@@ -31,6 +32,13 @@ const pages = [
     color: "yellow",
     label: "Network Status",
     href: "/network",
+    permission: 1,
+  },
+  {
+    icon: <Map size={16} />,
+    color: "yellow",
+    label: "Dynmap",
+    href: "/dynmap",
     permission: 1,
   },
   // Builders
