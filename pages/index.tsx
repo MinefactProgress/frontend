@@ -8,7 +8,7 @@ import {
   Text,
   Title,
   Tooltip,
-  useMantineTheme
+  useMantineTheme,
 } from "@mantine/core";
 import {
   ArcElement,
@@ -21,7 +21,7 @@ import {
   Legend,
   LineElement,
   LinearScale,
-  PointElement
+  PointElement,
 } from "chart.js";
 import {
   Backhoe,
@@ -29,7 +29,7 @@ import {
   Calendar,
   ChartBubble,
   Users,
-  X
+  X,
 } from "tabler-icons-react";
 import { Bar, Line } from "react-chartjs-2";
 
@@ -37,6 +37,7 @@ import Map from "../components/Map";
 import type { NextPage } from "next";
 import Page from "../components/Page";
 import StatsText from "../components/StatsText";
+import { colorFromStatus } from "../utils/blockUtils";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { useState } from "react";
@@ -59,8 +60,8 @@ const Home: NextPage = ({ user, setUser }: any) => {
   const [selectedBlock, setSelectedBlock] = useState({
     uid: 0,
     id: 0,
-    district: 1,
-    status: 1,
+    district: -1,
+    status: -1,
     progress: 0,
     details: false,
     builder: "",
@@ -117,6 +118,21 @@ const Home: NextPage = ({ user, setUser }: any) => {
           Not Started
         </Badge>
         <Badge
+          color="cyan"
+          size="lg"
+          variant={selectedBlock.status == 1 ? "filled" : "dot"}
+          style={{
+            backgroundColor:
+              selectedBlock.status != 1
+                ? theme.colorScheme === "dark"
+                  ? "black"
+                  : "white"
+                : undefined,
+          }}
+        >
+          Reserved
+        </Badge>
+        <Badge
           color="yellow"
           size="lg"
           variant={selectedBlock.status == 2 ? "filled" : "dot"}
@@ -130,6 +146,21 @@ const Home: NextPage = ({ user, setUser }: any) => {
           }}
         >
           Building
+        </Badge>
+        <Badge
+          color="orange"
+          size="lg"
+          variant={selectedBlock.status == 3? "filled" : "dot"}
+          style={{
+            backgroundColor:
+              selectedBlock.status != 3
+                ? theme.colorScheme === "dark"
+                  ? "black"
+                  : "white"
+                : undefined,
+          }}
+        >
+          Detailing
         </Badge>
         <Badge
           color="green"
@@ -210,7 +241,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
             radius="xl"
             size="md"
             onClick={() => {
-              router.push("#bInfo");
+              router.push("/districts/" + selectedBlock.district+"/"+selectedBlock.id);
             }}
             style={{
               boxShadow: theme.shadows.md,
@@ -233,13 +264,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
                 type: "polygon",
                 positions: JSON.parse(block.area),
                 options: {
-                  color: `rgba(${
-                    block.progress == 0
-                      ? "240, 62, 62"
-                      : block.progress < 100
-                      ? "255, 212, 59"
-                      : "55, 178, 77"
-                  })`,
+                  color: `${colorFromStatus(block.status)}FF`,
                   opacity:
                     selectedBlock.uid != 0
                       ? block.uid == selectedBlock.uid
@@ -253,8 +278,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
                   " #" +
                   block.id +
                   " | " +
-                  block.progress +
-                  "%",
+                  (block.status == 1 ? block.builder : block.progress + "%"),
                 eventHandlers: {
                   click: () => {
                     setSelectedBlock(block);
