@@ -30,6 +30,7 @@ import StatsText from "../../components/StatsText";
 import useSWR from "swr";
 import { useState } from "react";
 import useUser from "../../utils/hooks/useUser";
+import package_version from "../../package.json";
 
 ChartJS.register(
   CategoryScale,
@@ -63,23 +64,26 @@ const AdminPage: NextPage = () => {
         >
           <StatsText title="Backend Statistics">
             <Text color="dimmed">
-              Total Requests:
+              Total Requests
               <Text>
                 {data?.stats.total_requests}<br />
               </Text>
-              <br />Failed Requests:
+              <br />Failed Requests
               <Text color="">
                 {data?.stats.total_requests-data?.stats.successful_requests}
               </Text>
             </Text>
           </StatsText>
           <Grid gutter="md">
-            <Grid.Col>
-              <Skeleton
-                height={SECONDARY_COL_HEIGHT}
-                radius="md"
-                animate={false}
-              />
+            <Grid.Col span={6}>
+              <StatsText title="Frontend Version" style={{ height: "100%" }}>
+                {package_version.version}
+              </StatsText>
+            </Grid.Col>
+            <Grid.Col span={6}>
+              <StatsText title="Backend Version" style={{ height: "100%" }}>
+                {data?.backend_version}
+              </StatsText>
             </Grid.Col>
             <Grid.Col span={6}>
               <StatsRing
@@ -284,7 +288,7 @@ const AdminPage: NextPage = () => {
             animate={true}
             visible={!data}
           >
-            <StatsText title="operatin system" style={{ height: "100%" }}>
+            <StatsText title="operating system" style={{ height: "100%" }}>
               {data?.platform} ({data?.arch})
             </StatsText>
           </Skeleton>
