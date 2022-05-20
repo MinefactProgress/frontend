@@ -182,16 +182,16 @@ const LocationsPage = () => {
                       positions: JSON.parse(block.area),
                       options: {
                         color: `rgba(${
-                          block.progress == 0
+                          progress == 0
                             ? "194, 76, 60"
-                            : block.progress < 100
+                            : progress < 100
                             ? "216, 108, 50"
                             : "106, 186, 97"
                         })`,
                         opacity: block.uid == selected.uid ? 1 : 0.1,
                       },
                       radius: 15,
-                      tooltip: "Block #" + block.id,
+                      tooltip: "Block #" + block.uid,
                       eventHandlers: {
                         click: () => {
                           setSelected(block);
