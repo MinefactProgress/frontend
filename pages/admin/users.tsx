@@ -140,7 +140,7 @@ const UsersPage = () => {
   };
   const handleAddUser = async (e: any) => {
     const result = await fetch(
-      "http://142.44.137.53:8080/api/users/create?key=" + user.apikey,
+      "http://localhost:8080/api/users/create?key=" + user.apikey,
       {
         method: "POST",
         headers: {
@@ -165,8 +165,9 @@ const UsersPage = () => {
         title: "Account created",
         message:
           "The accound of " +
-          form.values.username +
-          " has been created successfully. Reload to see changes.",
+          result.data.username +
+          " has been created successfully. One Time Password: " +
+          result.data.password,
         color: "green",
         icon: <Check />,
       });
