@@ -24,7 +24,6 @@ import {
 import { Line } from "react-chartjs-2";
 import { NextPage } from "next";
 import Page from "../../components/Page";
-import PermissionWrapper from "../../utils/hooks/usePermission";
 import { StatsRing } from "../../components/StatsRing";
 import StatsText from "../../components/StatsText";
 import package_version from "../../package.json";
@@ -54,7 +53,6 @@ const AdminPage: NextPage = () => {
   const PRIMARY_COL_HEIGHT = 220;
   const SECONDARY_COL_HEIGHT = PRIMARY_COL_HEIGHT / 2 - theme.spacing.md / 2;
   return (
-    <PermissionWrapper permission={4}>
       <Page>
         <SimpleGrid
           cols={2}
@@ -328,7 +326,6 @@ const AdminPage: NextPage = () => {
           </Skeleton>
         </SimpleGrid>
       </Page>
-    </PermissionWrapper>
   );
 };
 

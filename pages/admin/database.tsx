@@ -13,7 +13,6 @@ import {
 import { useEffect, useState } from "react";
 
 import Page from "../../components/Page";
-import PermissionWrapper from "../../utils/hooks/usePermission";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { androidstudio } from "react-syntax-highlighter/dist/cjs/styles/hljs";
 import useSWR from "swr";
@@ -31,7 +30,6 @@ const DatabasePage = () => {
   );
 
   return (
-    <PermissionWrapper permission={4}>
       <Page>
         <SimpleGrid
           cols={2}
@@ -175,7 +173,6 @@ const DatabasePage = () => {
           </Grid>
         </SimpleGrid>
       </Page>
-    </PermissionWrapper>
   );
 };
 

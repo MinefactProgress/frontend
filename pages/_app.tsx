@@ -12,11 +12,13 @@ import { useEffect, useState } from "react";
 import { useHotkeys, useLocalStorage } from "@mantine/hooks";
 
 import type { AppProps } from "next/app";
+import ErrorPage from "./_error";
 import { ModalsProvider } from "@mantine/modals";
 import { NotificationsProvider } from "@mantine/notifications";
 import { SWRConfig } from "swr";
 import { SpotlightProvider } from "@mantine/spotlight";
 import pages from "../components/routes";
+import routes from "../components/routes";
 import { useRouter } from "next/router";
 import useUser from "../utils/hooks/useUser";
 
@@ -28,7 +30,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   });
   // Authentication
   const [user, setUser] = useUser();
-const router = useRouter()
+  const router = useRouter();
+  const allowed = (routes.find((route) => route.href === router.pathname)?.permission||1)<=(user.permission || 0);
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
 
@@ -71,11 +74,16 @@ const router = useRouter()
           withNormalizeCSS
         >
           <SpotlightProvider
-            actions={pages.map((page) => ({
-              icon: page.icon,
-              title: page.label,
-              onTrigger: () => router.push(page.href||"/"),
-              })).filter((page,i) => page.icon && pages[i].permission <= (user.permission||0))}
+            actions={pages
+              .map((page) => ({
+                icon: page.icon,
+                title: page.label,
+                onTrigger: () => router.push(page.href || "/"),
+              }))
+              .filter(
+                (page, i) =>
+                  page.icon && pages[i].permission <= (user.permission || 0)
+              )}
             searchIcon={<Search size={18} />}
             searchPlaceholder="Search..."
             shortcut="ctrl + K"
@@ -83,7 +91,8 @@ const router = useRouter()
           >
             <ModalsProvider>
               <NotificationsProvider>
-                <Component {...pageProps} user={user} setUser={setUser} />
+                {(routes.find((route) => route.href === router.pathname)?.permission||1)<=(user.permission || 0)?
+                <Component {...pageProps} user={user} setUser={setUser} />:<ErrorPage statuscode={401} /> }
               </NotificationsProvider>
             </ModalsProvider>
           </SpotlightProvider>

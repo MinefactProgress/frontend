@@ -27,11 +27,9 @@ import {
   Trash,
   UserPlus,
 } from "tabler-icons-react";
-import PermissionWrapper, {
-  getRoleFromPermission,
-} from "../../utils/hooks/usePermission";
 
 import Page from "../../components/Page";
+import { getRoleFromPermission } from "../../utils/hooks/usePermission";
 import { showNotification } from "@mantine/notifications";
 import { useForm } from "@mantine/form";
 import { useModals } from "@mantine/modals";
@@ -218,7 +216,6 @@ const UsersPage = () => {
   };
 
   return (
-    <PermissionWrapper permission={4}>
       <Page>
         <SimpleGrid
           cols={2}
@@ -512,7 +509,6 @@ const UsersPage = () => {
           </Grid>
         </SimpleGrid>
       </Page>
-    </PermissionWrapper>
   );
 };
 

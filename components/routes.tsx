@@ -62,18 +62,18 @@ const pages = [
     href: "/links",
     permission: 1,
   },
+  {
+    icon: <MapPins size={16} />,
+    color: "lime",
+    label: "Map Locations",
+    href: "/admin/locations",
+    permission: 1,
+  },
   // Moderators
   {
     label: "Moderation",
     divider: true,
     permission: 3,
-  },
-  {
-    icon: <MapPins size={16} />,
-    color: "cyan",
-    label: "Map Locations",
-    href: "/admin/locations",
-    permission: 1,
   },
   // Admin
   {

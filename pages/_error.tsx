@@ -140,8 +140,14 @@ const errors = [
   },
 ];
 
-function ErrorPage(status: any) {
+function ErrorPage(props: any) {
   const { classes } = useStyles();
+  const code = props.code||props.statuscode;
+  const status = errors.find((e) => e.code === code)||{
+    code: code,
+    title: "You found a Error we dont even know of!",
+    message: "Something went wrong, please try again later and contact us.",
+  };
   const router = useRouter();
   return (
     <Container className={classes.root}>
@@ -168,21 +174,11 @@ export function getServerSideProps({ res, err }: any) {
   if (new Date().getDate() === 1 && new Date().getMonth() === 4) {
     res.statusCode = 418;
   }
-  const statusCode = res ? res.statusCode : err ? err.statusCode : 404;
-  if (errors.find((e) => e.code === statusCode)) {
-    return {
-      props: {
-        code: statusCode,
-        title: errors.find((error) => error.code === statusCode)?.title,
-        message: errors.find((error) => error.code === statusCode)?.message,
-      },
-    };
-  }
+  
   return {
     props: {
-      code: statusCode,
-      title: "You found a Error we dont even know of!",
-      message: "Something went wrong, please try again later and contact us.",
+      code: res.statusCode,
+      
     },
   };
 }
