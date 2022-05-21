@@ -30,3 +30,25 @@ export function statusToName(status: number) {
       return "Unknown";
   }
 }
+export function statusToColorName(status: number) {
+  switch (status) {
+    case 0:
+      return "red";
+    case 1:
+      return "cyan";
+    case 2:
+      return "orange";
+    case 3:
+      return "yellow";
+    case 4:
+      return "green";
+    default:
+      return "gray";
+  }
+}
+export function progressToColorName(progress: number) {
+  if (progress >= 100) return "green";
+  else if (progress >= 80) return "yellow";
+  else if (progress >= 30) return "orange";
+  else return "red";
+}
