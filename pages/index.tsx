@@ -196,8 +196,8 @@ const Home: NextPage = ({ user, setUser }: any) => {
                 setSelectedBlock({
                   uid: 0,
                   id: 0,
-                  district: 1,
-                  status: 1,
+                  district: -1,
+                  status: -1,
                   progress: 0,
                   details: false,
                   builder: "",

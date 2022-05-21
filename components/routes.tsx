@@ -19,35 +19,35 @@ const pages = [
     label: "Progress Overview",
     href: "/",
     badge: "",
-    permission: 1,
+    permission: 0,
   },
   {
     icon: <List size={16} />,
     color: "yellow",
     label: "Project List",
     href: "/projects",
-    permission: 1,
+    permission: 0,
   },
   {
     icon: <BuildingCommunity size={16} />,
     color: "yellow",
     label: "Districts",
     href: "/districts",
-    permission: 1,
+    permission: 0,
   },
   {
     icon: <Hierarchy size={16} />,
     color: "yellow",
     label: "Network Status",
     href: "/network",
-    permission: 1,
+    permission: 0,
   },
   {
     icon: <Map size={16} />,
     color: "yellow",
     label: "Dynmap",
     href: "/dynmap",
-    permission: 1,
+    permission: 0,
   },
   // Builders
   {
@@ -73,7 +73,14 @@ const pages = [
   {
     label: "Moderation",
     divider: true,
-    permission: 3,
+    permission: 2,
+  },
+  {
+    icon: <Users size={16} />,
+    color: "cyan",
+    label: "Users",
+    href: "/admin/users",
+    permission: 2,
   },
   // Admin
   {
@@ -94,13 +101,6 @@ const pages = [
     label: "Database",
     href: "/admin/database",
     permission: 4,
-  },
-  {
-    icon: <Users size={16} />,
-    color: "grape",
-    label: "Users",
-    href: "/admin/users",
-    permission: 2,
   },
   {
     icon: <Settings size={16} />,

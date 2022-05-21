@@ -91,7 +91,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           >
             <ModalsProvider>
               <NotificationsProvider>
-                {(routes.find((route) => route.href === router.pathname)?.permission||1)<=(user.permission || 0)?
+                {(routes.find((route) => route.href === router.pathname)?.permission||0)<=(user.permission || 0)?
                 <Component {...pageProps} user={user} setUser={setUser} />:<ErrorPage statuscode={401} /> }
               </NotificationsProvider>
             </ModalsProvider>
