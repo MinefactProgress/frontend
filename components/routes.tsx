@@ -1,14 +1,15 @@
 import {
+  BuildingCommunity,
   ChartBar,
   ChartInfographic,
   Database,
   Hierarchy,
   Link,
   List,
+  Map,
   MapPins,
   Settings,
-  Users,
-  Map
+  Users
 } from "tabler-icons-react";
 
 const pages = [
@@ -25,6 +26,13 @@ const pages = [
     color: "yellow",
     label: "Project List",
     href: "/projects",
+    permission: 1,
+  },
+  {
+    icon: <BuildingCommunity size={16} />,
+    color: "yellow",
+    label: "Districts",
+    href: "/districts",
     permission: 1,
   },
   {
