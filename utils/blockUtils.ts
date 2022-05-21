@@ -30,3 +30,19 @@ export function statusToName(status: number) {
       return "Unknown";
   }
 }
+export function statusToColorName(status: number) {
+  switch (status) {
+    case 0:
+      return "red";
+    case 1:
+      return "cyan";
+    case 2:
+      return "orange";
+    case 3:
+      return "yellow";
+    case 4:
+      return "green";
+    default:
+      return "gray";
+  }
+}

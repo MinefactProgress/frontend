@@ -1,6 +1,7 @@
 import {
   Accordion,
   ActionIcon,
+  Badge,
   Grid,
   Group,
   Paper,
@@ -13,7 +14,7 @@ import {
 import Page from "../../components/Page";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-import { statusToName } from "../../utils/blockUtils";
+import { statusToName, statusToColorName } from "../../utils/blockUtils";
 import { Building } from "tabler-icons-react";
 
 const DistrictsPage = () => {
@@ -45,7 +46,13 @@ const DistrictsPage = () => {
               {districts?.map((district: any) => (
                 <tr key={district.name}>
                   <td>{district.name}</td>
-                  <td>{statusToName(district.status)}</td>
+                  <td>
+                    <Badge
+                      color={statusToColorName(district.status)}
+                    >
+                      {statusToName(district.status)}
+                    </Badge>
+                  </td>
                   <td>{district.progress.toFixed(2) + "%"}</td>
                   <td>{district.blocksCount.done}</td>
                   <td>{district.blocksCount.total-district.blocksCount.done}</td>
@@ -125,7 +132,13 @@ const DistrictsPage = () => {
                       ? boroughs?.map((district: any) => (
                         <tr key={district.name}>
                           <td>{district.name}</td>
-                          <td>{statusToName(district.status)}</td>
+                          <td>
+                            <Badge
+                              color={statusToColorName(district.status)}
+                            >
+                              {statusToName(district.status)}
+                            </Badge>
+                          </td>
                           <td>{district.progress.toFixed(2) + "%"}</td>
                           <td>{district.blocks.done}</td>
                           <td>{district.blocks.left}</td>
