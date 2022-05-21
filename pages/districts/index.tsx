@@ -2,9 +2,12 @@ import {
   Accordion,
   ActionIcon,
   Badge,
+  Center,
   Grid,
   Group,
   Paper,
+  Progress,
+  Slider,
   Table,
   Text,
   ThemeIcon,
@@ -14,7 +17,7 @@ import {
 import Page from "../../components/Page";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-import { statusToName, statusToColorName } from "../../utils/blockUtils";
+import { statusToName, statusToColorName, progressToColorName } from "../../utils/blockUtils";
 import { Building } from "tabler-icons-react";
 
 const DistrictsPage = () => {
@@ -53,7 +56,16 @@ const DistrictsPage = () => {
                       {statusToName(district.status)}
                     </Badge>
                   </td>
-                  <td>{district.progress.toFixed(2) + "%"}</td>
+                  <td>
+                    <Center>
+                      {district.progress.toFixed(2) + "%"}
+                    </Center>
+                    <Progress
+                      size="sm"
+                      value={district.progress}
+                      color={progressToColorName(district.progress)}
+                    />
+                  </td>
                   <td>{district.blocksCount.done}</td>
                   <td>{district.blocksCount.total-district.blocksCount.done}</td>
                   <td>{!district.completionDate ? "---"
@@ -139,7 +151,16 @@ const DistrictsPage = () => {
                               {statusToName(district.status)}
                             </Badge>
                           </td>
-                          <td>{district.progress.toFixed(2) + "%"}</td>
+                          <td>
+                          <Center>
+                            {district.progress.toFixed(2) + "%"}
+                          </Center>
+                          <Progress
+                            size="sm"
+                            value={district.progress}
+                            color={progressToColorName(district.progress)}
+                          />
+                          </td>
                           <td>{district.blocks.done}</td>
                           <td>{district.blocks.left}</td>
                           <td>{district.completionDate || "---"}</td>

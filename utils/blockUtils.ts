@@ -46,3 +46,9 @@ export function statusToColorName(status: number) {
       return "gray";
   }
 }
+export function progressToColorName(progress: number) {
+  if (progress >= 100) return "green";
+  else if (progress >= 80) return "yellow";
+  else if (progress >= 30) return "orange";
+  else return "red";
+}
