@@ -65,7 +65,6 @@ const Login = () => {
     },
   });
   const handleSubmit = async (values: typeof form.values) => {
-    console.log(values);
     const result = await fetch("http://142.44.137.53:8080/login", {
       method: "POST",
       headers: {

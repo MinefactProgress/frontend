@@ -27,10 +27,10 @@ import Page from "../../components/Page";
 import PermissionWrapper from "../../utils/hooks/usePermission";
 import { StatsRing } from "../../components/StatsRing";
 import StatsText from "../../components/StatsText";
+import package_version from "../../package.json";
 import useSWR from "swr";
 import { useState } from "react";
 import useUser from "../../utils/hooks/useUser";
-import package_version from "../../package.json";
 
 ChartJS.register(
   CategoryScale,
@@ -53,7 +53,6 @@ const AdminPage: NextPage = () => {
   const theme = useMantineTheme();
   const PRIMARY_COL_HEIGHT = 220;
   const SECONDARY_COL_HEIGHT = PRIMARY_COL_HEIGHT / 2 - theme.spacing.md / 2;
-  console.log(data);
   return (
     <PermissionWrapper permission={4}>
       <Page>

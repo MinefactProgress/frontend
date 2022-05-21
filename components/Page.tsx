@@ -67,7 +67,6 @@ export default function Page(props: {
       </Center>
     );
   }
-  console.log(router.pathname);
   return (
     <AppShell
       padding={props.noMargin ? 0 : "md"}
