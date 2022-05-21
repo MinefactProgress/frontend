@@ -23,16 +23,18 @@ import { Building } from "tabler-icons-react";
 const DistrictsPage = () => {
     const router = useRouter();
     const { data } = useSWR("http://142.44.137.53:8080/api/districts/get");
-    const nycID = data?.filter((d: any) => d.name === "New York City")[0].id;
-    const boroughs = data?.filter((d: any) => (d.parent === null || d.parent === nycID))
     const nyc = useSWR("http://142.44.137.53:8080/api/progress").data;
+    const nycID = data?.filter((d: any) => d.name === "New York City")[0].id;
+    const boroughs =
+              data?.filter((d: any) => d.parent === null).concat(data?.filter((d: any) => d.parent === nycID).sort(dynamicSort("progress")));
 
     const handleOpenDistrict = (id: string) => {
         router.push("/districts/" + id);
     }
 
     const genDistricts = (parent: any, data: any) => {
-        const districts = [parent].concat(data);
+      data.sort(dynamicSort("progress"));
+      const districts = [parent].concat(data);
         return <Table>
             <thead>
               <tr>
@@ -91,6 +93,7 @@ const DistrictsPage = () => {
         </Table>
     }
     const genSubboroughs = (data: any) => {
+      data.sort(dynamicSort("progress"));
         return data?.map((child: any) => {
             return <Accordion.Item label={child.name}>
                 {genDistricts(child, child.children)}
@@ -98,6 +101,7 @@ const DistrictsPage = () => {
         })
     }
     const genBoroughs = () => {
+      nyc?.children.sort(dynamicSort("progress"));
         return nyc?.children.map((child: any) => {
             return <Grid.Col>
                   <Paper
@@ -175,6 +179,22 @@ const DistrictsPage = () => {
         </Grid>
       </Page>
     )
+}
+
+function dynamicSort(property: string) {
+  var sortOrder = 1;
+  if (property[0] === "-") {
+    sortOrder = -1;
+    property = property.substr(1);
+  }
+  return function (a: any, b: any) {
+    /* next line works with strings and numbers,
+     * and you may want to customize it to your needs
+     */
+    var result =
+      a[property] > b[property] ? -1 : a[property] < b[property] ? 1 : 0;
+    return result * sortOrder;
+  };
 }
 
 export default DistrictsPage;
