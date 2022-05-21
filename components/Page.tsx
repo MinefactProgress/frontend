@@ -47,6 +47,7 @@ export default function Page(props: {
   scroll?: boolean;
   noMargin?: boolean;
   style?: any;
+  title?:string;
 }) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [loading, setLoading] = useState(true);
@@ -320,7 +321,7 @@ export default function Page(props: {
       })}
     >
       <Head>
-        <title>Progress | {pages.find((el : any) => el.href==router.pathname)?.label}</title>
+        <title>Progress | {props.title||pages.find((el : any) => el.href==router.pathname)?.label}</title>
       </Head>
       <Box
         sx={{

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 const DistrictPage = () => {
   const router = useRouter();
   const {district} = router.query;
-  return <Page>{district}</Page>;
+  return <Page title={district?.toString()}>{district}</Page>;
 };
 
 export default DistrictPage;
