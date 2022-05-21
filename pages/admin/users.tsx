@@ -138,7 +138,7 @@ const UsersPage = () => {
   };
   const handleAddUser = async (e: any) => {
     const result = await fetch(
-      "http://localhost:8080/api/users/create?key=" + user.apikey,
+      "http://142.44.137.53:8080/api/users/create?key=" + user.apikey,
       {
         method: "POST",
         headers: {
