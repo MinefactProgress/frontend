@@ -58,7 +58,7 @@ const pages = [
   {
     icon: <Link size={16} />,
     color: "lime",
-    label: "Usefull Links",
+    label: "Useful Links",
     href: "/links",
     permission: 1,
   },

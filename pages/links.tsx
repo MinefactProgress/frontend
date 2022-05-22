@@ -16,6 +16,7 @@ import { useForm } from "@mantine/form";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import useUser from "../utils/hooks/useUser";
+import { Permissions } from "../utils/hooks/usePermission";
 
 const LinksPage = () => {
   const theme = useMantineTheme();
@@ -77,9 +78,9 @@ const LinksPage = () => {
           marginBottom: theme.spacing.md,
         }}
       >
-        <Title>Usefull Link List</Title>
+        <Title>Useful Link List</Title>
       </Paper>
-      {(user.permission || 0) >= 4 ? (
+      {(user.permission || 0) >= Permissions.Moderator ? (
         <Paper
           withBorder
           radius="md"
