@@ -14,7 +14,7 @@ import {
 import Page from "../../../components/Page";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-import { progressToColorName, statusToColorName, statusToName } from "../../../utils/blockUtils";
+import { progressToColorName, statusToColorName, statusToName, colorFromStatus } from "../../../utils/blockUtils";
 import Map from "../../../components/Map";
 
 const DistrictPage = () => {
@@ -121,6 +121,7 @@ const DistrictPage = () => {
           radius="md"
           p="xs"
           style={{
+            height: "35vh",
             marginBottom: theme.spacing.md,
           }}
         >
@@ -129,32 +130,68 @@ const DistrictPage = () => {
           </Text>
           <Map
             width="100%"
-            height="100%"
+            height="94%"
+            zoom={14}
+            center={
+              data?.center?.length > 0
+                ? data?.center
+                : data?.blocks.blocks[0].area[0]
+            }
             polygon={{ data: data?.area || [] }}
             components={data
-              ?.blocks.blocks.map((block: any) => {
+              ?.blocks.blocks.map((block: any) =>
                 block.area.length !== 0
                   ? {
                       type: "polygon",
                       positions: block.area,
                       options: {
-                        color: `rgba(${
-                          block.progress == 0
-                            ? "194, 76, 60"
-                            : block.progress < 100
-                            ? "216, 108, 50"
-                            : "106, 186, 97"
-                        })`,
-                        opacity: 1,
+                        color: `${colorFromStatus(block.status)}FF`,
+                        opacity: 0.1,
                       },
                       radius: 15,
                       tooltip: "Block #" + block.id,
-                  }
-                  :null
-              }
+                      eventHandlers: {
+                        click: () => {
+                          handleClick(block.id);
+                        }
+                      }
+                    }
+                  : null
               )
             }
           />
+        </Paper>
+        <Paper
+          withBorder
+          radius="md"
+          p="xs"
+          style={{
+            marginBottom: theme.spacing.md,
+          }}
+        >
+          <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
+            Top 3 Builders
+          </Text>
+          <Table>
+            <thead>
+              <tr>
+                <th>Ranking</th>
+                <th>Builder</th>
+                <th>Claims</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data
+                ? data?.builders.slice(0,3).map((builder: any, index: number) => (
+                  <tr>
+                    <td>{index+1}</td>
+                    <td>{builder.name}</td>
+                    <td>{builder.blocks}</td>
+                  </tr>
+                ))
+              : null}
+            </tbody>
+          </Table>
         </Paper>
       </Grid.Col>
     </Grid>
