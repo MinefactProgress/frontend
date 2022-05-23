@@ -35,7 +35,9 @@ const DistrictsPage = () => {
     const genDistricts = (parent: any, data: any) => {
       data.sort(dynamicSort("progress"));
       const districts = [parent].concat(data);
-        return <Table>
+        return <Table
+          highlightOnHover
+        >
             <thead>
               <tr>
                 <th>Name</th>
@@ -44,12 +46,15 @@ const DistrictsPage = () => {
                 <th>Blocks Done</th>
                 <th>Blocks Left</th>
                 <th>Completion Date</th>
-                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {districts?.map((district: any) => (
-                <tr key={district.name}>
+                <tr onClick={e => {
+                  if(district.name !== parent.name) {
+                    handleOpenDistrict(district.name)
+                  }
+                }}>
                   <td>{district.name}</td>
                   <td>
                     <Badge
@@ -72,21 +77,6 @@ const DistrictsPage = () => {
                   <td>{district.blocksCount.total-district.blocksCount.done}</td>
                   <td>{!district.completionDate ? "---"
                         : new Date(district.completionDate).toLocaleDateString()}</td>
-                  <td>
-                    <Group spacing="xs">
-                      <Tooltip gutter={10} label={`Open ${district.name}`} withArrow>
-                        <ActionIcon
-                          onClick={() => handleOpenDistrict(district.name)}
-                          variant="transparent"
-                          disabled={district.name === parent.name}
-                        >
-                          <ThemeIcon>
-                            <Building size={18}/>
-                          </ThemeIcon>
-                        </ActionIcon>
-                      </Tooltip>
-                    </Group>
-                  </td>
                 </tr>
               ))}
             </tbody>
