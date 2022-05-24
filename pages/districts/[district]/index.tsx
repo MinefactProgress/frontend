@@ -133,7 +133,7 @@ const DistrictPage = () => {
                           />
                         </Center>
                       </td>
-                      <td>{block.builders}</td>
+                      <td>{block.builders.join(", ")}</td>
                       <td>
                         {!block.completionDate ? "---"
                           : new Date(block.completionDate).toLocaleDateString()}
@@ -152,7 +152,7 @@ const DistrictPage = () => {
           radius="md"
           p="xs"
           style={{
-            height: "36vh",
+            height: "40%",
             marginBottom: theme.spacing.md,
           }}
         >
@@ -198,6 +198,7 @@ const DistrictPage = () => {
           p="xs"
           style={{
             marginBottom: theme.spacing.md,
+            paddingBottom: 2
           }}
         >
           <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
