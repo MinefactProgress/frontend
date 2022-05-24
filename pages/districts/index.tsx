@@ -1,24 +1,18 @@
 import {
   Accordion,
-  ActionIcon,
   Badge,
   Center,
   Grid,
-  Group,
   Paper,
   Progress,
-  Slider,
   Table,
   Text,
-  ThemeIcon,
-  Tooltip,
 } from "@mantine/core";
 
 import Page from "../../components/Page";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { statusToName, statusToColorName, progressToColorName } from "../../utils/blockUtils";
-import { Building } from "tabler-icons-react";
 
 const DistrictsPage = () => {
     const router = useRouter();
@@ -111,7 +105,9 @@ const DistrictsPage = () => {
     }
 
     return (
-      <Page>
+      <Page
+        title="Districts"
+      >
         <Grid>
           <Grid.Col>
             <Paper
