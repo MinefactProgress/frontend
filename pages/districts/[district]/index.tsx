@@ -1,21 +1,49 @@
+import {
+  ArcElement,
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Filler,
+  Legend,
+  LineElement,
+  LinearScale,
+  PointElement,
+  Title as ChartTitle,
+  Tooltip,
+} from "chart.js";
 import { 
   Badge,
   Center,
   Checkbox,
-  Grid, Paper,
+  Grid,
+  Paper,
   Progress,
   ScrollArea,
   Table,
   Text,
   Title,
-  useMantineTheme
+  useMantineTheme,
 } from "@mantine/core";
+import { Bar } from "react-chartjs-2"
 
 import Page from "../../../components/Page";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { progressToColorName, statusToColorName, statusToName, colorFromStatus } from "../../../utils/blockUtils";
 import Map from "../../../components/Map";
+
+ChartJS.register(
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  ChartTitle,
+  Tooltip,
+  Legend,
+  Filler,
+  ArcElement
+)
 
 const DistrictPage = () => {
   const theme = useMantineTheme();
@@ -27,13 +55,18 @@ const DistrictPage = () => {
     router.push("/districts/" + district + "/" + blockID);
   }
   
-  return <Page>
+  return <Page
+    title={data?.name}
+  >
     <Grid>
-      <Grid.Col>
-        <Paper
+      <Grid.Col span={8}>
+      <Paper
           withBorder
           radius="md"
           p="xs"
+          style={{
+            marginBottom: theme.spacing.md,
+          }}
         >
           <Title>
             {district}
@@ -45,8 +78,6 @@ const DistrictPage = () => {
             label={data?.progress.toFixed(2) + "%"}
           />
         </Paper>
-      </Grid.Col>
-      <Grid.Col span={8}>
         <Paper
           withBorder
           radius="md"
@@ -121,7 +152,7 @@ const DistrictPage = () => {
           radius="md"
           p="xs"
           style={{
-            height: "35vh",
+            height: "36vh",
             marginBottom: theme.spacing.md,
           }}
         >
@@ -159,6 +190,93 @@ const DistrictPage = () => {
                   : null
               )
             }
+          />
+        </Paper>
+        <Paper
+          withBorder
+          radius="md"
+          p="xs"
+          style={{
+            marginBottom: theme.spacing.md,
+          }}
+        >
+          <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
+            Status Count
+          </Text>
+          <Bar
+            options={{
+              responsive: true,
+              scales: {
+                x: {
+                  grid: {
+                    display: true,
+                    color: "#9848d533",
+                    drawBorder: false,
+                    z: 1,
+                  },
+                },
+                y: {
+                  grid: {
+                    display: true,
+                    drawBorder: false,
+                    color: "#9848d533",
+                  },
+                  min: 0,
+                  max: data?.blocks.blocks.length,
+                },
+              },
+              plugins: {
+                legend: {
+                  display: false,
+                },
+                title: {
+                  display: false,
+                },
+                tooltip: {
+                  enabled: true,
+                },
+              },
+            }}
+            data={{
+              labels: [""],
+              datasets: [
+                {
+                  label: "Done",
+                  data: [data?.blocks.blocks.filter((b: any) => b.status === 4).length],
+                  backgroundColor: theme.colors.green[7] + "0f",
+                  borderColor: theme.colors.green[7],
+                  borderWidth: 2,
+                },
+                {
+                  label: "Detailing",
+                  data: [data?.blocks.blocks.filter((b: any) => b.status === 3).length],
+                  backgroundColor: theme.colors.yellow[7] + "0f",
+                  borderColor: theme.colors.yellow[7],
+                  borderWidth: 2,
+                },
+                {
+                  label: "Building",
+                  data: [data?.blocks.blocks.filter((b: any) => b.status === 2).length],
+                  backgroundColor: theme.colors.orange[7] + "0f",
+                  borderColor: theme.colors.orange[7],
+                  borderWidth: 2,
+                },
+                {
+                  label: "Reserved",
+                  data: [data?.blocks.blocks.filter((b: any) => b.status === 1).length],
+                  backgroundColor: theme.colors.cyan[7] + "0f",
+                  borderColor: theme.colors.cyan[7],
+                  borderWidth: 2,
+                },
+                {
+                  label: "Not Started",
+                  data: [data?.blocks.blocks.filter((b: any) => b.status === 0).length],
+                  backgroundColor: theme.colors.red[7] + "0f",
+                  borderColor: theme.colors.red[7],
+                  borderWidth: 2,
+                },
+              ]
+            }}
           />
         </Paper>
         <Paper
