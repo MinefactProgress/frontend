@@ -13,12 +13,12 @@ import {
   ThemeIcon,
   Tooltip,
 } from "@mantine/core";
+import { progressToColorName, statusToColorName, statusToName } from "../../utils/blockUtils";
 
+import { Building } from "tabler-icons-react";
 import Page from "../../components/Page";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-import { statusToName, statusToColorName, progressToColorName } from "../../utils/blockUtils";
-import { Building } from "tabler-icons-react";
 
 const DistrictsPage = () => {
     const router = useRouter();
@@ -94,16 +94,16 @@ const DistrictsPage = () => {
     }
     const genSubboroughs = (data: any) => {
       data.sort(dynamicSort("progress"));
-        return data?.map((child: any) => {
-            return <Accordion.Item label={child.name}>
+        return data?.map((child: any,i:number) => {
+            return <Accordion.Item label={child.name} key={i}>
                 {genDistricts(child, child.children)}
             </Accordion.Item>
         })
     }
     const genBoroughs = () => {
       nyc?.children.sort(dynamicSort("progress"));
-        return nyc?.children.map((child: any) => {
-            return <Grid.Col>
+        return nyc?.children.map((child: any,i:number) => {
+            return <Grid.Col key={i}>
                   <Paper
                     withBorder
                     radius="md"

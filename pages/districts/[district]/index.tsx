@@ -1,8 +1,9 @@
-import { 
+import {
   Badge,
   Center,
   Checkbox,
-  Grid, Paper,
+  Grid,
+  Paper,
   Progress,
   ScrollArea,
   Table,
@@ -10,12 +11,12 @@ import {
   Title,
   useMantineTheme
 } from "@mantine/core";
+import { progressToColorName, statusToColorName, statusToName } from "../../../utils/blockUtils";
 
+import Map from "../../../components/Map";
 import Page from "../../../components/Page";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-import { progressToColorName, statusToColorName, statusToName } from "../../../utils/blockUtils";
-import Map from "../../../components/Map";
 
 const DistrictPage = () => {
   const theme = useMantineTheme();
@@ -74,8 +75,8 @@ const DistrictPage = () => {
               </thead>
               <tbody>
                 {data
-                  ? data?.blocks.blocks.map((block: any) => (
-                    <tr onClick={e => handleClick(block.id)}>
+                  ? data?.blocks.blocks.map((block: any,i:number) => (
+                    <tr onClick={e => handleClick(block.id)} key={i}>
                       <td>{block.id}</td>
                       <td>
                         <Badge

@@ -36,6 +36,10 @@ function MyApp({ Component, pageProps }: AppProps) {
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
 
   useHotkeys([["mod+J", () => toggleColorScheme()]]);
+  useHotkeys([["mod+1", () => router.push("/")]]);
+  useHotkeys([["mod+2", () => router.push("/projects")]]);
+  useHotkeys([["mod+3", () => router.push("/districts")]]);
+  useHotkeys([["mod+4", () => router.push("/network")]]);
   return (
     <SWRConfig
       value={{
