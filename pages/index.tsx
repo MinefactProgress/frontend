@@ -32,6 +32,7 @@ import {
   X,
 } from "tabler-icons-react";
 import { Bar, Line } from "react-chartjs-2";
+import { useHotkeys, useScrollLock } from "@mantine/hooks";
 
 import Map from "../components/Map";
 import type { NextPage } from "next";
@@ -150,7 +151,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
         <Badge
           color="orange"
           size="lg"
-          variant={selectedBlock.status == 3? "filled" : "dot"}
+          variant={selectedBlock.status == 3 ? "filled" : "dot"}
           style={{
             backgroundColor:
               selectedBlock.status != 3
@@ -241,7 +242,9 @@ const Home: NextPage = ({ user, setUser }: any) => {
             radius="xl"
             size="md"
             onClick={() => {
-              router.push("/districts/" + selectedBlock.district+"/"+selectedBlock.id);
+              router.push(
+                "/districts/" + selectedBlock.district + "/" + selectedBlock.id
+              );
             }}
             style={{
               boxShadow: theme.shadows.md,
@@ -254,7 +257,6 @@ const Home: NextPage = ({ user, setUser }: any) => {
       <Map
         width="100%"
         height="100%"
-        noScroll
         zoom={13}
         polygon={{ data: data?.area || [] }}
         mapStyle={{ zIndex: 0 }}
