@@ -91,22 +91,19 @@ const DistrictPage = () => {
     }
   };
   const handleSubtmit = (values: any) => {
-    fetch(
-      "http://142.44.137.53:8080/api/blocks/update?key="+user.apikey,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          district: data?.name,
-          blockID: selBlock.id,
-          values: {
-            progress: values.progress,
-            details: values.details,
-            builder: values.builders.join(","),
-          }
-        }),
-      }
-    )
+    fetch("http://142.44.137.53:8080/api/blocks/update?key=" + user.apikey, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        district: data?.name,
+        blockID: selBlock.id,
+        values: {
+          progress: values.progress,
+          details: values.details,
+          builder: values.builders.join(","),
+        },
+      }),
+    })
       .then((res) => res.json())
       .then((res) => {
         if (res.error) {
@@ -118,7 +115,7 @@ const DistrictPage = () => {
         } else {
           showNotification({
             title: "Block Updated",
-            message: "The data of Block "+selBlock.id+" has been updated",
+            message: "The data of Block " + selBlock.id + " has been updated",
             color: "green",
             icon: <Check />,
           });

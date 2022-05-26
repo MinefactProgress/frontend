@@ -126,7 +126,7 @@ const LinksPage = () => {
               cursor: "pointer",
             }}
             onClick={() => {
-              window.open(link.link, '_blank');
+              window.open(link.link, "_blank");
             }}
           >
             <Text>{link.name}</Text>

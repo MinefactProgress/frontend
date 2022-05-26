@@ -53,279 +53,276 @@ const AdminPage: NextPage = () => {
   const PRIMARY_COL_HEIGHT = 220;
   const SECONDARY_COL_HEIGHT = PRIMARY_COL_HEIGHT / 2 - theme.spacing.md / 2;
   return (
-      <Page>
-        <SimpleGrid
-          cols={2}
-          spacing="md"
-          breakpoints={[{ maxWidth: "sm", cols: 1 }]}
-        >
-          <StatsText title="Backend Statistics">
-            <Text color="dimmed">
-              Total Requests
-              <Text>
-                {data?.stats.total_requests}<br />
-              </Text>
-              <br />Failed Requests
-              <Text color="">
-                {data?.stats.total_requests-data?.stats.successful_requests}
-              </Text>
+    <Page>
+      <SimpleGrid
+        cols={2}
+        spacing="md"
+        breakpoints={[{ maxWidth: "sm", cols: 1 }]}
+      >
+        <StatsText title="Backend Statistics">
+          <Text color="dimmed">
+            Total Requests
+            <Text>
+              {data?.stats.total_requests}
+              <br />
             </Text>
-          </StatsText>
-          <Grid gutter="md">
-            <Grid.Col span={6}>
-              <StatsText title="Frontend Version" style={{ height: "100%" }}>
-                {package_version.version}
-              </StatsText>
-            </Grid.Col>
-            <Grid.Col span={6}>
-              <StatsText title="Backend Version" style={{ height: "100%" }}>
-                {data?.backend_version}
-              </StatsText>
-            </Grid.Col>
-            <Grid.Col span={6}>
-              <StatsRing
-                label="CPU Usage"
-                stats={data?.cpu}
-                progress={parseInt(data?.cpu.split("%")[0])}
-                icon={<Cpu />}
-                color={
-                  parseInt(data?.cpu.split("%")[0]) >= 70 ? "red" : "green"
-                }
-              />
-            </Grid.Col>
-            <Grid.Col span={6}>
-              <StatsRing
-                label="RAM Usage"
-                stats={data?.ram.usage}
-                icon={<FileDatabase />}
-                progress={
-                  parseInt(data?.ram.max.split("M")[0]) /
+            <br />
+            Failed Requests
+            <Text color="">
+              {data?.stats.total_requests - data?.stats.successful_requests}
+            </Text>
+          </Text>
+        </StatsText>
+        <Grid gutter="md">
+          <Grid.Col span={6}>
+            <StatsText title="Frontend Version" style={{ height: "100%" }}>
+              {package_version.version}
+            </StatsText>
+          </Grid.Col>
+          <Grid.Col span={6}>
+            <StatsText title="Backend Version" style={{ height: "100%" }}>
+              {data?.backend_version}
+            </StatsText>
+          </Grid.Col>
+          <Grid.Col span={6}>
+            <StatsRing
+              label="CPU Usage"
+              stats={data?.cpu}
+              progress={parseInt(data?.cpu.split("%")[0])}
+              icon={<Cpu />}
+              color={parseInt(data?.cpu.split("%")[0]) >= 70 ? "red" : "green"}
+            />
+          </Grid.Col>
+          <Grid.Col span={6}>
+            <StatsRing
+              label="RAM Usage"
+              stats={data?.ram.usage}
+              icon={<FileDatabase />}
+              progress={
+                parseInt(data?.ram.max.split("M")[0]) /
+                parseInt(data?.ram.usage.split("M")[0]) /
+                100
+              }
+              color={
+                parseInt(data?.ram.max.split("M")[0]) /
                   parseInt(data?.ram.usage.split("M")[0]) /
-                  100
-                }
-                color={
-                  parseInt(data?.ram.max.split("M")[0]) /
-                    parseInt(data?.ram.usage.split("M")[0]) /
-                    100 >=
-                  70
-                    ? "red"
-                    : "green"
-                }
-              />
-            </Grid.Col>
-          </Grid>
-        </SimpleGrid>
-        <SimpleGrid
-          cols={2}
-          spacing="md"
-          breakpoints={[{ maxWidth: "sm", cols: 1 }]}
-          sx={{ marginTop: theme.spacing.md }}
+                  100 >=
+                70
+                  ? "red"
+                  : "green"
+              }
+            />
+          </Grid.Col>
+        </Grid>
+      </SimpleGrid>
+      <SimpleGrid
+        cols={2}
+        spacing="md"
+        breakpoints={[{ maxWidth: "sm", cols: 1 }]}
+        sx={{ marginTop: theme.spacing.md }}
+      >
+        <Skeleton
+          height={PRIMARY_COL_HEIGHT * 2}
+          radius="md"
+          animate={true}
+          visible={!data}
         >
-          <Skeleton
-            height={PRIMARY_COL_HEIGHT * 2}
-            radius="md"
-            animate={true}
-            visible={!data}
-          >
-            <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
-              <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
-                Ram Usage Chart
-              </Text>
-              <Line
-                options={{
-                  responsive: true,
-                  scales: {
-                    x: {
-                      grid: {
-                        display: true,
-                        color: "#499bee33",
-                        drawBorder: false,
-                        z: 1,
-                      },
-                    },
-                    y: {
-                      grid: {
-                        drawBorder: false,
-                        color: "#499bee0a",
-                      },
-                      min: 0,
-                      max: 100,
+          <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
+            <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
+              Ram Usage Chart
+            </Text>
+            <Line
+              options={{
+                responsive: true,
+                scales: {
+                  x: {
+                    grid: {
+                      display: true,
+                      color: "#499bee33",
+                      drawBorder: false,
+                      z: 1,
                     },
                   },
+                  y: {
+                    grid: {
+                      drawBorder: false,
+                      color: "#499bee0a",
+                    },
+                    min: 0,
+                    max: 100,
+                  },
+                },
 
-                  plugins: {
-                    legend: {
-                      display: false,
-                    },
-                    title: {
-                      display: false,
-                    },
-                    tooltip: {
-                      enabled: true,
+                plugins: {
+                  legend: {
+                    display: false,
+                  },
+                  title: {
+                    display: false,
+                  },
+                  tooltip: {
+                    enabled: true,
+                  },
+                },
+              }}
+              data={{
+                labels: data?.history.ram.map((e: any, i: any) =>
+                  data?.history.ram.length - i - 1 == 0
+                    ? "Now"
+                    : data?.history.ram.length - i - 1 + " min ago"
+                ),
+                datasets: [
+                  {
+                    label: "Ram",
+                    data: data?.history.ram.map(
+                      (e: any) =>
+                        100 / (data?.ram.max.split("MB")[0] / e.split("MB")[0])
+                    ),
+                    borderColor: "#499bee",
+                    tension: 0.3,
+                    fill: true,
+                    backgroundColor: "#499bee10",
+                    borderWidth: 2,
+                  },
+                ],
+              }}
+            />
+          </Paper>
+        </Skeleton>
+        <Skeleton
+          height={PRIMARY_COL_HEIGHT * 2}
+          radius="md"
+          animate={true}
+          visible={!data}
+        >
+          <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
+            <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
+              CPU Usage Chart
+            </Text>
+            <Line
+              options={{
+                responsive: true,
+                scales: {
+                  x: {
+                    grid: {
+                      display: true,
+                      color: "#9848d533",
+                      drawBorder: false,
+                      z: 1,
                     },
                   },
-                }}
-                data={{
-                  labels: data?.history.ram.map((e: any, i: any) =>
-                    data?.history.ram.length - i - 1 == 0
-                      ? "Now"
-                      : data?.history.ram.length - i - 1 + " min ago"
-                  ),
-                  datasets: [
-                    {
-                      label: "Ram",
-                      data: data?.history.ram.map(
-                        (e: any) =>
-                          100 /
-                          (data?.ram.max.split("MB")[0] / e.split("MB")[0])
-                      ),
-                      borderColor: "#499bee",
-                      tension: 0.3,
-                      fill: true,
-                      backgroundColor: "#499bee10",
-                      borderWidth: 2,
+                  y: {
+                    grid: {
+                      drawBorder: false,
+                      color: "#9848d50a",
                     },
-                  ],
-                }}
-              />
-            </Paper>
-          </Skeleton>
-          <Skeleton
-            height={PRIMARY_COL_HEIGHT * 2}
-            radius="md"
-            animate={true}
-            visible={!data}
-          >
-            <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
-              <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
-                CPU Usage Chart
-              </Text>
-              <Line
-                options={{
-                  responsive: true,
-                  scales: {
-                    x: {
-                      grid: {
-                        display: true,
-                        color: "#9848d533",
-                        drawBorder: false,
-                        z: 1,
-                      },
-                    },
-                    y: {
-                      grid: {
-                        drawBorder: false,
-                        color: "#9848d50a",
-                      },
-                      min: 0,
-                      max: 100,
-                    },
+                    min: 0,
+                    max: 100,
                   },
+                },
 
-                  plugins: {
-                    legend: {
-                      display: false,
-                    },
-                    title: {
-                      display: false,
-                    },
-                    tooltip: {
-                      enabled: true,
-                    },
+                plugins: {
+                  legend: {
+                    display: false,
                   },
-                }}
-                data={{
-                  labels: data?.history.cpu.map((e: any, i: any) =>
-                    data?.history.cpu.length - i - 1 == 0
-                      ? "Now"
-                      : data?.history.cpu.length - i - 1 + " min ago"
-                  ),
-                  datasets: [
-                    {
-                      label: "Cpu",
-                      data: data?.history.cpu.map((e: any) =>
-                        e.replace("%", "")
-                      ),
-                      borderColor: "#9848d5",
-                      tension: 0.3,
-                      fill: true,
-                      backgroundColor: "#9848d510",
-                      borderWidth: 2,
-                    },
-                  ],
-                }}
-              />
-            </Paper>
-          </Skeleton>
-        </SimpleGrid>
-        <SimpleGrid cols={5} spacing="md" sx={{ marginTop: theme.spacing.md }}>
-          <Skeleton
-            height={PRIMARY_COL_HEIGHT / 2}
-            radius="md"
-            animate={true}
-            visible={!data}
+                  title: {
+                    display: false,
+                  },
+                  tooltip: {
+                    enabled: true,
+                  },
+                },
+              }}
+              data={{
+                labels: data?.history.cpu.map((e: any, i: any) =>
+                  data?.history.cpu.length - i - 1 == 0
+                    ? "Now"
+                    : data?.history.cpu.length - i - 1 + " min ago"
+                ),
+                datasets: [
+                  {
+                    label: "Cpu",
+                    data: data?.history.cpu.map((e: any) => e.replace("%", "")),
+                    borderColor: "#9848d5",
+                    tension: 0.3,
+                    fill: true,
+                    backgroundColor: "#9848d510",
+                    borderWidth: 2,
+                  },
+                ],
+              }}
+            />
+          </Paper>
+        </Skeleton>
+      </SimpleGrid>
+      <SimpleGrid cols={5} spacing="md" sx={{ marginTop: theme.spacing.md }}>
+        <Skeleton
+          height={PRIMARY_COL_HEIGHT / 2}
+          radius="md"
+          animate={true}
+          visible={!data}
+        >
+          <StatsText title="status" style={{ height: "100%" }}>
+            {data?.status}
+          </StatsText>
+        </Skeleton>
+        <Skeleton
+          height={PRIMARY_COL_HEIGHT / 2}
+          radius="md"
+          animate={true}
+          visible={!data}
+        >
+          <StatsText title="uptime" style={{ height: "100%" }}>
+            {data?.uptime.formatted}
+          </StatsText>
+        </Skeleton>
+        <Skeleton
+          height={PRIMARY_COL_HEIGHT / 2}
+          radius="md"
+          animate={true}
+          visible={!data}
+        >
+          <StatsText title="operating system" style={{ height: "100%" }}>
+            {data?.platform} ({data?.arch})
+          </StatsText>
+        </Skeleton>
+        <Skeleton
+          height={PRIMARY_COL_HEIGHT / 2}
+          radius="md"
+          animate={true}
+          visible={!data}
+        >
+          <StatsText title="Node version" style={{ height: "100%" }}>
+            {data?.version}
+          </StatsText>
+        </Skeleton>
+        <Skeleton
+          height={PRIMARY_COL_HEIGHT / 2}
+          radius="md"
+          animate={true}
+          visible={!data}
+        >
+          <StatsText
+            title="database"
+            style={{ height: "100%" }}
+            onClick={() => setOpened(true)}
           >
-            <StatsText title="status" style={{ height: "100%" }}>
-              {data?.status}
-            </StatsText>
-          </Skeleton>
-          <Skeleton
-            height={PRIMARY_COL_HEIGHT / 2}
-            radius="md"
-            animate={true}
-            visible={!data}
+            {data?.database.status[0]}
+          </StatsText>
+          <Modal
+            opened={opened}
+            onClose={() => setOpened(false)}
+            title="Database"
+            size="lg"
+            overflow="inside"
           >
-            <StatsText title="uptime" style={{ height: "100%" }}>
-              {data?.uptime.formatted}
-            </StatsText>
-          </Skeleton>
-          <Skeleton
-            height={PRIMARY_COL_HEIGHT / 2}
-            radius="md"
-            animate={true}
-            visible={!data}
-          >
-            <StatsText title="operating system" style={{ height: "100%" }}>
-              {data?.platform} ({data?.arch})
-            </StatsText>
-          </Skeleton>
-          <Skeleton
-            height={PRIMARY_COL_HEIGHT / 2}
-            radius="md"
-            animate={true}
-            visible={!data}
-          >
-            <StatsText title="Node version" style={{ height: "100%" }}>
-              {data?.version}
-            </StatsText>
-          </Skeleton>
-          <Skeleton
-            height={PRIMARY_COL_HEIGHT / 2}
-            radius="md"
-            animate={true}
-            visible={!data}
-          >
-            <StatsText
-              title="database"
-              style={{ height: "100%" }}
-              onClick={() => setOpened(true)}
-            >
-              {data?.database.status[0]}
-            </StatsText>
-            <Modal
-              opened={opened}
-              onClose={() => setOpened(false)}
-              title="Database"
-              size="lg"
-              overflow="inside"
-            >
-              <Text>Version: v{data?.database.version}</Text>
-            </Modal>
+            <Text>Version: v{data?.database.version}</Text>
+          </Modal>
 
-            <Group position="center"></Group>
-          </Skeleton>
-        </SimpleGrid>
-      </Page>
+          <Group position="center"></Group>
+        </Skeleton>
+      </SimpleGrid>
+    </Page>
   );
 };
 

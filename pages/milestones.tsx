@@ -41,11 +41,11 @@ const useStyles = createStyles((theme) => ({
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
     textAlign: "center",
     fontWeight: 900,
-    fontSize: 38,color:
-    theme.colorScheme === "dark"
-      ? theme.colors.dark[1]
-      : theme.colors.gray[5],
-
+    fontSize: 38,
+    color:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[1]
+        : theme.colors.gray[5],
 
     [theme.fn.smallerThan("sm")]: {
       fontSize: 32,
@@ -69,35 +69,35 @@ const MilestonesPage = () => {
   );
   const size = useWindowSize();
   return (
-      <>
-    <Confetti
-    numberOfPieces={1000}
-    recycle={false}
-    width={size.width}
-    height={size.height}
-  />
-    <Container className={classes.root}>
-      
-      <div className={classes.label}>
-        <CountUp end={projects ? projects.at(-1).projects : null} />
-      </div>
-      <Title className={classes.title}>
-        🎉We did it! {milestones ? milestones[0].projects : null} Projects!🎉
-      </Title>
-      <Text
-        color="dimmed"
-        size="lg"
-        align="center"
-        className={classes.description}
-      >
-        On the{" "}
-        {new Date(milestones ? milestones[0].date : "").toLocaleString(
-          "default",
-          { month: "long", year: "numeric", day: "numeric" }
-        )}{" "}
-        after {milestones ? milestones[0].days : null} Days
-      </Text>
-    </Container></>
+    <>
+      <Confetti
+        numberOfPieces={1000}
+        recycle={false}
+        width={size.width}
+        height={size.height}
+      />
+      <Container className={classes.root}>
+        <div className={classes.label}>
+          <CountUp end={projects ? projects.at(-1).projects : null} />
+        </div>
+        <Title className={classes.title}>
+          🎉We did it! {milestones ? milestones[0].projects : null} Projects!🎉
+        </Title>
+        <Text
+          color="dimmed"
+          size="lg"
+          align="center"
+          className={classes.description}
+        >
+          On the{" "}
+          {new Date(milestones ? milestones[0].date : "").toLocaleString(
+            "default",
+            { month: "long", year: "numeric", day: "numeric" }
+          )}{" "}
+          after {milestones ? milestones[0].days : null} Days
+        </Text>
+      </Container>
+    </>
   );
 };
 export default MilestonesPage;

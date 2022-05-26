@@ -35,7 +35,7 @@ const DynmapPage = () => {
           src="https://newyork.minefact.de/"
           height={"92.5%"}
           width={"100%"}
-          style={{border:"none"}}
+          style={{ border: "none" }}
         />
       </Paper>
     </Page>

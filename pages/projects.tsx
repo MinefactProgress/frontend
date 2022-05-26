@@ -55,10 +55,7 @@ const ProjectsPage = () => {
   const [user] = useUser();
   const { data } = useSWR("http://142.44.137.53:8080/api/projects/get");
   var projects: any = { labels: [], datasets: [] };
-  const [rangeValue, setRangeValue] = useState<[number, number]>([
-    -30,
-    -1,
-  ]);
+  const [rangeValue, setRangeValue] = useState<[number, number]>([-30, -1]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   data?.slice(rangeValue[0] - 1, rangeValue[1]).forEach((element: any) => {
     projects.labels.push(new Date(element.date).toLocaleDateString());
@@ -262,7 +259,7 @@ const ProjectsPage = () => {
               }}
               style={{ marginBottom: theme.spacing.md }}
             />
-            <Text color="dimmed" >Total Projects: </Text>
+            <Text color="dimmed">Total Projects: </Text>
             <Text>
               {
                 data?.filter(

@@ -142,8 +142,8 @@ const errors = [
 
 function ErrorPage(props: any) {
   const { classes } = useStyles();
-  const code = props.code||props.statuscode;
-  const status = errors.find((e) => e.code === code)||{
+  const code = props.code || props.statuscode;
+  const status = errors.find((e) => e.code === code) || {
     code: code,
     title: "You found a Error we dont even know of!",
     message: "Something went wrong, please try again later and contact us.",
@@ -174,11 +174,10 @@ export function getServerSideProps({ res, err }: any) {
   if (new Date().getDate() === 1 && new Date().getMonth() === 4) {
     res.statusCode = 418;
   }
-  
+
   return {
     props: {
       code: res.statusCode,
-      
     },
   };
 }

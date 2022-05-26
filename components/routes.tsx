@@ -9,7 +9,7 @@ import {
   Map,
   MapPins,
   Settings,
-  Users
+  Users,
 } from "tabler-icons-react";
 
 const pages = [

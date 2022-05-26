@@ -21,7 +21,7 @@ import {
   Title,
   UnstyledButton,
   useMantineColorScheme,
-  useMantineTheme
+  useMantineTheme,
 } from "@mantine/core";
 import {
   ChevronLeft,
@@ -33,7 +33,7 @@ import {
   Search,
   Settings,
   Sun,
-  Trash
+  Trash,
 } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
@@ -47,7 +47,7 @@ export default function Page(props: {
   scroll?: boolean;
   noMargin?: boolean;
   style?: any;
-  title?:string;
+  title?: string;
 }) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [loading, setLoading] = useState(true);
@@ -273,7 +273,11 @@ export default function Page(props: {
         >
           <Group sx={{ height: "100%" }} px={20} position="apart">
             <Group style={{ height: "100%" }}>
-              <img src="/logo.png" alt="logo" style={{ height: "90%" }} />
+              <img
+                src="/logo.png"
+                alt="logo"
+                style={{ height: "6vh", width: "6vh" }}
+              />
               <Title sx={{ color: colorScheme === "dark" ? "white" : "black" }}>
                 Progress
               </Title>
@@ -292,6 +296,7 @@ export default function Page(props: {
                 variant="default"
                 onClick={() => router.reload()}
                 size={30}
+                aria-label="Refresh"
               >
                 <Refresh size={16} />
               </ActionIcon>{" "}
@@ -299,6 +304,7 @@ export default function Page(props: {
                 variant="default"
                 onClick={() => toggleColorScheme()}
                 size={30}
+                aria-label="Toggle color scheme"
               >
                 {colorScheme === "dark" ? (
                   <Sun size={16} />
@@ -320,7 +326,29 @@ export default function Page(props: {
       })}
     >
       <Head>
-        <title>Progress | {props.title||pages.find((el : any) => el.href==router.pathname)?.label}</title>
+        <title>
+          Progress |{" "}
+          {props.title ||
+            pages.find((el: any) => el.href == router.pathname)?.label}
+        </title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <meta name="theme-color" content={theme.colors.blue[7]} />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content={theme.colors.blue[7]}
+        />
+        <meta
+          name="msapplication-navbutton-color"
+          content={theme.colors.blue[7]}
+        />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="minefact Progress" />
+        <meta name="application-name" content="Minefact Progress" />
+        <meta
+          name="description"
+          content="We are tracking the Progress made on the Minefact New York City server as part of the Build the Earth Project."
+        />
       </Head>
       <Box
         sx={{
@@ -328,7 +356,7 @@ export default function Page(props: {
           width: "100%",
           overflow: "auto",
           overflowX: "hidden",
-          ...props.style
+          ...props.style,
         }}
       >
         {props.scroll ? (

@@ -1,11 +1,5 @@
 import { ArrowDownRight, ArrowUpRight } from "tabler-icons-react";
-import {
-  Center,
-  Group,
-  Paper,
-  RingProgress,
-  Text
-} from "@mantine/core";
+import { Center, Group, Paper, RingProgress, Text } from "@mantine/core";
 
 import React from "react";
 

@@ -1,6 +1,6 @@
-
-html,body {
-  overflow:hidden;
+html,
+body {
+  overflow: hidden;
 }
 * {
   scroll-behavior: smooth;

@@ -216,119 +216,189 @@ const UsersPage = () => {
   };
 
   return (
-      <Page>
-        <SimpleGrid
-          cols={2}
-          spacing="md"
-          breakpoints={[{ maxWidth: "sm", cols: 1 }]}
+    <Page>
+      <SimpleGrid
+        cols={2}
+        spacing="md"
+        breakpoints={[{ maxWidth: "sm", cols: 1 }]}
+      >
+        <Skeleton
+          height={PRIMARY_COL_HEIGHT}
+          radius="md"
+          animate={false}
+          visible={false}
         >
-          <Skeleton
-            height={PRIMARY_COL_HEIGHT}
-            radius="md"
-            animate={false}
-            visible={false}
-          >
-            <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
-              <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
-                Users
-              </Text>
-              <ScrollArea>
-                <Table>
-                  <thead>
-                    <tr>
-                      <th>UID</th>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Role</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data
-                      ? data?.map((user: any) => (
-                          <tr key={user.uid}>
-                            <td>{user.uid}</td>
-                            <td>{user.username}</td>
-                            <td>{user.email}</td>
-                            <td>{getRoleFromPermission(user.permission)}</td>
-                            <td>
-                              <Group spacing="xs">
-                                <Tooltip gutter={10} label="Delete" withArrow>
-                                  <ActionIcon
-                                    onClick={() => handleDeleteUser(user.uid)}
-                                    variant="transparent"
-                                    disabled={user.username === "root"}
-                                  >
-                                    <ThemeIcon color={"red"} variant="light">
-                                      <Trash size={18} />
-                                    </ThemeIcon>
-                                  </ActionIcon>
-                                </Tooltip>
-                              </Group>
-                            </td>
-                          </tr>
-                        ))
-                      : null}
-                  </tbody>
-                </Table>
-              </ScrollArea>
-            </Paper>
-          </Skeleton>
-          <Grid gutter="md">
-            <Grid.Col>
-              <Skeleton
-                height={SECONDARY_COL_HEIGHT * 1.5}
-                radius="md"
-                animate={false}
-                visible={false}
-              >
-                <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
-                  <Text
-                    color="dimmed"
-                    size="xs"
-                    transform="uppercase"
-                    weight={700}
+          <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
+            <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
+              Users
+            </Text>
+            <ScrollArea>
+              <Table>
+                <thead>
+                  <tr>
+                    <th>UID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data
+                    ? data?.map((user: any) => (
+                        <tr key={user.uid}>
+                          <td>{user.uid}</td>
+                          <td>{user.username}</td>
+                          <td>{user.email}</td>
+                          <td>{getRoleFromPermission(user.permission)}</td>
+                          <td>
+                            <Group spacing="xs">
+                              <Tooltip gutter={10} label="Delete" withArrow>
+                                <ActionIcon
+                                  onClick={() => handleDeleteUser(user.uid)}
+                                  variant="transparent"
+                                  disabled={user.username === "root"}
+                                >
+                                  <ThemeIcon color={"red"} variant="light">
+                                    <Trash size={18} />
+                                  </ThemeIcon>
+                                </ActionIcon>
+                              </Tooltip>
+                            </Group>
+                          </td>
+                        </tr>
+                      ))
+                    : null}
+                </tbody>
+              </Table>
+            </ScrollArea>
+          </Paper>
+        </Skeleton>
+        <Grid gutter="md">
+          <Grid.Col>
+            <Skeleton
+              height={SECONDARY_COL_HEIGHT * 1.5}
+              radius="md"
+              animate={false}
+              visible={false}
+            >
+              <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
+                <Text
+                  color="dimmed"
+                  size="xs"
+                  transform="uppercase"
+                  weight={700}
+                >
+                  User Control
+                </Text>
+                <Tabs
+                  variant="pills"
+                  tabPadding="md"
+                  style={{ marginTop: theme.spacing.md }}
+                >
+                  <Tabs.Tab label="Add new User" icon={<UserPlus size={14} />}>
+                    <form onSubmit={form.onSubmit(handleAddUser)}>
+                      <TextInput
+                        label="Username"
+                        name="username"
+                        placeholder="Username"
+                        required
+                        style={{ marginBottom: theme.spacing.md }}
+                        {...form.getInputProps("username")}
+                      />
+                      <Group>
+                        <TextInput
+                          label="Email"
+                          name="email"
+                          placeholder="Email"
+                          required
+                          style={{
+                            marginBottom: theme.spacing.md,
+                            width: "100%",
+                          }}
+                          {...form.getInputProps("email")}
+                        />
+                      </Group>
+
+                      <Divider my="sm" />
+                      <Select
+                        label="Role"
+                        name="role"
+                        placeholder="Select a role"
+                        required
+                        style={{ marginBottom: theme.spacing.md }}
+                        data={[
+                          { value: "0", label: "User" },
+                          { value: "1", label: "Builder" },
+                          { value: "2", label: "Moderator" },
+                          { value: "4", label: "Admin" },
+                        ]}
+                        {...form.getInputProps("role")}
+                      />
+                      <Textarea
+                        label="About"
+                        name="about"
+                        placeholder="Something about the user..."
+                        style={{ marginBottom: theme.spacing.md }}
+                        {...formEdit.getInputProps("about")}
+                      />
+                      <Group position="center" grow>
+                        <TextInput
+                          label="Discord"
+                          name="discord"
+                          placeholder="Discord"
+                          style={{ marginBottom: theme.spacing.md }}
+                          {...form.getInputProps("discord")}
+                        />
+                        <TextInput
+                          label="Minecraft"
+                          name="minecraft"
+                          placeholder="Minecraft"
+                          style={{ marginBottom: theme.spacing.md }}
+                          {...formEdit.getInputProps("minecraft")}
+                        />
+                      </Group>
+
+                      <Button type="submit" size="sm" mt="xs" mb="xs" fullWidth>
+                        Add User
+                      </Button>
+                    </form>
+                  </Tabs.Tab>
+                  <Tabs.Tab
+                    label="Edit exisiting User"
+                    icon={<Pencil size={14} />}
                   >
-                    User Control
-                  </Text>
-                  <Tabs
-                    variant="pills"
-                    tabPadding="md"
-                    style={{ marginTop: theme.spacing.md }}
-                  >
-                    <Tabs.Tab
-                      label="Add new User"
-                      icon={<UserPlus size={14} />}
-                    >
-                      <form onSubmit={form.onSubmit(handleAddUser)}>
+                    <form onSubmit={formEdit.onSubmit(handleEditUser)}>
+                      <Group position="center" grow>
+                        <NumberInput
+                          label="UID"
+                          name="uid"
+                          placeholder="UID"
+                          required
+                          hideControls
+                          style={{ marginBottom: theme.spacing.md }}
+                          {...formEdit.getInputProps("uid")}
+                        />
                         <TextInput
                           label="Username"
                           name="username"
                           placeholder="Username"
-                          required
                           style={{ marginBottom: theme.spacing.md }}
-                          {...form.getInputProps("username")}
+                          {...formEdit.getInputProps("username")}
                         />
-                        <Group>
-                          <TextInput
-                            label="Email"
-                            name="email"
-                            placeholder="Email"
-                            required
-                            style={{
-                              marginBottom: theme.spacing.md,
-                              width: "100%",
-                            }}
-                            {...form.getInputProps("email")}
-                          />
-                        </Group>
-
-                        <Divider my="sm" />
+                      </Group>
+                      <Group position="center" grow>
+                        <TextInput
+                          label="Password"
+                          name="password"
+                          placeholder="Password"
+                          style={{ marginBottom: theme.spacing.md }}
+                          {...formEdit.getInputProps("password")}
+                        />
                         <Select
                           label="Role"
                           name="role"
                           placeholder="Select a role"
-                          required
                           style={{ marginBottom: theme.spacing.md }}
                           data={[
                             { value: "0", label: "User" },
@@ -336,179 +406,94 @@ const UsersPage = () => {
                             { value: "2", label: "Moderator" },
                             { value: "4", label: "Admin" },
                           ]}
-                          {...form.getInputProps("role")}
+                          {...formEdit.getInputProps("role")}
                         />
-                        <Textarea
-                          label="About"
-                          name="about"
-                          placeholder="Something about the user..."
+                      </Group>
+
+                      <Divider my="sm" />
+                      <Group position="center" grow>
+                        <TextInput
+                          label="Discord"
+                          name="discord"
+                          placeholder="Discord"
                           style={{ marginBottom: theme.spacing.md }}
-                          {...formEdit.getInputProps("about")}
+                          {...form.getInputProps("discord")}
                         />
-                        <Group position="center" grow>
-                          <TextInput
-                            label="Discord"
-                            name="discord"
-                            placeholder="Discord"
-                            style={{ marginBottom: theme.spacing.md }}
-                            {...form.getInputProps("discord")}
-                          />
-                          <TextInput
-                            label="Minecraft"
-                            name="minecraft"
-                            placeholder="Minecraft"
-                            style={{ marginBottom: theme.spacing.md }}
-                            {...formEdit.getInputProps("minecraft")}
-                          />
-                        </Group>
-
-                        <Button
-                          type="submit"
-                          size="sm"
-                          mt="xs"
-                          mb="xs"
-                          fullWidth
-                        >
-                          Add User
-                        </Button>
-                      </form>
-                    </Tabs.Tab>
-                    <Tabs.Tab
-                      label="Edit exisiting User"
-                      icon={<Pencil size={14} />}
-                    >
-                      <form onSubmit={formEdit.onSubmit(handleEditUser)}>
-                        <Group position="center" grow>
-                          <NumberInput
-                            label="UID"
-                            name="uid"
-                            placeholder="UID"
-                            required
-                            hideControls
-                            style={{ marginBottom: theme.spacing.md }}
-                            {...formEdit.getInputProps("uid")}
-                          />
-                          <TextInput
-                            label="Username"
-                            name="username"
-                            placeholder="Username"
-                            style={{ marginBottom: theme.spacing.md }}
-                            {...formEdit.getInputProps("username")}
-                          />
-                        </Group>
-                        <Group position="center" grow>
-                          <TextInput
-                            label="Password"
-                            name="password"
-                            placeholder="Password"
-                            style={{ marginBottom: theme.spacing.md }}
-                            {...formEdit.getInputProps("password")}
-                          />
-                          <Select
-                            label="Role"
-                            name="role"
-                            placeholder="Select a role"
-                            style={{ marginBottom: theme.spacing.md }}
-                            data={[
-                              { value: "0", label: "User" },
-                              { value: "1", label: "Builder" },
-                              { value: "2", label: "Moderator" },
-                              { value: "4", label: "Admin" },
-                            ]}
-                            {...formEdit.getInputProps("role")}
-                          />
-                        </Group>
-
-                        <Divider my="sm" />
-                        <Group position="center" grow>
-                          <TextInput
-                            label="Discord"
-                            name="discord"
-                            placeholder="Discord"
-                            style={{ marginBottom: theme.spacing.md }}
-                            {...form.getInputProps("discord")}
-                          />
-                          <TextInput
-                            label="Minecraft"
-                            name="minecraft"
-                            placeholder="Minecraft"
-                            style={{ marginBottom: theme.spacing.md }}
-                            {...formEdit.getInputProps("minecraft")}
-                          />
-                        </Group>
-
-                        <Textarea
-                          label="About"
-                          name="about"
-                          placeholder="Something about the user..."
+                        <TextInput
+                          label="Minecraft"
+                          name="minecraft"
+                          placeholder="Minecraft"
                           style={{ marginBottom: theme.spacing.md }}
-                          {...formEdit.getInputProps("about")}
+                          {...formEdit.getInputProps("minecraft")}
                         />
+                      </Group>
 
-                        <Group position="center" grow>
-                          <TextInput
-                            label="Profile Picture"
-                            name="picture"
-                            placeholder="https://..."
-                            style={{ marginBottom: theme.spacing.md }}
-                            {...formEdit.getInputProps("picture")}
-                          />
-                          <TextInput
-                            label="Background Image"
-                            name="image"
-                            placeholder="https://..."
-                            style={{ marginBottom: theme.spacing.md }}
-                            {...formEdit.getInputProps("image")}
-                          />
-                        </Group>
-                        <Button
-                          type="submit"
-                          size="sm"
-                          mt="xs"
-                          mb="xs"
-                          fullWidth
-                        >
-                          Update User
-                        </Button>
-                      </form>
-                    </Tabs.Tab>
-                  </Tabs>
-                </Paper>
-              </Skeleton>
-            </Grid.Col>
-            <Grid.Col span={6}>
-              <Skeleton
-                height={SECONDARY_COL_HEIGHT / 2}
+                      <Textarea
+                        label="About"
+                        name="about"
+                        placeholder="Something about the user..."
+                        style={{ marginBottom: theme.spacing.md }}
+                        {...formEdit.getInputProps("about")}
+                      />
+
+                      <Group position="center" grow>
+                        <TextInput
+                          label="Profile Picture"
+                          name="picture"
+                          placeholder="https://..."
+                          style={{ marginBottom: theme.spacing.md }}
+                          {...formEdit.getInputProps("picture")}
+                        />
+                        <TextInput
+                          label="Background Image"
+                          name="image"
+                          placeholder="https://..."
+                          style={{ marginBottom: theme.spacing.md }}
+                          {...formEdit.getInputProps("image")}
+                        />
+                      </Group>
+                      <Button type="submit" size="sm" mt="xs" mb="xs" fullWidth>
+                        Update User
+                      </Button>
+                    </form>
+                  </Tabs.Tab>
+                </Tabs>
+              </Paper>
+            </Skeleton>
+          </Grid.Col>
+          <Grid.Col span={6}>
+            <Skeleton
+              height={SECONDARY_COL_HEIGHT / 2}
+              radius="md"
+              animate={false}
+              visible={false}
+            >
+              <Paper
+                withBorder
                 radius="md"
-                animate={false}
-                visible={false}
-              >
-                <Paper
-                  withBorder
-                  radius="md"
-                  p="xs"
-                  style={{ height: "100%" }}
-                ></Paper>
-              </Skeleton>
-            </Grid.Col>
-            <Grid.Col span={6}>
-              <Skeleton
-                height={SECONDARY_COL_HEIGHT / 2}
+                p="xs"
+                style={{ height: "100%" }}
+              ></Paper>
+            </Skeleton>
+          </Grid.Col>
+          <Grid.Col span={6}>
+            <Skeleton
+              height={SECONDARY_COL_HEIGHT / 2}
+              radius="md"
+              animate={false}
+              visible={false}
+            >
+              <Paper
+                withBorder
                 radius="md"
-                animate={false}
-                visible={false}
-              >
-                <Paper
-                  withBorder
-                  radius="md"
-                  p="xs"
-                  style={{ height: "100%" }}
-                ></Paper>
-              </Skeleton>
-            </Grid.Col>
-          </Grid>
-        </SimpleGrid>
-      </Page>
+                p="xs"
+                style={{ height: "100%" }}
+              ></Paper>
+            </Skeleton>
+          </Grid.Col>
+        </Grid>
+      </SimpleGrid>
+    </Page>
   );
 };
 

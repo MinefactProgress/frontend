@@ -31,7 +31,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   // Authentication
   const [user, setUser] = useUser();
   const router = useRouter();
-  const allowed = (routes.find((route) => route.href === router.pathname)?.permission||1)<=(user.permission || 0);
+  const allowed =
+    (routes.find((route) => route.href === router.pathname)?.permission || 1) <=
+    (user.permission || 0);
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
 
@@ -95,8 +97,12 @@ function MyApp({ Component, pageProps }: AppProps) {
           >
             <ModalsProvider>
               <NotificationsProvider>
-                {(routes.find((route) => route.href === router.pathname)?.permission||0)<=(user.permission || 0)?
-                <Component {...pageProps} user={user} setUser={setUser} />:<ErrorPage statuscode={401} /> }
+                {(routes.find((route) => route.href === router.pathname)
+                  ?.permission || 0) <= (user.permission || 0) ? (
+                  <Component {...pageProps} user={user} setUser={setUser} />
+                ) : (
+                  <ErrorPage statuscode={401} />
+                )}
               </NotificationsProvider>
             </ModalsProvider>
           </SpotlightProvider>

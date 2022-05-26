@@ -54,16 +54,24 @@ interface StatsGridProps {
   diff?: number;
   subtitle?: string;
   style?: any;
-  showIcon?:boolean;
+  showIcon?: boolean;
   onClick?: () => void;
 }
 
 const StatsText = (stat: StatsGridProps) => {
   const { classes } = useStyles();
-  const DiffIcon = stat.icon||(stat.diff || 0 > 0 ? ArrowUpRight : ArrowDownRight);
+  const DiffIcon =
+    stat.icon || (stat.diff || 0 > 0 ? ArrowUpRight : ArrowDownRight);
 
   return (
-    <Paper withBorder p="md" radius="md" key={stat.title} style={stat.style} onClick={stat.onClick}>
+    <Paper
+      withBorder
+      p="md"
+      radius="md"
+      key={stat.title}
+      style={stat.style}
+      onClick={stat.onClick}
+    >
       <Group position="apart">
         <Text size="xs" color="dimmed" className={classes.title}>
           {stat.title}
@@ -72,7 +80,9 @@ const StatsText = (stat: StatsGridProps) => {
       </Group>
 
       <Group align="flex-end" spacing="xs" mt={25}>
-        <Text className={classes.value} style={{display:"inline-block"}}>{stat.children}</Text>
+        <Text className={classes.value} style={{ display: "inline-block" }}>
+          {stat.children}
+        </Text>
         {stat.diff && (
           <Text
             color={stat.diff > 0 ? "teal" : "red"}
@@ -85,7 +95,7 @@ const StatsText = (stat: StatsGridProps) => {
         )}
       </Group>
 
-      <Text size="xs" color="dimmed" mt={6} style={{display:"inline-block"}}>
+      <Text size="xs" color="dimmed" mt={6} style={{ display: "inline-block" }}>
         {stat.subtitle}
       </Text>
     </Paper>
