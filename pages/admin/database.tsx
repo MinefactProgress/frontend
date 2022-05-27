@@ -25,7 +25,7 @@ const DatabasePage = () => {
   const [sqlState, setSqlState] = useState("");
   const [fetch, setShouldFetch] = useState(false);
   const { data } = useSWR(
-    fetch ? "http://142.44.137.53:8080/api/admin/query?query=" + sqlState : null
+    fetch ? "/api/admin/query?query=" + sqlState : null
   );
 
   return (

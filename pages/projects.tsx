@@ -53,7 +53,7 @@ ChartJS.register(
 const ProjectsPage = () => {
   const theme = useMantineTheme();
   const [user] = useUser();
-  const { data } = useSWR("http://142.44.137.53:8080/api/projects/get");
+  const { data } = useSWR("/api/projects/get");
   var projects: any = { labels: [], datasets: [] };
   const [rangeValue, setRangeValue] = useState<[number, number]>([-30, -1]);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -67,7 +67,7 @@ const ProjectsPage = () => {
     },
   });
   const handleSubmit = async (e: any) => {
-    fetch("http://142.44.137.53:8080/api/projects/set", {
+    fetch(process.env.NEXT_PUBLIC_API_URL+"/api/projects/set", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

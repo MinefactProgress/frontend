@@ -31,7 +31,7 @@ const LocationsPage = () => {
     id: null,
   });
   const [user, setUser] = useUser();
-  const { data } = useSWR("http://142.44.137.53:8080/api/blocks/get", {
+  const { data } = useSWR("/api/blocks/get", {
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
   });
@@ -49,7 +49,7 @@ const LocationsPage = () => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     fetch(
-      "http://142.44.137.53:8080/api/blocks/addLocation?key=e9299168-9a87-4a44-801b-4214449e46be",
+      process.env.NEXT_PUBLIC_API_URL+"/api/blocks/addLocation?key=e9299168-9a87-4a44-801b-4214449e46be",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -83,7 +83,7 @@ const LocationsPage = () => {
   const handleDelete = (e: any, i: number) => {
     e.preventDefault();
     fetch(
-      "http://142.44.137.53:8080/api/blocks/removeLocation?key=e9299168-9a87-4a44-801b-4214449e46be",
+      process.env.NEXT_PUBLIC_API_URL+"/api/blocks/removeLocation?key=e9299168-9a87-4a44-801b-4214449e46be",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

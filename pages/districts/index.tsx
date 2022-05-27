@@ -21,8 +21,8 @@ import useSWR from "swr";
 
 const DistrictsPage = () => {
   const router = useRouter();
-  const { data } = useSWR("http://142.44.137.53:8080/api/districts/get");
-  const nyc = useSWR("http://142.44.137.53:8080/api/progress").data;
+  const { data } = useSWR("/api/districts/get");
+  const nyc = useSWR("/api/progress").data;
   const nycID = data?.filter((d: any) => d.name === "New York City")[0].id;
   const boroughs = data
     ?.filter((d: any) => d.parent === null)

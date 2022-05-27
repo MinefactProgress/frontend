@@ -42,12 +42,12 @@ ChartJS.register(
 const NetworkPage = () => {
   const router = useRouter();
   const [selectedServer, setSelectedServer] = useState("");
-  const { data } = useSWR("http://142.44.137.53:8080/api/network/ping");
+  const { data } = useSWR("/api/network/ping");
   const { data: playersRw } = useSWR(
-    "http://142.44.137.53:8080/api/playerstats/get"
+    "/api/playerstats/get"
   );
   const { data: servers } = useSWR(
-    "http://142.44.137.53:8080/api/admin/settings/get/ips"
+    "/api/admin/settings/get/ips"
   );
   var players: any = {
     labels: [],

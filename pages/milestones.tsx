@@ -62,10 +62,10 @@ const useStyles = createStyles((theme) => ({
 const MilestonesPage = () => {
   const { classes } = useStyles();
   const { data: projects } = useSWR(
-    "http://142.44.137.53:8080/api/projects/get"
+    "/api/projects/get"
   );
   const { data: milestones } = useSWR(
-    "http://142.44.137.53:8080/api/projects/milestones/recent"
+    "/api/projects/milestones/recent"
   );
   const size = useWindowSize();
   return (

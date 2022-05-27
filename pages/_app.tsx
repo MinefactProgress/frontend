@@ -48,14 +48,18 @@ function MyApp({ Component, pageProps }: AppProps) {
         refreshInterval: 0,
         fetcher: (resource: any, init: any) =>
           fetch(
-            resource.includes("?")
-              ? resource +
-                  "&key=" +
-                  JSON.parse(window.localStorage.getItem("auth") || "{}").apikey
-              : resource +
-                  "?key=" +
-                  JSON.parse(window.localStorage.getItem("auth") || "{}")
-                    .apikey,
+            resource.includes("https")
+              ? resource
+              : process.env.NEXT_PUBLIC_API_URL +
+                  (resource.includes("?")
+                    ? resource +
+                      "&key=" +
+                      JSON.parse(window.localStorage.getItem("auth") || "{}")
+                        .apikey
+                    : resource +
+                      "?key=" +
+                      JSON.parse(window.localStorage.getItem("auth") || "{}")
+                        .apikey),
             {
               headers: {
                 "Access-Control-Allow-Origin": "*",

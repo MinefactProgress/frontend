@@ -72,7 +72,7 @@ const DistrictPage = () => {
   const district = info?.at(0);
   const [user] = useUser();
   const { data } = useSWR(
-    "http://142.44.137.53:8080/api/districts/get/" + district
+    "/api/districts/get/" + district
   );
   const selBlock = info?.at(1)
     ? data?.blocks.blocks.find(
@@ -91,7 +91,7 @@ const DistrictPage = () => {
     }
   };
   const handleSubtmit = (values: any) => {
-    fetch("http://142.44.137.53:8080/api/blocks/update?key=" + user.apikey, {
+    fetch(process.env.NEXT_PUBLIC_API_URL+"/api/blocks/update?key=" + user.apikey, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

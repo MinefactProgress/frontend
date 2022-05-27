@@ -11,19 +11,19 @@ import {
 
 import { Link } from "tabler-icons-react";
 import Page from "../components/Page";
+import { Permissions } from "../utils/hooks/usePermission";
 import { showNotification } from "@mantine/notifications";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import useUser from "../utils/hooks/useUser";
-import { Permissions } from "../utils/hooks/usePermission";
 
 const LinksPage = () => {
   const theme = useMantineTheme();
   const router = useRouter();
   const [user] = useUser();
   const { data } = useSWR(
-    "http://142.44.137.53:8080/api/admin/settings/get/links"
+    "/api/admin/settings/get/links"
   );
   const form = useForm({
     initialValues: {
@@ -33,7 +33,7 @@ const LinksPage = () => {
   });
   const handleSubmit = async (values: typeof form.values) => {
     const result = await fetch(
-      "http://142.44.137.53:8080/api/admin/settings/set",
+      "/api/admin/settings/set",
       {
         method: "POST",
         headers: {

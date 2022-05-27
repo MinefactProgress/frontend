@@ -65,7 +65,7 @@ const Login = () => {
     },
   });
   const handleSubmit = async (values: typeof form.values) => {
-    const result = await fetch("http://142.44.137.53:8080/login", {
+    const result = await fetch(process.env.NEXT_PUBLIC_API_URL+"/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

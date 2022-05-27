@@ -70,16 +70,16 @@ const Home: NextPage = ({ user, setUser }: any) => {
     area: "[]",
   });
   const theme = useMantineTheme();
-  const { data } = useSWR("http://142.44.137.53:8080/api/blocks/get");
+  const { data } = useSWR("/api/blocks/get");
   const { data: districts } = useSWR(
-    "http://142.44.137.53:8080/api/districts/get"
+    "/api/districts/get"
   );
-  const { data: progress } = useSWR("http://142.44.137.53:8080/api/progress");
+  const { data: progress } = useSWR("/api/progress");
   const { data: playersRw } = useSWR(
-    "http://142.44.137.53:8080/api/playerstats/get"
+    "/api/playerstats/get"
   );
   const { data: projectsRw } = useSWR(
-    "http://142.44.137.53:8080/api/projects/get"
+    "/api/projects/get"
   );
   var projects: any = { labels: [], datasets: [] };
   var players: any = { labels: [], datasets: [] };
