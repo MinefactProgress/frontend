@@ -60,18 +60,20 @@ const AdminPage: NextPage = () => {
         breakpoints={[{ maxWidth: "sm", cols: 1 }]}
       >
         <StatsText title="Backend Statistics">
-          <Text color="dimmed">
-            Total Requests
-            <Text>
-              {data?.stats.total_requests}
-              <br />
+          <SimpleGrid cols={2}>
+            <Text color="dimmed">
+              Total Requests<br />{data?.stats.total_requests}
             </Text>
-            <br />
-            Failed Requests
-            <Text color="">
-              {data?.stats.total_requests - data?.stats.successful_requests}
+            <Text color="dimmed">
+              Successful Requests<br />{data?.stats.successful_requests}
             </Text>
-          </Text>
+            <Text color="dimmed">
+              Invalid Requests<br />{data?.stats.total_requests - data?.stats.successful_requests}
+            </Text>
+            <Text color="dimmed">
+              Errors occurred<br />{data?.stats.error_requests}
+            </Text>
+          </SimpleGrid>
         </StatsText>
         <Grid gutter="md">
           <Grid.Col span={6}>
