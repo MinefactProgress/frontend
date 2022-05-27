@@ -70,17 +70,11 @@ const Home: NextPage = ({ user, setUser }: any) => {
     area: "[]",
   });
   const theme = useMantineTheme();
-  const { data } = useSWR("/api/blocks/get");
-  const { data: districts } = useSWR(
-    "/api/districts/get"
-  );
+  const { data } = useSWR("http://localhost:8080/api/blocks/get");
+  const { data: districts } = useSWR("/api/districts/get");
   const { data: progress } = useSWR("/api/progress");
-  const { data: playersRw } = useSWR(
-    "/api/playerstats/get"
-  );
-  const { data: projectsRw } = useSWR(
-    "/api/projects/get"
-  );
+  const { data: playersRw } = useSWR("/api/playerstats/get");
+  const { data: projectsRw } = useSWR("/api/projects/get");
   var projects: any = { labels: [], datasets: [] };
   var players: any = { labels: [], datasets: [] };
   projectsRw?.slice(-30).forEach((element: any) => {
@@ -106,10 +100,10 @@ const Home: NextPage = ({ user, setUser }: any) => {
         <Badge
           color="red"
           size="lg"
-          variant={selectedBlock.status == 0 ? "filled" : "dot"}
+          variant={selectedBlock.status == 0|| selectedBlock.status == 1 ? "filled" : "dot"}
           style={{
             backgroundColor:
-              selectedBlock.status != 0
+              selectedBlock.status != 0 && selectedBlock.status != 1
                 ? theme.colorScheme === "dark"
                   ? "black"
                   : "white"
@@ -119,27 +113,12 @@ const Home: NextPage = ({ user, setUser }: any) => {
           Not Started
         </Badge>
         <Badge
-          color="cyan"
-          size="lg"
-          variant={selectedBlock.status == 1 ? "filled" : "dot"}
-          style={{
-            backgroundColor:
-              selectedBlock.status != 1
-                ? theme.colorScheme === "dark"
-                  ? "black"
-                  : "white"
-                : undefined,
-          }}
-        >
-          Reserved
-        </Badge>
-        <Badge
           color="yellow"
           size="lg"
-          variant={selectedBlock.status == 2 ? "filled" : "dot"}
+          variant={selectedBlock.status == 2|| selectedBlock.status == 3 ? "filled" : "dot"}
           style={{
             backgroundColor:
-              selectedBlock.status != 2
+              selectedBlock.status != 2&& selectedBlock.status != 3
                 ? theme.colorScheme === "dark"
                   ? "black"
                   : "white"
@@ -147,21 +126,6 @@ const Home: NextPage = ({ user, setUser }: any) => {
           }}
         >
           Building
-        </Badge>
-        <Badge
-          color="orange"
-          size="lg"
-          variant={selectedBlock.status == 3 ? "filled" : "dot"}
-          style={{
-            backgroundColor:
-              selectedBlock.status != 3
-                ? theme.colorScheme === "dark"
-                  ? "black"
-                  : "white"
-                : undefined,
-          }}
-        >
-          Detailing
         </Badge>
         <Badge
           color="green"
@@ -266,7 +230,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
                 type: "polygon",
                 positions: JSON.parse(block.area),
                 options: {
-                  color: `${colorFromStatus(block.status)}FF`,
+                  color: `${colorFromStatus(block.status, true)}FF`,
                   opacity:
                     selectedBlock.uid != 0
                       ? block.uid == selectedBlock.uid
