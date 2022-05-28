@@ -22,6 +22,13 @@ const pages = [
     permission: 0,
   },
   {
+    icon: <BuildingCommunity size={16} />,
+    color: "yellow",
+    label: "Districts",
+    href: "/districts",
+    permission: 0,
+  },
+  {
     icon: <List size={16} />,
     color: "yellow",
     label: "Project List",
@@ -29,10 +36,10 @@ const pages = [
     permission: 0,
   },
   {
-    icon: <BuildingCommunity size={16} />,
+    icon: <Users size={16} />,
     color: "yellow",
-    label: "Districts",
-    href: "/districts",
+    label: "Staff Team",
+    href: "/users",
     permission: 0,
   },
   {
