@@ -24,9 +24,7 @@ const DatabasePage = () => {
   const SECONDARY_COL_HEIGHT = PRIMARY_COL_HEIGHT / 2 - theme.spacing.md / 2;
   const [sqlState, setSqlState] = useState("");
   const [fetch, setShouldFetch] = useState(false);
-  const { data } = useSWR(
-    fetch ? "/api/admin/query?query=" + sqlState : null
-  );
+  const { data } = useSWR(fetch ? "/api/admin/query?query=" + sqlState : null);
 
   return (
     <Page>
@@ -124,23 +122,43 @@ const DatabasePage = () => {
                   size="xs"
                   transform="uppercase"
                   weight={700}
+                  style={{ marginBottom: theme.spacing.md }}
                 >
-                  Response
+                  Tools
                 </Text>
-                <ScrollArea
-                  style={{ marginTop: theme.spacing.md, height: "80%" }}
+                <Button
+                  onClick={(e: any) =>
+                    window.open("http://144.217.77.29/phpmyadmin", "_blank")
+                  }
+                  fullWidth
                 >
-                  <Text>
-                    Database Ping: {data?.time.diff}ms
-                    <br />
-                  </Text>
-                  <Text>
-                    Request Time:{" "}
-                    {data?.time
-                      ? new Date(data?.time.start).toLocaleTimeString()
-                      : null}
-                  </Text>
-                </ScrollArea>
+                  Open phpMyAdmin
+                </Button>
+                <Button
+                  onClick={(e: any) =>
+                    window.open(
+                      process.env.NEXT_PUBLIC_API_URL + "/api/progress",
+                      "_blank"
+                    )
+                  }
+                  fullWidth
+                  
+                  style={{ marginBottom: theme.spacing.md,marginTop:theme.spacing.md }}
+                >
+                  Open Backend Route
+                </Button>
+                <Button
+                  onClick={(e: any) =>
+                    window.open(
+                      process.env.NEXT_PUBLIC_API_URL?.replace("https", "ssh") +
+                        "/api/progress",
+                      "_blank"
+                    )
+                  }
+                  fullWidth
+                >
+                  Open ssh tunnel
+                </Button>
               </Paper>
             </Skeleton>
           </Grid.Col>
