@@ -70,7 +70,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
     area: "[]",
   });
   const theme = useMantineTheme();
-  const { data } = useSWR("http://localhost:8080/api/blocks/get");
+  const { data } = useSWR("/api/blocks/get");
   const { data: districts } = useSWR("/api/districts/get");
   const { data: progress } = useSWR("/api/progress");
   const { data: playersRw } = useSWR("/api/playerstats/get");
