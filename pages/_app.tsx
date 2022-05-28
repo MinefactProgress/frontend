@@ -48,14 +48,12 @@ function MyApp({ Component, pageProps }: AppProps) {
         refreshInterval: 0,
         fetcher: (resource: any, init: any) =>
           fetch(
-            (resource.includes("http")
-              ? resource
-              : process.env.NEXT_PUBLIC_API_URL) +
-              (resource.includes("?")?
-                  "&key=" +
+            process.env.NEXT_PUBLIC_API_URL +
+              resource +
+              (resource.includes("?")
+                ? "&key=" +
                   JSON.parse(window.localStorage.getItem("auth") || "{}").apikey
-                :
-                  "?key=" +
+                : "?key=" +
                   JSON.parse(window.localStorage.getItem("auth") || "{}")
                     .apikey),
             {
