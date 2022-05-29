@@ -11,8 +11,8 @@ import {
 } from "@mantine/core";
 
 import Page from "../../components/Page";
-import useSWR from "swr";
 import { useRouter } from "next/router";
+import useSWR from "swr";
 
 const StaffPage = () => {
   const router = useRouter();
@@ -62,8 +62,8 @@ const StaffPage = () => {
     <Page title="Staff List">
       <Grid>
         <Group>
-          {data?.map((user: any) => (
-            <Paper withBorder radius="md" p="lg">
+          {data?.map((user: any, i:number) => (
+            <Paper withBorder radius="md" p="lg" key={i}>
               <Avatar
                 src={"https://mc-heads.net/avatar/" + user.username}
                 size={120}
