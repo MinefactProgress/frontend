@@ -61,9 +61,8 @@ const StaffPage = () => {
   return (
     <Page title="Staff List">
       <Grid>
-        <Group>
           {data?.map((user: any, i:number) => (
-            <Paper withBorder radius="md" p="lg" key={i}>
+            <Paper withBorder radius="md" key={i}>
               <Avatar
                 src={"https://mc-heads.net/avatar/" + user.username}
                 size={120}
@@ -94,7 +93,6 @@ const StaffPage = () => {
               </Button>
             </Paper>
           ))}
-        </Group>
       </Grid>
     </Page>
   );
