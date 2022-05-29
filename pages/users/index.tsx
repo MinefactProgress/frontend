@@ -19,6 +19,7 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import useUser from "../../utils/hooks/useUser";
 import { userInfo } from "os";
+import { rankToColor } from "../../utils/userUtils";
 
 const StaffPage = () => {
   const router = useRouter();
@@ -44,23 +45,6 @@ const StaffPage = () => {
         ? indexA - indexB
         : a.username.localeCompare(b.username);
     });
-
-  const rankToColor = (rank: string) => {
-    switch (rank) {
-      case "Owner":
-        return "#AA0000";
-      case "Administrator":
-        return "#FF5555";
-      case "Moderator":
-        return "#00AAAA";
-      case "Developer":
-        return "#55FFFF";
-      case "Supporter":
-        return "#5555FF";
-      case "Builder":
-        return "#0000AA";
-    }
-  };
 
   const openProfile = (username: string) => {
     router.push("/users/" + username);
