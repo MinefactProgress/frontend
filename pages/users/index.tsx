@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   Avatar,
   Badge,
   Button,
@@ -8,14 +9,21 @@ import {
   Paper,
   ScrollArea,
   Text,
+  useMantineTheme,
 } from "@mantine/core";
 
 import Page from "../../components/Page";
+import { Plus } from "tabler-icons-react";
+import ThemeSwitch from "../../components/ThemeSwitch";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import useUser from "../../utils/hooks/useUser";
+import { userInfo } from "os";
 
 const StaffPage = () => {
   const router = useRouter();
+  const theme = useMantineTheme();
+  const [user] = useUser();
   const { data: dataRaw } = useSWR("/api/users/get");
 
   const rankSort = [
@@ -61,8 +69,9 @@ const StaffPage = () => {
   return (
     <Page title="Staff List">
       <Grid>
-          {data?.map((user: any, i:number) => (
-            <Paper withBorder radius="md" key={i}>
+        {data?.map((user: any, i: number) => (
+          <Grid.Col key={i} span={2}>
+            <Paper withBorder radius="md" p="lg">
               <Avatar
                 src={"https://mc-heads.net/avatar/" + user.username}
                 size={120}
@@ -78,6 +87,7 @@ const StaffPage = () => {
                     backgroundColor: rankToColor(user.rank),
                     color: "#FFFFFF",
                     opacity: 1,
+                    marginTop: theme.spacing.xs,
                   }}
                 >
                   {user.rank}
@@ -92,7 +102,8 @@ const StaffPage = () => {
                 View Profile
               </Button>
             </Paper>
-          ))}
+          </Grid.Col>
+        ))}
       </Grid>
     </Page>
   );
