@@ -232,7 +232,7 @@ const UsersPage = () => {
             <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
               Users
             </Text>
-            <ScrollArea>
+            <ScrollArea style={{ height: "86vh" }} type="hover">
               <Table>
                 <thead>
                   <tr>
@@ -271,7 +271,7 @@ const UsersPage = () => {
                     : null}
                 </tbody>
               </Table>
-            </ScrollArea>
+                    </ScrollArea>
           </Paper>
         </Skeleton>
         <Grid gutter="md">
