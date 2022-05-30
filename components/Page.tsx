@@ -331,6 +331,8 @@ export default function Page(props: {
           {props.title ||
             pages.find((el: any) => el.href == router.pathname)?.label}
         </title>
+        <meta name="title" content="Minefact Progress Tracking" />
+        <meta name="keyworkds" content="progress, tracking, minefact, nyc, new york city, new york, minecraft, buildtheearth, mf,network, server, multiplayer" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta name="theme-color" content={theme.colors.blue[7]} />
         <meta
