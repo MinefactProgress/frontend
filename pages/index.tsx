@@ -207,7 +207,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
             size="md"
             onClick={() => {
               router.push(
-                "/districts/" + selectedBlock.district + "/" + selectedBlock.id
+                "/districts/" + districts[selectedBlock.district-1].name + "/" + selectedBlock.id
               );
             }}
             style={{

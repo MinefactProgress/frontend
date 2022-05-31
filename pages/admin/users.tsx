@@ -217,11 +217,8 @@ const UsersPage = () => {
 
   return (
     <Page>
-      <SimpleGrid
-        cols={2}
-        spacing="md"
-        breakpoints={[{ maxWidth: "sm", cols: 1 }]}
-      >
+      <Grid>
+        <Grid.Col span={7}>
         <Skeleton
           height={PRIMARY_COL_HEIGHT}
           radius="md"
@@ -238,6 +235,8 @@ const UsersPage = () => {
                   <tr>
                     <th>UID</th>
                     <th>Name</th>
+                    <th>Discord</th>
+                    <th>Minecraft Role</th>
                     <th>Email</th>
                     <th>Role</th>
                     <th>Actions</th>
@@ -249,6 +248,8 @@ const UsersPage = () => {
                         <tr key={user.uid}>
                           <td>{user.uid}</td>
                           <td>{user.username}</td>
+                          <td>{user.discord}</td>
+                          <td>{user.rank}</td>
                           <td>{user.email}</td>
                           <td>{getRoleFromPermission(user.permission)}</td>
                           <td>
@@ -274,6 +275,8 @@ const UsersPage = () => {
                     </ScrollArea>
           </Paper>
         </Skeleton>
+        </Grid.Col>
+        <Grid.Col span={5}>
         <Grid gutter="md">
           <Grid.Col>
             <Skeleton
@@ -492,7 +495,10 @@ const UsersPage = () => {
             </Skeleton>
           </Grid.Col>
         </Grid>
-      </SimpleGrid>
+        </Grid.Col>
+      </Grid>
+       
+       
     </Page>
   );
 };
