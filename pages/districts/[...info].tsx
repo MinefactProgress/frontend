@@ -5,6 +5,7 @@ import {
   Center,
   Checkbox,
   Grid,
+  Group,
   Modal,
   Paper,
   Progress,
@@ -71,9 +72,7 @@ const DistrictPage = () => {
   const { info } = router.query;
   const district = info?.at(0);
   const [user] = useUser();
-  const { data } = useSWR(
-    "/api/districts/get/" + district
-  );
+  const { data } = useSWR("/api/districts/get/" + district);
   const selBlock = info?.at(1)
     ? data?.blocks.blocks.find(
         (b: any) => b.id === parseInt(info?.at(1) || "1")
@@ -91,19 +90,22 @@ const DistrictPage = () => {
     }
   };
   const handleSubtmit = (values: any) => {
-    fetch(process.env.NEXT_PUBLIC_API_URL+"/api/blocks/update?key=" + user.apikey, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        district: data?.name,
-        blockID: selBlock.id,
-        values: {
-          progress: values.progress,
-          details: values.details,
-          builder: values.builders.join(","),
-        },
-      }),
-    })
+    fetch(
+      process.env.NEXT_PUBLIC_API_URL + "/api/blocks/update?key=" + user.apikey,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          district: data?.name,
+          blockID: selBlock.id,
+          values: {
+            progress: values.progress,
+            details: values.details,
+            builder: values.builders.join(","),
+          },
+        }),
+      }
+    )
       .then((res) => res.json())
       .then((res) => {
         if (res.error) {
@@ -226,9 +228,55 @@ const DistrictPage = () => {
               marginBottom: theme.spacing.md,
             }}
           >
-            <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
-              Blocks
-            </Text>
+            <Group grow>
+              <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
+                Blocks
+              </Text>
+              {user.uid > 0 ? (
+                <Badge
+                  variant={statusFilter === 5 ? "filled" : "outline"}
+                  onClick={(e: any) => {
+                    setStatusFilter(5);
+                    router.push("/districts/" + data?.name + "?f=" + 5);
+                  }}
+                >
+                  My Claims
+                </Badge>
+              ) : null}
+
+              {[4, 3, 2, 1, 0].map((status) => (
+                <Badge
+                  key={status}
+                  color={statusToColorName(status)}
+                  variant={statusFilter === status ? "filled" : "outline"}
+                  onClick={(e: any) => {
+                    setStatusFilter(status);
+                    router.push("/districts/" + data?.name + "?f=" + status);
+                  }}
+                >
+                  {statusToName(status)}
+                </Badge>
+              ))}
+              {statusFilter !== null ? (
+                <Tooltip label="Clear Selection" placement="start" withArrow>
+                  <ActionIcon
+                    size="sm"
+                    radius="xl"
+                    variant="outline"
+                    style={{
+                      backgroundColor:
+                        theme.colorScheme === "dark" ? "black" : "white",
+                    }}
+                    onClick={() => {
+                      setStatusFilter(null);
+                      router.push("/districts/" + data?.name);
+                    }}
+                  >
+                    <X size={16} />
+                  </ActionIcon>
+                </Tooltip>
+              ) : null}
+            </Group>
             <ScrollArea style={{ height: "75vh" }}>
               <Table highlightOnHover>
                 <thead>
@@ -247,7 +295,9 @@ const DistrictPage = () => {
                     ? data?.blocks.blocks
                         .filter((block: any) =>
                           statusFilter != null
-                            ? block.status == statusFilter
+                            ? statusFilter === 5
+                              ? block.builders.includes(user.username)
+                              : block.status == statusFilter
                             : true
                         )
                         .map((block: any, i: number) => (
@@ -264,23 +314,7 @@ const DistrictPage = () => {
                           >
                             <td>{block.id}</td>
                             <td>
-                              <Badge
-                                color={statusToColorName(block.status)}
-                                onClick={(e: any) => {
-                                  if (block.status == statusFilter) {
-                                    setStatusFilter(null);
-                                    router.push("/districts/" + data?.name);
-                                  } else {
-                                    setStatusFilter(block.status);
-                                    router.push(
-                                      "/districts/" +
-                                        data?.name +
-                                        "?f=" +
-                                        block.status
-                                    );
-                                  }
-                                }}
-                              >
+                              <Badge color={statusToColorName(block.status)}>
                                 {statusToName(block.status)}
                               </Badge>
                             </td>
@@ -410,7 +444,10 @@ const DistrictPage = () => {
                 },
                 plugins: {
                   legend: {
-                    display: false,
+                    display: true,
+                    labels: {
+                      boxWidth: 35,
+                    },
                   },
                   title: {
                     display: false,
