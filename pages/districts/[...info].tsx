@@ -65,7 +65,9 @@ const DistrictPage = () => {
   const theme = useMantineTheme();
   const router = useRouter();
   const [blockOpened, setBlockOpened] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<number | null | undefined>(null);
+  const [statusFilter, setStatusFilter] = useState<number | null | undefined>(
+    null
+  );
   if (router.query.f && statusFilter === null) {
     setStatusFilter(parseInt(router.query.f as string));
   }
@@ -228,53 +230,63 @@ const DistrictPage = () => {
               marginBottom: theme.spacing.md,
             }}
           >
-            <div style={{width:"100%"}}>
-              <Text color="dimmed" size="xs" transform="uppercase" weight={700} style={{display:"inline-block"}}>
+            <div style={{ width: "100%" }}>
+              <Text
+                color="dimmed"
+                size="xs"
+                transform="uppercase"
+                weight={700}
+                style={{ display: "inline-block" }}
+              >
                 Blocks
               </Text>
-              <Group style={{float:"right"}}>
-              {user.uid > 0 ? (
-                <Badge
-                  variant={statusFilter === 5 ? "filled" : "outline"}
-                  onClick={(e: any) => {
-                    setStatusFilter(5);
-                    router.push("/districts/" + data?.name + "?f=" + 5);
-                  }}
-                >
-                  My Claims
-                </Badge>
-              ) : null}
-
-              {[4, 3, 2, 1, 0].map((status) => (
-                <Badge
-                  key={status}
-                  color={statusToColorName(status)}
-                  variant={statusFilter === status ? "filled" : "outline"}
-                  onClick={(e: any) => {
-                    setStatusFilter(status);
-                    router.push("/districts/" + data?.name + "?f=" + status);
-                  }}
-                >
-                  {statusToName(status)}
-                </Badge>
-              ))}
-              {statusFilter !== null ? (
-                <Tooltip label="Clear Filter"
-                placement="end" withArrow 
-                position="bottom">
-                  <ActionIcon
-                    size="xs"
-                    radius="xl"
-                    variant="outline"
-                    onClick={() => {
-                      setStatusFilter(undefined);
-                      router.push("/districts/" + data?.name);
+              <Group style={{ float: "right" }}>
+                {user.uid > 0 ? (
+                  <Badge
+                    variant={statusFilter === 5 ? "filled" : "outline"}
+                    onClick={(e: any) => {
+                      setStatusFilter(5);
+                      router.push("/districts/" + data?.name + "?f=" + 5);
                     }}
                   >
-                    <X size={16} />
-                  </ActionIcon>
-                </Tooltip>
-              ) : null}</Group>
+                    My Claims
+                  </Badge>
+                ) : null}
+
+                {[4, 3, 2, 1, 0].map((status) => (
+                  <Badge
+                    key={status}
+                    color={statusToColorName(status)}
+                    variant={statusFilter === status ? "filled" : "outline"}
+                    onClick={(e: any) => {
+                      setStatusFilter(status);
+                      router.push("/districts/" + data?.name + "?f=" + status);
+                    }}
+                  >
+                    {statusToName(status)}
+                  </Badge>
+                ))}
+                {statusFilter !== null ? (
+                  <Tooltip
+                    label="Clear Filter"
+                    placement="end"
+                    withArrow
+                    position="bottom"
+                  >
+                    <ActionIcon
+                      size="xs"
+                      radius="xl"
+                      variant="outline"
+                      onClick={() => {
+                        setStatusFilter(undefined);
+                        router.push("/districts/" + data?.name);
+                      }}
+                    >
+                      <X size={16} />
+                    </ActionIcon>
+                  </Tooltip>
+                ) : null}
+              </Group>
             </div>
             <ScrollArea style={{ height: "75vh" }}>
               <Table highlightOnHover>
@@ -443,7 +455,7 @@ const DistrictPage = () => {
                 },
                 plugins: {
                   legend: {
-                    display: true,
+                    display: false,
                     labels: {
                       boxWidth: 35,
                     },
