@@ -65,7 +65,7 @@ const DistrictPage = () => {
   const theme = useMantineTheme();
   const router = useRouter();
   const [blockOpened, setBlockOpened] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<number | null>(null);
+  const [statusFilter, setStatusFilter] = useState<number | null | undefined>(null);
   if (router.query.f && statusFilter === null) {
     setStatusFilter(parseInt(router.query.f as string));
   }
@@ -268,7 +268,7 @@ const DistrictPage = () => {
                         theme.colorScheme === "dark" ? "black" : "white",
                     }}
                     onClick={() => {
-                      setStatusFilter(null);
+                      setStatusFilter(undefined);
                       router.push("/districts/" + data?.name);
                     }}
                   >
