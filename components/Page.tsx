@@ -276,7 +276,7 @@ export default function Page(props: {
               <img
                 src="/logo.png"
                 alt="logo"
-                style={{ height: "6vh", width: "6vh" }}
+                style={{ height: "5vh", width: "5vh" }}
               />
               <Title sx={{ color: colorScheme === "dark" ? "white" : "black" }}>
                 Progress
