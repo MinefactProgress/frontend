@@ -96,6 +96,13 @@ const pages = [
     permission: 3,
   },
   {
+    icon: <BuildingCommunity size={16} />,
+    color: "grape",
+    label: "Manage Districts",
+    href: "/admin/districts",
+    permission: 4,
+  },
+  {
     icon: <ChartInfographic size={16} />,
     color: "grape",
     label: "Status",
