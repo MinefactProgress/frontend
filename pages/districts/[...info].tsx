@@ -228,10 +228,11 @@ const DistrictPage = () => {
               marginBottom: theme.spacing.md,
             }}
           >
-            <Group grow>
-              <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
+            <div style={{width:"100%"}}>
+              <Text color="dimmed" size="xs" transform="uppercase" weight={700} style={{display:"inline-block"}}>
                 Blocks
               </Text>
+              <Group style={{float:"right"}}>
               {user.uid > 0 ? (
                 <Badge
                   variant={statusFilter === 5 ? "filled" : "outline"}
@@ -258,15 +259,13 @@ const DistrictPage = () => {
                 </Badge>
               ))}
               {statusFilter !== null ? (
-                <Tooltip label="Clear Selection" placement="start" withArrow>
+                <Tooltip label="Clear Filter"
+                placement="end" withArrow 
+                position="bottom">
                   <ActionIcon
-                    size="sm"
+                    size="xs"
                     radius="xl"
                     variant="outline"
-                    style={{
-                      backgroundColor:
-                        theme.colorScheme === "dark" ? "black" : "white",
-                    }}
                     onClick={() => {
                       setStatusFilter(undefined);
                       router.push("/districts/" + data?.name);
@@ -275,8 +274,8 @@ const DistrictPage = () => {
                     <X size={16} />
                   </ActionIcon>
                 </Tooltip>
-              ) : null}
-            </Group>
+              ) : null}</Group>
+            </div>
             <ScrollArea style={{ height: "75vh" }}>
               <Table highlightOnHover>
                 <thead>
