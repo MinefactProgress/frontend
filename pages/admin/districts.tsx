@@ -20,18 +20,27 @@ import { CirclePlus, Check, Cross, Pencil, Trash } from "tabler-icons-react";
 import Page from "../../components/Page";
 import { showNotification } from "@mantine/notifications";
 import { useForm } from "@mantine/form";
+import { useModals } from "@mantine/modals";
 import useSWR from "swr";
 import useUser from "../../utils/hooks/useUser";
 
 const DistrictsPage = () => {
   const theme = useMantineTheme();
+  const modals = useModals();
   const [user] = useUser();
   const form = useForm({
     initialValues: {
       name: "",
       parent: "",
       image: "",
-      map: "",
+    },
+  });
+  const formEdit = useForm({
+    initialValues: {
+      id: "",
+      name: "",
+      parent: "",
+      image: "",
     },
   });
   const { data } = useSWR("/api/districts/get");
@@ -72,7 +81,66 @@ const DistrictsPage = () => {
     }
   };
   const handleDistrictEdit = () => {};
-  const handleDistrictDelete = () => {};
+  const handleDistrictDelete = (id: number) => {
+    const district = data?.find((d: any) => d.id === id);
+    modals.openConfirmModal({
+      title: "Do you want to delete this district?",
+      centered: true,
+      children: (
+        <Text size="sm">
+          You will delete <b>{district.name}</b>
+          <br />
+          All District Progress and Statistics will be deleted.
+        </Text>
+      ),
+      labels: { confirm: "Delete District", cancel: "Cancel Deletion" },
+      confirmProps: { color: "red" },
+      onCancel: () => {
+        showNotification({
+          title: "Deletion cancelled",
+          message: "The district was not deleted.",
+          icon: <Cross />,
+        });
+      },
+      onConfirm: async () => {
+        const result = await fetch(
+          process.env.NEXT_PUBLIC_API_URL +
+            "/api/districts/delete?key=" +
+            user.apikey,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+            body: JSON.stringify({
+              name: district.name,
+            }),
+          }
+        ).then((res) => res.json());
+        if (result.error) {
+          showNotification({
+            autoClose: 5000,
+            title: "Error deleting district",
+            message: result.message,
+            color: "red",
+            icon: <Cross />,
+          });
+        } else {
+          showNotification({
+            autoClose: 5000,
+            title: "District deleted",
+            message:
+              "The district " +
+              district.name +
+              " has been deleted successfully. Reload to see changes.",
+            color: "green",
+            icon: <Check />,
+          });
+        }
+      },
+    });
+  };
 
   return (
     <Page title="Manage Districts">
@@ -113,7 +181,9 @@ const DistrictsPage = () => {
                             <Group spacing="xs">
                               <Tooltip gutter={10} label="Delete" withArrow>
                                 <ActionIcon
-                                  onClick={() => handleDistrictDelete()}
+                                  onClick={() =>
+                                    handleDistrictDelete(district.id)
+                                  }
                                   disabled={district.id === 1}
                                 >
                                   <ThemeIcon color="red">
@@ -173,9 +243,9 @@ const DistrictsPage = () => {
                                 return {
                                   value: district.id,
                                   label: `${district.name} (${
-                                    data?.filter(
+                                    data?.find(
                                       (d: any) => d.id === district.parent
-                                    )[0].name
+                                    ).name
                                   })`,
                                 };
                               } else {
