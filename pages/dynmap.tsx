@@ -14,30 +14,13 @@ import Page from "../components/Page";
 const DynmapPage = () => {
   const theme = useMantineTheme();
   return (
-    <Page>
-      <Paper
-        withBorder
-        radius="md"
-        p="xs"
-        style={{
-          marginBottom: theme.spacing.md,
-          height: "90vh",
-        }}
-      >
-        <Title
-          style={{
-            marginBottom: theme.spacing.md,
-          }}
-        >
-          Dynmap of New York City
-        </Title>
-        <iframe
+    <Page noMargin style={{overflow:"hidden"}}>
+     <iframe
           src="https://newyork.minefact.de/"
-          height={"92.5%"}
-          width={"100%"}
-          style={{ border: "none" }}
+          height="100%"
+          width="100%"
+          style={{ border: "none",padding:"none",margin:"none" }}
         />
-      </Paper>
     </Page>
   );
 };
