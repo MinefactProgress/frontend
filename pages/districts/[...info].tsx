@@ -7,12 +7,12 @@ import {
   Grid,
   Group,
   Image,
-  Modal,
+  MultiSelect,
+  NumberInput,
   Pagination,
   Paper,
   Progress,
   ScrollArea,
-  Slider,
   Table,
   Tabs,
   Text,
@@ -35,6 +35,7 @@ import {
   PointElement,
 } from "chart.js";
 import {
+  Backhoe,
   CameraPlus,
   ChartBar,
   Check,
@@ -79,7 +80,6 @@ ChartJS.register(
 const DistrictPage = () => {
   const theme = useMantineTheme();
   const router = useRouter();
-  const [blockOpened, setBlockOpened] = useState(false);
   const [activePage, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<number | null | undefined>(
     undefined
@@ -91,19 +91,15 @@ const DistrictPage = () => {
   const district = info?.at(0);
   const [user] = useUser();
   const { data } = useSWR("/api/districts/get/" + district);
-  const selBlock = info?.at(1)
-    ? data?.blocks.blocks.find(
+  const [selBlock, setSelBlock] = useState<any>(null);
+  if (info?.at(1) && selBlock === null && data) {
+    console.log("block: ", info.at(1));
+    setSelBlock(
+      data?.blocks.blocks.find(
         (b: any) => b.id === parseInt(info?.at(1) || "1")
       )
-    : undefined;
-
-  const editForm = useForm({
-    initialValues: {
-      progress: 0,
-      details: false,
-      builders: [""],
-    },
-  });
+    );
+  }
   const imageForm = useForm({
     initialValues: {
       image: "",
@@ -120,50 +116,58 @@ const DistrictPage = () => {
 
   const handleClick = (blockID: any) => {
     router.push("/districts/" + district + "/" + blockID);
-    if ((user.permission || 0) >= Permissions.Builder) {
-      editForm.setValues({
-        progress: selBlock?.progress,
-        details: selBlock?.details,
-        builders: selBlock?.builders.map((b: any) => b),
+    setSelBlock(data?.blocks.blocks.find((b: any) => b.id === blockID));
+  };
+  const handleSubtmit = (event: any) => {
+    event.preventDefault();
+    if (
+      selBlock &&
+      selBlock != data?.blocks.blocks.find((b: any) => b.id === selBlock?.id)
+    ) {
+      fetch(
+        process.env.NEXT_PUBLIC_API_URL +
+          "/api/blocks/update?key=" +
+          user.apikey,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            district: data?.name,
+            blockID: selBlock?.id,
+            values: {
+              progress: selBlock?.progress,
+              details: selBlock?.details,
+              builder: selBlock?.builders.join(","),
+            },
+          }),
+        }
+      )
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.error) {
+            showNotification({
+              title: "Error Updating Block",
+              message: res.message,
+              color: "red",
+            });
+          } else {
+            showNotification({
+              title: "Block Updated",
+              message:
+                "The data of Block " + selBlock?.id + " has been updated",
+              color: "green",
+              icon: <Check />,
+            });
+          }
+        });
+    } else {
+      showNotification({
+        title: "Nothing Changed",
+        message: "No changes were made to the block",
       });
-      setBlockOpened(true);
     }
   };
-  const handleSubtmit = (values: any) => {
-    fetch(
-      process.env.NEXT_PUBLIC_API_URL + "/api/blocks/update?key=" + user.apikey,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          district: data?.name,
-          blockID: selBlock.id,
-          values: {
-            progress: values.progress,
-            details: values.details,
-            builder: values.builders.join(","),
-          },
-        }),
-      }
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.error) {
-          showNotification({
-            title: "Error Updating Block",
-            message: res.message,
-            color: "red",
-          });
-        } else {
-          showNotification({
-            title: "Block Updated",
-            message: "The data of Block " + selBlock.id + " has been updated",
-            color: "green",
-            icon: <Check />,
-          });
-        }
-      });
-  };
+  console.log(selBlock);
   const handleAddImage = async () => {
     const images = data?.image;
     images.push(imageForm.values.image);
@@ -204,74 +208,6 @@ const DistrictPage = () => {
 
   return (
     <Page title={data?.name}>
-      <Modal
-        centered
-        opened={blockOpened}
-        onClose={() => setBlockOpened(false)}
-        title={data?.name + " Block " + selBlock?.id}
-      >
-        <form onSubmit={editForm.onSubmit(handleSubtmit)}>
-          <Slider
-            label={(value) => `Progress ${value}%`}
-            min={0}
-            max={100}
-            step={5}
-            color={progressToColorName(editForm.values.progress)}
-            marks={[{ value: 25 }, { value: 50 }, { value: 75 }]}
-            {...editForm.getInputProps("progress")}
-          />
-          <Checkbox
-            label="Details"
-            disabled={editForm.values.progress != 100}
-            color="green"
-            style={{
-              marginTop: theme.spacing.md,
-              marginBottom: theme.spacing.md,
-            }}
-            {...editForm.getInputProps("details")}
-          />
-          <Button
-            fullWidth
-            color={progressToColorName(editForm.values.progress)}
-            onClick={(e: any) => {
-              if (
-                !editForm.values.builders.includes(
-                  user.username || "wf8whopiw8ghjZH)h"
-                )
-              ) {
-                const newBuilders = editForm.values.builders;
-                newBuilders.push(user.username || "");
-                editForm.setFieldValue("builders", newBuilders);
-              } else {
-                const newBuilders = editForm.values.builders;
-                newBuilders.splice(
-                  newBuilders.indexOf(user.username || "fwetwg"),
-                  1
-                );
-                editForm.setFieldValue(
-                  "builders",
-                  editForm.values.builders?.filter(
-                    (b: any) => b !== user.username
-                  )
-                );
-              }
-
-              console.log(editForm.values.builders);
-            }}
-          >
-            {editForm.values.builders?.includes(user.username || "di3w8fal")
-              ? "Unclaim Block"
-              : "Claim Block"}
-          </Button>
-          <Button
-            type="submit"
-            fullWidth
-            style={{ marginTop: theme.spacing.md }}
-          >
-            Update
-          </Button>
-        </form>
-      </Modal>
       <Grid>
         <Grid.Col span={8}>
           <Paper
@@ -520,43 +456,7 @@ const DistrictPage = () => {
                   </Center>
                 )}
               </Tabs.Tab>
-              {(user.permission || 0) >= Permissions.Moderator ? (
-                <Tabs.Tab label="Add Image" icon={<CameraPlus size={14} />}>
-                  <form onSubmit={imageForm.onSubmit(handleAddImage)}>
-                    <TextInput
-                      label="Image Link"
-                      name="link"
-                      placeholder="https://..."
-                      required
-                      style={{ marginBottom: theme.spacing.md }}
-                      {...imageForm.getInputProps("image")}
-                    />
-                    <Button type="submit" size="sm" mt="xs" mb="xs" fullWidth>
-                      Add Image
-                    </Button>
-                  </form>
-                </Tabs.Tab>
-              ) : null}
-            </Tabs>
-          </Paper>
-          <Paper
-            withBorder
-            radius="md"
-            p="xs"
-            style={{
-              height: "48%",
-              marginBottom: theme.spacing.md,
-            }}
-          >
-            <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
-              Statistics
-            </Text>
-            <Tabs
-              variant="outline"
-              tabPadding="md"
-              style={{ marginTop: theme.spacing.md }}
-            >
-              <Tabs.Tab label="Stats Count" icon={<ChartBar size={14} />}>
+              <Tabs.Tab label="Statuses" icon={<ChartBar size={14} />}>
                 <Bar
                   options={{
                     responsive: true,
@@ -652,7 +552,7 @@ const DistrictPage = () => {
                   }}
                 />
               </Tabs.Tab>
-              <Tabs.Tab label="Top Builders" icon={<Users size={14} />}>
+              <Tabs.Tab label="Builders" icon={<Users size={14} />}>
                 <Table>
                   <thead>
                     <tr>
@@ -676,6 +576,117 @@ const DistrictPage = () => {
                   </tbody>
                 </Table>
               </Tabs.Tab>
+            </Tabs>
+          </Paper>
+          <Paper
+            withBorder
+            radius="md"
+            p="xs"
+            style={{
+              height: "48%",
+              marginBottom: theme.spacing.md,
+            }}
+          >
+            <Tabs
+              variant="outline"
+              tabPadding="md"
+              style={{ marginTop: theme.spacing.md }}
+            >
+              {(user.permission || 0) >= Permissions.Builder ? (
+                <Tabs.Tab label="Update Block" icon={<Edit size={14} />}>
+                  <form onSubmit={handleSubtmit}>
+                    <NumberInput
+                      label="Block"
+                      min={1}
+                      max={data?.blocks.blocks.length}
+                      value={selBlock?.id}
+                      onChange={handleClick}
+                    />
+                    <MultiSelect
+                      dropdownPosition="top"
+                      label="Builders"
+                      creatable
+                      searchable
+                      placeholder="Select Builders"
+                      getCreateLabel={(query) => `+ Add ${query}`}
+                      data={
+                        selBlock
+                          ? [
+                              ...selBlock?.builders,
+                              user.username
+                            ]
+                          : [user.username]
+                      }
+                      value={selBlock?.builders}
+                      onChange={(e: any) => {
+                        setSelBlock({
+                          ...selBlock,
+                          builders: e,
+                        });
+                      }}
+                      onCreate={(e: any) => {
+                        setSelBlock({
+                          ...selBlock,
+                          builders: [...selBlock.builders, e],
+                        });
+                      }}
+                    />
+                    <NumberInput
+                      label="Progress"
+                      min={0}
+                      max={100}
+                      icon={<Backhoe size={18} />}
+                      value={selBlock?.progress}
+                      onChange={(e: any) => {
+                        setSelBlock({
+                          ...selBlock,
+                          progress: e,
+                        });
+                      }}
+                    />
+                    <Checkbox
+                      label="Street Details"
+                      disabled={selBlock?.progress != 100}
+                      style={{
+                        marginTop: theme.spacing.md,
+                        marginBottom: theme.spacing.md,
+                      }}
+                      value={selBlock?.details}
+                      onChange={(e: any) => {
+                        setSelBlock({
+                          ...selBlock,
+                          details: e.currentTarget.checked,
+                        });
+                      }}
+                    />
+
+                    <Button
+                      type="submit"
+                      fullWidth
+                      style={{ marginTop: theme.spacing.md }}
+                    >
+                      Update Block
+                    </Button>
+                  </form>
+                </Tabs.Tab>
+              ) : null}
+              {(user.permission || 0) >= Permissions.Moderator ? (
+                <Tabs.Tab label="Add Image" icon={<CameraPlus size={14} />}>
+                  <form onSubmit={imageForm.onSubmit(handleAddImage)}>
+                    <TextInput
+                      label="Image Link"
+                      name="link"
+                      placeholder="https://..."
+                      required
+                      style={{ marginBottom: theme.spacing.md }}
+                      {...imageForm.getInputProps("image")}
+                    />
+                    <Button type="submit" size="sm" mt="xs" mb="xs" fullWidth>
+                      Add Image
+                    </Button>
+                  </form>
+                </Tabs.Tab>
+              ) : null}
             </Tabs>
           </Paper>
         </Grid.Col>
