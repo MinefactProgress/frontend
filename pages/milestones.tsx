@@ -24,6 +24,7 @@ const useStyles = createStyles((theme) => ({
   label: {
     textAlign: "center",
     fontWeight: 900,
+    userSelect: "none",
     fontSize: 300,
     lineHeight: 1,
     marginBottom: theme.spacing.xl * 1.5,
@@ -61,18 +62,14 @@ const useStyles = createStyles((theme) => ({
 }));
 const MilestonesPage = () => {
   const { classes } = useStyles();
-  const { data: projects } = useSWR(
-    "/api/projects/get"
-  );
-  const { data: milestones } = useSWR(
-    "/api/projects/milestones/recent"
-  );
+  const { data: projects } = useSWR("/api/projects/get");
+  const { data: milestones } = useSWR("/api/projects/milestones/recent");
   const size = useWindowSize();
   return (
     <>
       <Confetti
         numberOfPieces={1000}
-        recycle={false}
+        recycle={true}
         width={size.width}
         height={size.height}
       />
@@ -81,7 +78,11 @@ const MilestonesPage = () => {
           <CountUp end={projects ? projects.at(-1).projects : null} />
         </div>
         <Title className={classes.title}>
-          🎉We did it! {milestones ? milestones[0].projects : null} Projects!🎉
+          🎉We did it!
+          {milestones
+            ? " " + Math.floor(milestones[0]?.projects / 1000) * 1000 + " "
+            : null}
+          Projects!🎉
         </Title>
         <Text
           color="dimmed"
@@ -89,12 +90,13 @@ const MilestonesPage = () => {
           align="center"
           className={classes.description}
         >
-          On the{" "}
-          {new Date(milestones ? milestones[0].date : "").toLocaleString(
-            "default",
-            { month: "long", year: "numeric", day: "numeric" }
-          )}{" "}
-          after {milestones ? milestones[0].days : null} Days
+          On the
+          {" " +
+            new Date(
+              milestones ? milestones[0]?.date : ""
+            ).toLocaleDateString() +
+            " "}
+          after {milestones ? milestones[0]?.days : null} Days
         </Text>
       </Container>
     </>
