@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   Button,
   Container,
   Group,
@@ -8,8 +9,10 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 
+import { ArrowLeft } from "tabler-icons-react";
 import Confetti from "react-confetti";
 import CountUp from "react-countup";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 
@@ -61,12 +64,16 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 const MilestonesPage = () => {
+  const router = useRouter();
   const { classes } = useStyles();
   const { data: projects } = useSWR("/api/projects/get");
   const { data: milestones } = useSWR("/api/projects/milestones/recent");
   const size = useWindowSize();
   return (
     <>
+    <Head>
+      <title>Progress | Milestones</title>
+    </Head>
       <Confetti
         numberOfPieces={1000}
         recycle={true}
@@ -99,6 +106,9 @@ const MilestonesPage = () => {
           after {milestones ? milestones[0]?.days : null} Days
         </Text>
       </Container>
+        <ActionIcon variant="outline" style={{position:"absolute",top:20,left:20}} onClick={()=>router.back()}>
+          <ArrowLeft />
+        </ActionIcon>
     </>
   );
 };
