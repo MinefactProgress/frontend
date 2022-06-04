@@ -66,7 +66,7 @@ const DistrictPage = () => {
   const router = useRouter();
   const [blockOpened, setBlockOpened] = useState(false);
   const [statusFilter, setStatusFilter] = useState<number | null | undefined>(
-    null
+    undefined
   );
   if (router.query.f && statusFilter === null) {
     setStatusFilter(parseInt(router.query.f as string));
@@ -266,7 +266,7 @@ const DistrictPage = () => {
                     {statusToName(status)}
                   </Badge>
                 ))}
-                {statusFilter !== null ? (
+                {statusFilter !== undefined ? (
                   <Tooltip
                     label="Clear Filter"
                     placement="end"
@@ -425,7 +425,7 @@ const DistrictPage = () => {
             p="xs"
             style={{
               marginBottom: theme.spacing.md,
-              paddingBottom: 2,
+              paddingBottom: 6,
             }}
           >
             <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
