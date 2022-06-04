@@ -6,13 +6,17 @@ import {
   Checkbox,
   Grid,
   Group,
+  Image,
   Modal,
+  Pagination,
   Paper,
   Progress,
   ScrollArea,
   Slider,
   Table,
+  Tabs,
   Text,
+  TextInput,
   Title,
   Tooltip,
   useMantineTheme,
@@ -30,7 +34,17 @@ import {
   LinearScale,
   PointElement,
 } from "chart.js";
-import { Check, Edit, X } from "tabler-icons-react";
+import {
+  CameraPlus,
+  ChartBar,
+  Check,
+  Cross,
+  Edit,
+  Map as MapIcon,
+  Photo,
+  Users,
+  X,
+} from "tabler-icons-react";
 import {
   colorFromStatus,
   progressToColorName,
@@ -41,6 +55,7 @@ import {
 import { Bar } from "react-chartjs-2";
 import Map from "../../components/Map";
 import Page from "../../components/Page";
+import { Permissions } from "../../utils/hooks/usePermission";
 import { showNotification } from "@mantine/notifications";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/router";
@@ -65,6 +80,7 @@ const DistrictPage = () => {
   const theme = useMantineTheme();
   const router = useRouter();
   const [blockOpened, setBlockOpened] = useState(false);
+  const [activePage, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<number | null | undefined>(
     undefined
   );
@@ -80,9 +96,31 @@ const DistrictPage = () => {
         (b: any) => b.id === parseInt(info?.at(1) || "1")
       )
     : undefined;
+
+  const editForm = useForm({
+    initialValues: {
+      progress: 0,
+      details: false,
+      builders: [""],
+    },
+  });
+  const imageForm = useForm({
+    initialValues: {
+      image: "",
+    },
+    validate: {
+      image: (value) =>
+        /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.test(
+          value
+        )
+          ? null
+          : "Invalid URL",
+    },
+  });
+
   const handleClick = (blockID: any) => {
     router.push("/districts/" + district + "/" + blockID);
-    if ((user.permission || 0) >= 1) {
+    if ((user.permission || 0) >= Permissions.Builder) {
       editForm.setValues({
         progress: selBlock?.progress,
         details: selBlock?.details,
@@ -126,13 +164,43 @@ const DistrictPage = () => {
         }
       });
   };
-  const editForm = useForm({
-    initialValues: {
-      progress: 0,
-      details: false,
-      builders: [""],
-    },
-  });
+  const handleAddImage = async () => {
+    const images = data?.image;
+    images.push(imageForm.values.image);
+    const result = await fetch(
+      process.env.NEXT_PUBLIC_API_URL +
+        "/api/districts/edit?key=" +
+        user.apikey,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({
+          district: data?.name,
+          image: JSON.stringify(images),
+        }),
+      }
+    ).then((res) => res.json());
+    if (result.error) {
+      showNotification({
+        autoClose: 5000,
+        title: "Error adding image",
+        message: result.message,
+        color: "red",
+        icon: <Cross />,
+      });
+    } else {
+      showNotification({
+        autoClose: 5000,
+        title: "Image added",
+        message: "The Image has been added successfully",
+        color: "green",
+        icon: <Check />,
+      });
+    }
+  };
 
   return (
     <Page title={data?.name}>
@@ -298,7 +366,7 @@ const DistrictPage = () => {
                     <th>Details</th>
                     <th>Builder</th>
                     <th>Completion Date</th>
-                    {(user.permission || 0) >= 1 && <th></th>}
+                    {(user.permission || 0) >= Permissions.Builder && <th></th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -353,7 +421,7 @@ const DistrictPage = () => {
                                     block.completionDate
                                   ).toLocaleDateString()}
                             </td>
-                            {(user.permission || 0) >= 1 && (
+                            {(user.permission || 0) >= Permissions.Builder && (
                               <td>
                                 <ActionIcon
                                   onClick={(e: any) => handleClick(block.id)}
@@ -376,188 +444,239 @@ const DistrictPage = () => {
             radius="md"
             p="xs"
             style={{
-              height: "40%",
+              height: "48%",
+              width: "100%",
+              marginBottom: theme.spacing.md,
+            }}
+          >
+            <Tabs
+              variant="outline"
+              tabPadding="md"
+              style={{
+                marginTop: theme.spacing.md,
+              }}
+            >
+              <Tabs.Tab label="Map" icon={<MapIcon size={14} />}>
+                <div style={{ height: "36vh", width: "53vh" }}>
+                  <Map
+                    width="100%"
+                    height="94%"
+                    style={{ zIndex: 10 }}
+                    zoom={14}
+                    center={
+                      data?.center?.length > 0
+                        ? data?.center
+                        : data?.blocks.blocks[0].area[0]
+                    }
+                    polygon={{ data: data?.area || [] }}
+                    components={data?.blocks.blocks.map((block: any) =>
+                      block.area.length !== 0
+                        ? {
+                            type: "polygon",
+                            positions: block.area,
+                            options: {
+                              color: `${colorFromStatus(block.status)}FF`,
+                              opacity: selBlock
+                                ? selBlock?.uid == block?.uid
+                                  ? 1
+                                  : 0.05
+                                : 0.5,
+                            },
+                            radius: 15,
+                            tooltip: "Block #" + block.id,
+                            eventHandlers: {
+                              click: () => {
+                                handleClick(block.id);
+                              },
+                            },
+                          }
+                        : null
+                    )}
+                  />
+                </div>
+              </Tabs.Tab>
+              <Tabs.Tab label="Image Gallery" icon={<Photo size={14} />}>
+                {data?.image.length > 0 ? (
+                  <div>
+                    <Image
+                      width="53vh"
+                      height="28vh"
+                      radius="md"
+                      src={data?.image[activePage - 1]}
+                      alt=""
+                    />
+                    <Center>
+                      <Pagination
+                        page={activePage}
+                        onChange={setPage}
+                        total={data?.image.length}
+                        style={{ marginTop: theme.spacing.md }}
+                      />
+                    </Center>
+                  </div>
+                ) : (
+                  <Center style={{ height: "28vh", width: "100%" }}>
+                    No Images found!
+                  </Center>
+                )}
+              </Tabs.Tab>
+              {(user.permission || 0) >= Permissions.Moderator ? (
+                <Tabs.Tab label="Add Image" icon={<CameraPlus size={14} />}>
+                  <form onSubmit={imageForm.onSubmit(handleAddImage)}>
+                    <TextInput
+                      label="Image Link"
+                      name="link"
+                      placeholder="https://..."
+                      required
+                      style={{ marginBottom: theme.spacing.md }}
+                      {...imageForm.getInputProps("image")}
+                    />
+                    <Button type="submit" size="sm" mt="xs" mb="xs" fullWidth>
+                      Add Image
+                    </Button>
+                  </form>
+                </Tabs.Tab>
+              ) : null}
+            </Tabs>
+          </Paper>
+          <Paper
+            withBorder
+            radius="md"
+            p="xs"
+            style={{
+              height: "48%",
               marginBottom: theme.spacing.md,
             }}
           >
             <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
-              Map
+              Statistics
             </Text>
-            <Map
-              width="100%"
-              height="94%"
-              style={{ zIndex: 0 }}
-              zoom={14}
-              center={
-                data?.center?.length > 0
-                  ? data?.center
-                  : data?.blocks.blocks[0].area[0]
-              }
-              polygon={{ data: data?.area || [] }}
-              components={data?.blocks.blocks.map((block: any) =>
-                block.area.length !== 0
-                  ? {
-                      type: "polygon",
-                      positions: block.area,
-                      options: {
-                        color: `${colorFromStatus(block.status)}FF`,
-                        opacity: selBlock
-                          ? selBlock?.uid == block?.uid
-                            ? 1
-                            : 0.05
-                          : 0.5,
-                      },
-                      radius: 15,
-                      tooltip: "Block #" + block.id,
-                      eventHandlers: {
-                        click: () => {
-                          handleClick(block.id);
+            <Tabs
+              variant="outline"
+              tabPadding="md"
+              style={{ marginTop: theme.spacing.md }}
+            >
+              <Tabs.Tab label="Stats Count" icon={<ChartBar size={14} />}>
+                <Bar
+                  options={{
+                    responsive: true,
+                    scales: {
+                      x: {
+                        grid: {
+                          display: true,
+                          color: "#9848d533",
+                          drawBorder: false,
+                          z: 1,
                         },
                       },
-                    }
-                  : null
-              )}
-            />
-          </Paper>
-          <Paper
-            withBorder
-            radius="md"
-            p="xs"
-            style={{
-              marginBottom: theme.spacing.md,
-              paddingBottom: 6,
-            }}
-          >
-            <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
-              Status Count
-            </Text>
-            <Bar
-              options={{
-                responsive: true,
-                scales: {
-                  x: {
-                    grid: {
-                      display: true,
-                      color: "#9848d533",
-                      drawBorder: false,
-                      z: 1,
+                      y: {
+                        grid: {
+                          display: true,
+                          drawBorder: false,
+                          color: "#9848d533",
+                        },
+                        min: 0,
+                        max: data?.blocks.blocks.length,
+                      },
                     },
-                  },
-                  y: {
-                    grid: {
-                      display: true,
-                      drawBorder: false,
-                      color: "#9848d533",
+                    plugins: {
+                      legend: {
+                        display: true,
+                        position: "bottom",
+                        labels: {
+                          boxWidth: 35,
+                        },
+                      },
+                      title: {
+                        display: false,
+                      },
+                      tooltip: {
+                        enabled: true,
+                      },
                     },
-                    min: 0,
-                    max: data?.blocks.blocks.length,
-                  },
-                },
-                plugins: {
-                  legend: {
-                    display: false,
-                    labels: {
-                      boxWidth: 35,
-                    },
-                  },
-                  title: {
-                    display: false,
-                  },
-                  tooltip: {
-                    enabled: true,
-                  },
-                },
-              }}
-              data={{
-                labels: [""],
-                datasets: [
-                  {
-                    label: "Done",
-                    data: [
-                      data?.blocks.blocks.filter((b: any) => b.status === 4)
-                        .length,
+                  }}
+                  data={{
+                    labels: [""],
+                    datasets: [
+                      {
+                        label: "Done",
+                        data: [
+                          data?.blocks.blocks.filter((b: any) => b.status === 4)
+                            .length,
+                        ],
+                        backgroundColor: theme.colors.green[7] + "0f",
+                        borderColor: theme.colors.green[7],
+                        borderWidth: 2,
+                      },
+                      {
+                        label: "Detailing",
+                        data: [
+                          data?.blocks.blocks.filter((b: any) => b.status === 3)
+                            .length,
+                        ],
+                        backgroundColor: theme.colors.yellow[7] + "0f",
+                        borderColor: theme.colors.yellow[7],
+                        borderWidth: 2,
+                      },
+                      {
+                        label: "Building",
+                        data: [
+                          data?.blocks.blocks.filter((b: any) => b.status === 2)
+                            .length,
+                        ],
+                        backgroundColor: theme.colors.orange[7] + "0f",
+                        borderColor: theme.colors.orange[7],
+                        borderWidth: 2,
+                      },
+                      {
+                        label: "Reserved",
+                        data: [
+                          data?.blocks.blocks.filter((b: any) => b.status === 1)
+                            .length,
+                        ],
+                        backgroundColor: theme.colors.cyan[7] + "0f",
+                        borderColor: theme.colors.cyan[7],
+                        borderWidth: 2,
+                      },
+                      {
+                        label: "Not Started",
+                        data: [
+                          data?.blocks.blocks.filter((b: any) => b.status === 0)
+                            .length,
+                        ],
+                        backgroundColor: theme.colors.red[7] + "0f",
+                        borderColor: theme.colors.red[7],
+                        borderWidth: 2,
+                      },
                     ],
-                    backgroundColor: theme.colors.green[7] + "0f",
-                    borderColor: theme.colors.green[7],
-                    borderWidth: 2,
-                  },
-                  {
-                    label: "Detailing",
-                    data: [
-                      data?.blocks.blocks.filter((b: any) => b.status === 3)
-                        .length,
-                    ],
-                    backgroundColor: theme.colors.yellow[7] + "0f",
-                    borderColor: theme.colors.yellow[7],
-                    borderWidth: 2,
-                  },
-                  {
-                    label: "Building",
-                    data: [
-                      data?.blocks.blocks.filter((b: any) => b.status === 2)
-                        .length,
-                    ],
-                    backgroundColor: theme.colors.orange[7] + "0f",
-                    borderColor: theme.colors.orange[7],
-                    borderWidth: 2,
-                  },
-                  {
-                    label: "Reserved",
-                    data: [
-                      data?.blocks.blocks.filter((b: any) => b.status === 1)
-                        .length,
-                    ],
-                    backgroundColor: theme.colors.cyan[7] + "0f",
-                    borderColor: theme.colors.cyan[7],
-                    borderWidth: 2,
-                  },
-                  {
-                    label: "Not Started",
-                    data: [
-                      data?.blocks.blocks.filter((b: any) => b.status === 0)
-                        .length,
-                    ],
-                    backgroundColor: theme.colors.red[7] + "0f",
-                    borderColor: theme.colors.red[7],
-                    borderWidth: 2,
-                  },
-                ],
-              }}
-            />
-          </Paper>
-          <Paper
-            withBorder
-            radius="md"
-            p="xs"
-            style={{
-              marginBottom: theme.spacing.md,
-            }}
-          >
-            <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
-              Top 3 Builders
-            </Text>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Ranking</th>
-                  <th>Builder</th>
-                  <th>Claims</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data
-                  ? data?.builders
-                      .slice(0, 3)
-                      .map((builder: any, i: number) => (
-                        <tr key={i}>
-                          <td>{i + 1}</td>
-                          <td>{builder.name}</td>
-                          <td>{builder.blocks}</td>
-                        </tr>
-                      ))
-                  : null}
-              </tbody>
-            </Table>
+                  }}
+                />
+              </Tabs.Tab>
+              <Tabs.Tab label="Top Builders" icon={<Users size={14} />}>
+                <Table>
+                  <thead>
+                    <tr>
+                      <th>Ranking</th>
+                      <th>Builder</th>
+                      <th>Claims</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data
+                      ? data?.builders
+                          .slice(0, 7)
+                          .map((builder: any, i: number) => (
+                            <tr key={i}>
+                              <td>{i + 1}</td>
+                              <td>{builder.name}</td>
+                              <td>{builder.blocks}</td>
+                            </tr>
+                          ))
+                      : null}
+                  </tbody>
+                </Table>
+              </Tabs.Tab>
+            </Tabs>
           </Paper>
         </Grid.Col>
       </Grid>
