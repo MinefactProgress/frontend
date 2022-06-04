@@ -26,6 +26,7 @@ import {
 import {
   ChevronLeft,
   ChevronRight,
+  Confetti,
   Login,
   Logout,
   MoonStars,
@@ -294,12 +295,12 @@ export default function Page(props: {
             <Group style={{ height: "100%" }}>
               <ActionIcon
                 variant="default"
-                onClick={() => router.reload()}
+                onClick={() => router.push("/milestones")}
                 size={30}
-                aria-label="Refresh"
+                aria-label="Milestones"
               >
-                <Refresh size={16} />
-              </ActionIcon>{" "}
+                <Confetti size={16} />
+              </ActionIcon>
               <ActionIcon
                 variant="default"
                 onClick={() => toggleColorScheme()}
