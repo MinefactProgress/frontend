@@ -8,22 +8,18 @@ import {
   LinearScale,
   PointElement,
   Title,
-  Tooltip,
+  Tooltip
 } from "chart.js";
 import {
-  Button,
   Center,
   Grid,
-  Group,
   Paper,
-  Select,
   Text,
-  useMantineTheme,
+  useMantineTheme
 } from "@mantine/core";
 import { Line, Pie } from "react-chartjs-2";
 
 import Page from "../../components/Page";
-import { doesNotMatch } from "assert";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { useState } from "react";
@@ -143,7 +139,7 @@ const NetworkPage = () => {
             <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
               Server Player Count
             </Text>
-            {servers.online?<Pie
+            {servers?.online?<Pie
               options={{
                 responsive: true,
                 scales: {
