@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Badge,
   Button,
+  Grid,
   Group,
   Paper,
   SimpleGrid,
@@ -32,7 +33,7 @@ import {
   X,
 } from "tabler-icons-react";
 import { Bar, Line } from "react-chartjs-2";
-import { useHotkeys, useScrollLock } from "@mantine/hooks";
+import { useHotkeys, useMediaQuery, useScrollLock } from "@mantine/hooks";
 
 import Map from "../components/Map";
 import type { NextPage } from "next";
@@ -70,6 +71,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
     area: "[]",
   });
   const theme = useMantineTheme();
+  const smallScreen = useMediaQuery("(max-width: 768px)");
   const { data } = useSWR("/api/blocks/get");
   const { data: districts } = useSWR("/api/districts/get");
   const { data: progress } = useSWR("/api/progress");
@@ -271,7 +273,8 @@ const Home: NextPage = ({ user, setUser }: any) => {
             building Project.
           </Text>
         </Paper>
-        <SimpleGrid cols={5} spacing="md" sx={{ marginTop: theme.spacing.md }}>
+        <Grid columns={20} sx={{ marginTop: theme.spacing.md }}>
+          <Grid.Col sm={5}>
           <StatsText
             title="Tracking since"
             style={{ height: "100%" }}
@@ -282,36 +285,40 @@ const Home: NextPage = ({ user, setUser }: any) => {
                 (1000 * 3600 * 24)
             )}{" "}
             Days
-          </StatsText>
+          </StatsText></Grid.Col>
+          <Grid.Col sm={5}>
           <StatsText
             title="Total Progress"
             style={{ height: "100%" }}
             icon={<ChartBubble />}
           >
             {Math.round(progress?.progress)}%
-          </StatsText>
+          </StatsText></Grid.Col>
+          <Grid.Col sm={5}>
           <StatsText
             title="Helping hands"
             style={{ height: "100%" }}
             icon={<Users />}
           >
             {progress?.builders.length} Builders
-          </StatsText>
+          </StatsText></Grid.Col>
+          <Grid.Col sm={5}>
           <StatsText
             title="In-Progress Blocks"
             style={{ height: "100%" }}
             icon={<Backhoe />}
           >
             {progress?.blocksCount.building} Blocks
-          </StatsText>
+          </StatsText></Grid.Col>
+          <Grid.Col sm={5}>
           <StatsText
             title="Total Blocks"
             style={{ height: "100%" }}
             icon={<BuildingCommunity />}
           >
             {progress?.blocksCount.total} Blocks
-          </StatsText>
-        </SimpleGrid>
+          </StatsText></Grid.Col>
+        </Grid>
         <Paper
           withBorder
           radius="md"
@@ -367,7 +374,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
                 },
               },
             }}
-            height={"38px"}
+            height={smallScreen?"120px":"38px"}
             data={{
               labels: [
                 progress?.name,
@@ -408,7 +415,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
               ],
             }}
           />
-        </Paper>{" "}
+        </Paper>
         <Paper
           withBorder
           radius="md"
@@ -450,7 +457,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
                 },
               },
             }}
-            height={"50px"}
+            height={smallScreen?"160px":"50px"}
             data={{
               labels: projects.labels,
               datasets: [
@@ -508,7 +515,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
                 },
               },
             }}
-            height={"50px"}
+            height={smallScreen?"160px":"50px"}
             data={{
               labels: players.labels,
               datasets: [
