@@ -1,21 +1,28 @@
 import {
+  Armchair,
+  Backhoe,
+  BuildingSkyscraper,
+  News,
+} from "tabler-icons-react";
+import {
   Avatar,
-  Badge,
   Button,
   Center,
+  Grid,
   Group,
-  Progress,
+  Paper,
+  ScrollArea,
   Stack,
+  Table,
   Text,
   Title,
   useMantineTheme,
 } from "@mantine/core";
-import { colorFromStatus, progressToColorName } from "../../utils/blockUtils";
 
 import Map from "../../components/Map";
 import Page from "../../components/Page";
-import { getRoleFromPermission } from "../../utils/hooks/usePermission";
-import { rankToColor } from "../../utils/userUtils";
+import { StatsRing } from "../../components/StatsRing";
+import { colorFromStatus } from "../../utils/blockUtils";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { useState } from "react";
@@ -47,9 +54,16 @@ const UserPage = () => {
   if (!image) {
     image = rndImage?.link;
   }
+  var districts: any | null = null;
+  var builders: any | null = null;
   var claimsPolygons: any[] | null = null;
-  if (claims && !claimsPolygons) {
+  claims?.claims.districts.sort(function (a: any, b: any) {
+    return b.blocks.length - a.blocks.length;
+  });
+  if (claims && !claimsPolygons && !builders && !districts) {
     claimsPolygons = [];
+    builders = {};
+    districts = {};
     claims?.claims.districts.map((district: any) => {
       district.blocks?.map((block: any) => {
         // @ts-ignore
@@ -57,13 +71,13 @@ const UserPage = () => {
           type: "polygon",
           positions: block.area,
           options: {
-            color: `${colorFromStatus(block.status, true)}FF`,
+            color: `${colorFromStatus(block.status, false)}FF`,
             opacity:
-                    selectedBlock.block.uid != 0
-                      ? block.uid == selectedBlock.block.uid
-                        ? 1
-                        : 0.05
-                      : 0.5,
+              selectedBlock.block.uid != 0
+                ? block.uid == selectedBlock.block.uid
+                  ? 1
+                  : 0.05
+                : 0.5,
           },
           radius: 15,
           tooltip:
@@ -71,14 +85,36 @@ const UserPage = () => {
             " #" +
             block.id +
             " | " +
-            (block.status == 1 ? block.builder : block.progress + "%"),
+            (block.status == 1 ? block.builders : block.progress + "%"),
           eventHandlers: {
             click: () => {
               setSelectedBlock({ block: block, district: district.name });
             },
           },
         });
+        if (block.builders) {
+          block.builders.map((builder: any) => {
+            if (builder != u) {
+              if (builders[builder]) {
+                builders[builder].push(block.id);
+              } else {
+                builders[builder] = [block.id];
+              }
+            }
+          });
+        }
+        if (districts[district.name]) {
+          console.log(districts[district.name]);
+          districts[district.name]++;
+        } else {
+          districts[district.name] = 1;
+        }
       });
+    });
+  }
+  if (claims && !builders) {
+    claims?.claims.districts.map((district: any) => {
+      district.blocks?.map((block: any) => {});
     });
   }
   return (
@@ -106,7 +142,7 @@ const UserPage = () => {
         </Avatar>
         <Stack
           align="flex-start"
-          spacing="xs"
+          spacing={theme.spacing.xs / 4}
           style={{
             marginLeft: theme.spacing.xl,
           }}
@@ -115,70 +151,193 @@ const UserPage = () => {
             style={{
               color: "white",
               fontSize: theme.fontSizes.xl * 3,
-              userSelect: "none",
+              userSelect: "text",
             }}
           >
-            {u}
+            {data?.discord.split("#")[0] || u}
           </Title>
-          <Badge
-            style={{
-              backgroundColor: rankToColor(data?.rank) + "bb",
-              color: "#FFFFFF",
-              opacity: 1,
-              marginTop: theme.spacing.xs,
-            }}
-          >
-            {data?.rank}
-          </Badge>
+          <Text>#{data?.discord.split("#")[1]}</Text>
         </Stack>
       </Center>
-      <Progress
-        value={(claims?.claims.done / claims?.claims.total) * 100}
-        color={progressToColorName(
-          (claims?.claims.done / claims?.claims.total) * 100
-        )}
-        radius={0}
-        styles={{ root: { backgroundColor: "#00000000" } }}
-        style={{ marginTop: -theme.spacing.md / 4 }}
-      />
-      <div>
-        <Group
-          style={{
-            position: "absolute",
-            zIndex: 2,
-            bottom: theme.spacing.md,
-            width: "45vw",
-          }}
-          position="center"
-        >
-          {selectedBlock.block.uid != 0 && (
-            <Button
-              variant="filled"
-              color="gray"
-              radius="xl"
-              size="md"
-              onClick={() => {
-                router.push(
-                  "/districts/" + selectedBlock.district + "/" + selectedBlock.block.id
-                );
-              }}
+      <Grid style={{ height: "54vh", width: "100%", overflow: "hidden" }}>
+        <Grid.Col span={6}>
+          <div>
+            <Group
               style={{
-                boxShadow: theme.shadows.md,
+                position: "absolute",
+                zIndex: 2,
+                bottom: theme.spacing.md,
+                left: theme.spacing.md,
               }}
+              position="center"
             >
-              View Block Stats
-            </Button>
-          )}
-        </Group>
-        <Map
-          width="45vw"
-          height="53vh"
-          zoom={13}
-          polygon={{ data: data?.area || [] }}
-          mapStyle={{ zIndex: 0 }}
-          components={claimsPolygons}
-        ></Map>
-      </div>
+              {selectedBlock.block.uid != 0 && (
+                <Button
+                  variant="filled"
+                  color="gray"
+                  radius="xl"
+                  size="md"
+                  onClick={() => {
+                    router.push(
+                      "/districts/" +
+                        selectedBlock.district +
+                        "/" +
+                        selectedBlock.block.id
+                    );
+                  }}
+                  style={{
+                    boxShadow: theme.shadows.md,
+                  }}
+                >
+                  View Block Stats
+                </Button>
+              )}
+            </Group>
+            <Map
+              width="100%"
+              height="53vh"
+              zoom={13}
+              polygon={{ data: data?.area || [] }}
+              mapStyle={{ zIndex: 0 }}
+              components={claimsPolygons}
+            ></Map>
+          </div>
+        </Grid.Col>
+        <Grid.Col span={6} style={{ height: "100%" }}>
+          <ScrollArea style={{ width: "100%", height: "100%" }}>
+            <div style={{ margin: theme.spacing.md }} id="i">
+              <Grid>
+                <Grid.Col span={6}>
+                  <StatsRing
+                    label="Reserved"
+                    stats={claims?.claims.reserved + "/" + claims?.claims.total}
+                    progress={
+                      (claims?.claims.reserved / claims?.claims.total) * 100
+                    }
+                    icon={<News />}
+                    color={colorFromStatus(1, false)}
+                  />
+                </Grid.Col>
+                <Grid.Col span={6}>
+                  <StatsRing
+                    label="Building"
+                    stats={claims?.claims.building + "/" + claims?.claims.total}
+                    progress={
+                      (claims?.claims.building / claims?.claims.total) * 100
+                    }
+                    icon={<Backhoe />}
+                    color={colorFromStatus(2, false)}
+                  />
+                </Grid.Col>
+                <Grid.Col span={6}>
+                  <StatsRing
+                    label="Detailing"
+                    stats={
+                      claims?.claims.detailing + "/" + claims?.claims.total
+                    }
+                    progress={
+                      (claims?.claims.detailing / claims?.claims.total) * 100
+                    }
+                    icon={<Armchair />}
+                    color={colorFromStatus(3, false)}
+                  />
+                </Grid.Col>
+                <Grid.Col span={6}>
+                  <StatsRing
+                    label="Done"
+                    stats={claims?.claims.done + "/" + claims?.claims.total}
+                    progress={
+                      (claims?.claims.done / claims?.claims.total) * 100
+                    }
+                    icon={<BuildingSkyscraper />}
+                    color={colorFromStatus(4, false)}
+                  />
+                </Grid.Col>
+                {data?.about != "" && (
+                  <Grid.Col span={12}>
+                    <Paper withBorder radius="md" p="xs">
+                      <Text
+                        color="dimmed"
+                        size="xs"
+                        transform="uppercase"
+                        weight={700}
+                      >
+                        About {u}
+                      </Text>
+                      <p>{data?.about}</p>
+                    </Paper>
+                  </Grid.Col>
+                )}<Grid.Col span={12}>
+                <Paper withBorder radius="md" p="xs">
+                  <Text
+                    color="dimmed"
+                    size="xs"
+                    transform="uppercase"
+                    weight={700}
+                  >
+                    {u}´ most worked on Districts
+                  </Text>
+                  <Table>
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Blocks</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {districts &&
+                        Object.keys(districts).map(
+                          (district: string, i: number) => {
+                            if (i < 3) {
+                              return (
+                                <tr key={district}>
+                                  <td>{district}</td>
+                                  <td>{districts[district]}</td>
+                                </tr>
+                              );
+                            }
+                          }
+                        )}
+                    </tbody>
+                  </Table>
+                </Paper>
+              </Grid.Col>
+                <Grid.Col span={12}>
+                  <Paper withBorder radius="md" p="xs">
+                    <Text
+                      color="dimmed"
+                      size="xs"
+                      transform="uppercase"
+                      weight={700}
+                    >
+                      {u} worked together with
+                    </Text>
+                    <Table>
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Block</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {builders &&
+                          Object.keys(builders).map((builder: string) => {
+                            return (
+                              <tr key={builder}>
+                                <td>{builder}</td>
+                                <td>{builders[builder].join(", ")}</td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </Table>
+                  </Paper>
+                </Grid.Col>
+              </Grid>
+            </div>
+          </ScrollArea>
+        </Grid.Col>
+      </Grid>
     </Page>
   );
 };
