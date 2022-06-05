@@ -1,5 +1,6 @@
 import {
   Button,
+  Grid,
   Group,
   Paper,
   SimpleGrid,
@@ -114,15 +115,15 @@ const LinksPage = () => {
           </form>
         </Paper>
       ) : null}
-      <SimpleGrid cols={4}>
+      <Grid>
         {data?.value?.map((link: any, i: number) => (
-          <Paper
-            key={i}
+          <Grid.Col sm={12} md={4}
+          key={i}>
+            <Paper
             withBorder
             radius="md"
             p="xs"
             style={{
-              marginBottom: theme.spacing.md,
               cursor: "pointer",
             }}
             onClick={() => {
@@ -131,8 +132,9 @@ const LinksPage = () => {
           >
             <Text>{link.name}</Text>
           </Paper>
+          </Grid.Col>
         ))}
-      </SimpleGrid>
+      </Grid>
     </Page>
   );
 };
