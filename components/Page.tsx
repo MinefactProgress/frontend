@@ -30,7 +30,6 @@ import {
   Login,
   Logout,
   MoonStars,
-  Refresh,
   Search,
   Settings,
   Sun,
@@ -76,82 +75,78 @@ export default function Page(props: {
       fixed
       navbar={
         <Navbar
-          width={{
-            // When viewport is larger than theme.breakpoints.sm, Navbar width will be 300
-            sm: 200,
-
-            // When viewport is larger than theme.breakpoints.lg, Navbar width will be 400
-            lg: 300,
-
-            // When other breakpoints do not match base width is used, defaults to 100%
-            base: 200,
-          }}
-          p="xs"
-          fixed
-          position={{ top: 0, left: 0 }}
           hiddenBreakpoint="sm"
           hidden={!opened}
+          width={{ sm: 200, lg: 300 }}
         >
-          <Navbar.Section grow mt="xs">
-            {/* Page Navigation */}
-            {pages.map((page) =>
-              page.permission <= (user.permission || 0) ? (
-                page.divider ? (
-                  <Divider my="sm" size="sm" label={page.label} />
-                ) : (
-                  <UnstyledButton
-                    onClick={() => (window.location.href = page.href || "/")}
-                    sx={(theme) => ({
-                      display: "block",
-                      width: "100%",
-                      padding: theme.spacing.xs,
-                      borderRadius: theme.radius.sm,
-                      marginTop: theme.spacing.xs / 2,
-                      color:
-                        theme.colorScheme === "dark"
-                          ? theme.colors.dark[0]
-                          : theme.black,
-                      backgroundColor:
-                        router.pathname === page.href
-                          ? theme.colorScheme === "dark"
-                            ? theme.colors.dark[5]
-                            : theme.colors.gray[1]
-                          : undefined,
-                      "&:hover": {
-                        backgroundColor:
+          <Navbar.Section grow p="sm">
+            <ScrollArea
+              sx={{
+                height: "82vh",
+                "@media (max-width: 768px)": {
+                  height: "77vh",
+                },
+              }}
+            >
+              {/* Page Navigation */}
+              {pages.map((page) =>
+                page.permission <= (user.permission || 0) ? (
+                  page.divider ? (
+                    <Divider my="sm" size="sm" label={page.label} />
+                  ) : (
+                    <UnstyledButton
+                      onClick={() => (window.location.href = page.href || "/")}
+                      sx={(theme) => ({
+                        display: "block",
+                        width: "100%",
+                        padding: theme.spacing.xs,
+                        borderRadius: theme.radius.sm,
+                        marginTop: theme.spacing.xs / 2,
+                        color:
                           theme.colorScheme === "dark"
-                            ? theme.colors.dark[6]
-                            : theme.colors.gray[0],
-                      },
-                    })}
-                    key={page.label}
-                  >
-                    <Group>
-                      {page.badge ? (
-                        <Indicator color={page.badge} size={12} withBorder>
+                            ? theme.colors.dark[0]
+                            : theme.black,
+                        backgroundColor:
+                          router.pathname === page.href
+                            ? theme.colorScheme === "dark"
+                              ? theme.colors.dark[5]
+                              : theme.colors.gray[1]
+                            : undefined,
+                        "&:hover": {
+                          backgroundColor:
+                            theme.colorScheme === "dark"
+                              ? theme.colors.dark[6]
+                              : theme.colors.gray[0],
+                        },
+                      })}
+                      key={page.label}
+                    >
+                      <Group>
+                        {page.badge ? (
+                          <Indicator color={page.badge} size={12} withBorder>
+                            <ThemeIcon color={page.color} variant="light">
+                              {page.icon}
+                            </ThemeIcon>
+                          </Indicator>
+                        ) : (
                           <ThemeIcon color={page.color} variant="light">
                             {page.icon}
                           </ThemeIcon>
-                        </Indicator>
-                      ) : (
-                        <ThemeIcon color={page.color} variant="light">
-                          {page.icon}
-                        </ThemeIcon>
-                      )}
+                        )}
 
-                      <Text size="sm">{page.label}</Text>
-                    </Group>
-                  </UnstyledButton>
-                )
-              ) : null
-            )}
+                        <Text size="sm">{page.label}</Text>
+                      </Group>
+                    </UnstyledButton>
+                  )
+                ) : null
+              )}
+            </ScrollArea>
           </Navbar.Section>
           <Navbar.Section>
             {/* User Avatar */}
             {!!user && (
               <Box
                 sx={{
-                  paddingTop: theme.spacing.sm,
                   borderTop: `1px solid ${
                     theme.colorScheme === "dark"
                       ? theme.colors.dark[4]
@@ -267,11 +262,7 @@ export default function Page(props: {
         </Navbar>
       }
       header={
-        <Header
-          height={60}
-          position={{ top: 0, left: 0 }}
-          sx={{ width: "100vw", position: "fixed" }}
-        >
+        <Header height={70}>
           <Group sx={{ height: "100%" }} px={20} position="apart">
             <Group style={{ height: "100%" }}>
               <img
@@ -333,7 +324,10 @@ export default function Page(props: {
             pages.find((el: any) => el.href == router.pathname)?.label}
         </title>
         <meta name="title" content="Minefact Progress Tracking" />
-        <meta name="keyworkds" content="progress, tracking, minefact, nyc, new york city, new york, minecraft, buildtheearth, mf,network, server, multiplayer" />
+        <meta
+          name="keyworkds"
+          content="progress, tracking, minefact, nyc, new york city, new york, minecraft, buildtheearth, mf,network, server, multiplayer"
+        />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta name="theme-color" content={theme.colors.blue[7]} />
         <meta
