@@ -60,7 +60,7 @@ const AdminPage: NextPage = () => {
         breakpoints={[{ maxWidth: "sm", cols: 1 }]}
       >
         <StatsText title="Backend Statistics">
-          <SimpleGrid cols={2}>
+          <SimpleGrid cols={2} >
             <Text color="dimmed">
               Total Requests<br />{data?.stats.total_requests}
             </Text>
@@ -257,7 +257,8 @@ const AdminPage: NextPage = () => {
           </Paper>
         </Skeleton>
       </SimpleGrid>
-      <SimpleGrid cols={5} spacing="md" sx={{ marginTop: theme.spacing.md }}>
+      <Grid sx={{ marginTop: theme.spacing.md }} columns={20} >
+        <Grid.Col sm={5}>
         <Skeleton
           height={PRIMARY_COL_HEIGHT / 2}
           radius="md"
@@ -268,6 +269,8 @@ const AdminPage: NextPage = () => {
             {data?.status}
           </StatsText>
         </Skeleton>
+        </Grid.Col>
+        <Grid.Col sm={5}>
         <Skeleton
           height={PRIMARY_COL_HEIGHT / 2}
           radius="md"
@@ -278,6 +281,8 @@ const AdminPage: NextPage = () => {
             {data?.uptime.formatted}
           </StatsText>
         </Skeleton>
+        </Grid.Col>
+        <Grid.Col sm={5}>
         <Skeleton
           height={PRIMARY_COL_HEIGHT / 2}
           radius="md"
@@ -288,6 +293,8 @@ const AdminPage: NextPage = () => {
             {data?.platform} ({data?.arch})
           </StatsText>
         </Skeleton>
+        </Grid.Col>
+        <Grid.Col sm={5}>
         <Skeleton
           height={PRIMARY_COL_HEIGHT / 2}
           radius="md"
@@ -298,6 +305,8 @@ const AdminPage: NextPage = () => {
             {data?.version}
           </StatsText>
         </Skeleton>
+        </Grid.Col>
+        <Grid.Col sm={5}>
         <Skeleton
           height={PRIMARY_COL_HEIGHT / 2}
           radius="md"
@@ -323,7 +332,8 @@ const AdminPage: NextPage = () => {
 
           <Group position="center"></Group>
         </Skeleton>
-      </SimpleGrid>
+        </Grid.Col>
+      </Grid>
     </Page>
   );
 };
