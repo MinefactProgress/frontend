@@ -9,6 +9,7 @@ import {
 import useUser, { useAuth } from "../utils/hooks/useUser";
 
 import jwt from "../utils/jwt";
+import { showNotification } from "@mantine/notifications";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/router";
 
@@ -17,7 +18,6 @@ const useStyles = createStyles((theme) => ({
     height: "100vh",
     backgroundSize: "cover",
     backgroundImage:
-      // TODO: add Random api url
       `url("https://cdn.discordapp.com/attachments/714797791913705472/927491066653970442/Bridge_1.png")`,
   },
 
@@ -86,6 +86,13 @@ const Login = () => {
           router.push("/");
         }
       );
+    } else {
+      showNotification({
+        title: "Error",
+        message: data.message,
+        color: "red",
+        icon: <Login />,
+      });
     }
   };
   return (
