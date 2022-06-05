@@ -7,6 +7,7 @@ import {
   Grid,
   Group,
   Image,
+  MediaQuery,
   MultiSelect,
   NumberInput,
   Pagination,
@@ -209,7 +210,7 @@ const DistrictPage = () => {
   return (
     <Page title={data?.name}>
       <Grid>
-        <Grid.Col span={8}>
+        <Grid.Col sm={8}>
           <Paper
             withBorder
             radius="md"
@@ -244,7 +245,8 @@ const DistrictPage = () => {
               >
                 Blocks
               </Text>
-              <Group style={{ float: "right" }}>
+             <MediaQuery smallerThan={"sm"} styles={{display:"none"}}>
+             <Group style={{ float: "right" }}>
                 {user.uid > 0 ? (
                   <Badge
                     variant={statusFilter === 5 ? "filled" : "outline"}
@@ -291,6 +293,7 @@ const DistrictPage = () => {
                   </Tooltip>
                 ) : null}
               </Group>
+             </MediaQuery>
             </div>
             <ScrollArea style={{ height: "75vh" }}>
               <Table highlightOnHover>
@@ -374,7 +377,7 @@ const DistrictPage = () => {
             </ScrollArea>
           </Paper>
         </Grid.Col>
-        <Grid.Col span={4}>
+        <Grid.Col sm={4}>
           <Paper
             withBorder
             radius="md"
