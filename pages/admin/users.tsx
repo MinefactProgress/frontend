@@ -218,7 +218,7 @@ const UsersPage = () => {
   return (
     <Page>
       <Grid>
-        <Grid.Col span={7}>
+        <Grid.Col sm={7}>
         <Skeleton
           height={PRIMARY_COL_HEIGHT}
           radius="md"
@@ -276,7 +276,7 @@ const UsersPage = () => {
           </Paper>
         </Skeleton>
         </Grid.Col>
-        <Grid.Col span={5}>
+        <Grid.Col sm={5}>
         <Grid gutter="md">
           <Grid.Col>
             <Skeleton
