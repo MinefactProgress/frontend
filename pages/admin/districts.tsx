@@ -15,7 +15,7 @@ import {
   Tooltip,
   useMantineTheme,
 } from "@mantine/core";
-import { CirclePlus, Check, Cross, Pencil, Trash } from "tabler-icons-react";
+import { Check, CirclePlus, Cross, Pencil, Trash } from "tabler-icons-react";
 
 import Page from "../../components/Page";
 import { showNotification } from "@mantine/notifications";
@@ -145,7 +145,7 @@ const DistrictsPage = () => {
   return (
     <Page title="Manage Districts">
       <Grid>
-        <Grid.Col span={7}>
+        <Grid.Col sm={7}>
           <Paper withBorder radius="md" p="xs">
             <Group>
               <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
@@ -201,7 +201,7 @@ const DistrictsPage = () => {
             </ScrollArea>
           </Paper>
         </Grid.Col>
-        <Grid.Col span={5}>
+        <Grid.Col sm={5}>
           <Paper withBorder radius="md" p="xs">
             <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
               District Control
