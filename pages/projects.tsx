@@ -28,11 +28,11 @@ import {
 } from "@mantine/core";
 import { Bar, Line, Pie } from "react-chartjs-2";
 import { Calendar, Number0 } from "tabler-icons-react";
+import { useForm, useMediaQuery } from "@mantine/hooks";
 
 import { DatePicker } from "@mantine/dates";
 import Page from "../components/Page";
 import { showNotification } from "@mantine/notifications";
-import { useForm } from "@mantine/hooks";
 import useSWR from "swr";
 import { useState } from "react";
 import useUser from "../utils/hooks/useUser";
@@ -52,6 +52,7 @@ ChartJS.register(
 
 const ProjectsPage = () => {
   const theme = useMantineTheme();
+  const query = useMediaQuery("sm");
   const [user] = useUser();
   const { data } = useSWR("/api/projects/get");
   var projects: any = { labels: [], datasets: [] };
@@ -67,7 +68,7 @@ const ProjectsPage = () => {
     },
   });
   const handleSubmit = async (e: any) => {
-    fetch(process.env.NEXT_PUBLIC_API_URL+"/api/projects/set", {
+    fetch(process.env.NEXT_PUBLIC_API_URL + "/api/projects/set", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -98,66 +99,7 @@ const ProjectsPage = () => {
   return (
     <Page>
       <Grid>
-        <Grid.Col span={4}>
-          <Paper
-            withBorder
-            radius="md"
-            p="xs"
-            style={{
-              marginBottom: theme.spacing.md,
-            }}
-          >
-            <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
-              Project List
-            </Text>
-            <ScrollArea style={{ height: "86vh" }}>
-              <Table highlightOnHover>
-                <thead
-                  style={{
-                    position: "sticky",
-                    top: 0,
-                    zIndex: 99,
-                    backgroundColor:
-                      theme.colorScheme === "dark"
-                        ? theme.colors.dark[7]
-                        : "#FFFFFF",
-                  }}
-                >
-                  <tr>
-                    <th>Date</th>
-                    <th>Total Projects</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data
-                    ? data.map((item: any, i: number) => (
-                        <tr key={i}>
-                          <td>{new Date(item.date).toLocaleDateString()}</td>
-                          <td>
-                            {item.projects}
-                            <Badge
-                              color={
-                                !isNaN(item.projects - data[i - 1]?.projects) &&
-                                item.projects - data[i - 1]?.projects > 0
-                                  ? "green"
-                                  : "red"
-                              }
-                              style={{ marginLeft: theme.spacing.md }}
-                            >
-                              {!isNaN(item.projects - data[i - 1]?.projects)
-                                ? "+ " + (item.projects - data[i - 1]?.projects)
-                                : "+0"}
-                            </Badge>
-                          </td>
-                        </tr>
-                      ))
-                    : null}
-                </tbody>
-              </Table>
-            </ScrollArea>
-          </Paper>
-        </Grid.Col>
-        <Grid.Col span={8}>
+        <Grid.Col sm={12} md={7}>
           <Paper
             withBorder
             radius="md"
@@ -304,6 +246,65 @@ const ProjectsPage = () => {
               </form>
             </Paper>
           )}
+        </Grid.Col>
+        <Grid.Col sm={12} md={5}>
+          <Paper
+            withBorder
+            radius="md"
+            p="xs"
+            style={{
+              marginBottom: theme.spacing.md,
+            }}
+          >
+            <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
+              Project List
+            </Text>
+            <ScrollArea style={{ height: "86vh" }}>
+              <Table highlightOnHover>
+                <thead
+                  style={{
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 99,
+                    backgroundColor:
+                      theme.colorScheme === "dark"
+                        ? theme.colors.dark[7]
+                        : "#FFFFFF",
+                  }}
+                >
+                  <tr>
+                    <th>Date</th>
+                    <th>Total Projects</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data
+                    ? data.map((item: any, i: number) => (
+                        <tr key={i}>
+                          <td>{new Date(item.date).toLocaleDateString()}</td>
+                          <td>
+                            {item.projects}
+                            <Badge
+                              color={
+                                !isNaN(item.projects - data[i - 1]?.projects) &&
+                                item.projects - data[i - 1]?.projects > 0
+                                  ? "green"
+                                  : "red"
+                              }
+                              style={{ marginLeft: theme.spacing.md }}
+                            >
+                              {!isNaN(item.projects - data[i - 1]?.projects)
+                                ? "+ " + (item.projects - data[i - 1]?.projects)
+                                : "+0"}
+                            </Badge>
+                          </td>
+                        </tr>
+                      ))
+                    : null}
+                </tbody>
+              </Table>
+            </ScrollArea>
+          </Paper>
         </Grid.Col>
       </Grid>
     </Page>
