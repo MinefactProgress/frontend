@@ -127,7 +127,7 @@ const NetworkPage = () => {
         </Center>
       </Paper>
       <Grid>
-        <Grid.Col span={5}>
+        <Grid.Col sm={5}>
           <Paper
             withBorder
             radius="md"
@@ -204,7 +204,7 @@ const NetworkPage = () => {
                 No Data</Center>}
           </Paper>
         </Grid.Col>
-        <Grid.Col span={7}>
+        <Grid.Col sm={7}>
           <Paper
             withBorder
             radius="md"
