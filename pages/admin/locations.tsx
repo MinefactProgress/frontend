@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Button,
   Group,
+  MediaQuery,
   NumberInput,
   Paper,
   Progress,
@@ -49,7 +50,8 @@ const LocationsPage = () => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     fetch(
-      process.env.NEXT_PUBLIC_API_URL+"/api/blocks/addLocation?key=e9299168-9a87-4a44-801b-4214449e46be",
+      process.env.NEXT_PUBLIC_API_URL +
+        "/api/blocks/addLocation?key=e9299168-9a87-4a44-801b-4214449e46be",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -83,7 +85,8 @@ const LocationsPage = () => {
   const handleDelete = (e: any, i: number) => {
     e.preventDefault();
     fetch(
-      process.env.NEXT_PUBLIC_API_URL+"/api/blocks/removeLocation?key=e9299168-9a87-4a44-801b-4214449e46be",
+      process.env.NEXT_PUBLIC_API_URL +
+        "/api/blocks/removeLocation?key=e9299168-9a87-4a44-801b-4214449e46be",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -121,177 +124,200 @@ const LocationsPage = () => {
   };
   return (
     <Page>
-      <Paper withBorder radius="md" p="xs" style={{ height: "8vh" }}>
-        <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
-          Progress of adding Locations
-        </Text>
-        <Progress
-          value={progress}
-          color={progress < 50 ? "red" : progress < 100 ? "orange" : "green"}
-        />
-        <Text>
-          {doneElem}/{totalElem} ({Math.floor(progress * 10) / 10}%)
-        </Text>
-      </Paper>
-      <Paper
-        withBorder
-        radius="md"
-        p="xs"
-        style={{ height: "20vh", marginTop: theme.spacing.md }}
-      >
-        <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
-          How to
-        </Text>
-        <Text>
-          1. Enter the District you want to add block locations for. (eg: Little
-          Italy)
-          <br />
-          2. Enter the Block ID you want to add the locations for. (eg: 1)
-          <br />
-          3. Enter the first location you want to add. (eg: 40.71093308501933,
-          -74.00563970021507)
-          <br />
-          4. Click the button to add the location.
-          <br />
-          5. Once the location box is cleared add the next point.
-          <br />
-          You can click on a Block on the map and choose a edge point to add it
-          to your current block.
-        </Text>
-      </Paper>
-      <Paper
-        withBorder
-        radius="md"
-        p="xs"
-        style={{ height: "35vh", marginTop: theme.spacing.md }}
-      >
-        <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
-          Map
-        </Text>
-        <SimpleGrid cols={2} spacing="md" style={{ height: "94%" }}>
-          <Map
-            width="100%"
-            height="100%"
-            polygon={{ data: data?.area || [] }}
-            components={data
-              ?.map((block: any) =>
-                block.location != "[]"
-                  ? {
-                      type: "polygon",
-                      positions: JSON.parse(block.area),
-                      options: {
-                        color: `rgba(${
-                          progress == 0
-                            ? "194, 76, 60"
-                            : progress < 100
-                            ? "216, 108, 50"
-                            : "106, 186, 97"
-                        })`,
-                        opacity: block.uid == selected.uid ? 1 : 0.1,
-                      },
-                      radius: 15,
-                      tooltip: "Block #" + block.uid,
-                      eventHandlers: {
-                        click: () => {
-                          setSelected(block);
+      <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+        <Paper withBorder radius="md" p="xs" style={{ height: "8vh" }}>
+          <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
+            Progress of adding Locations
+          </Text>
+          <Progress
+            value={progress}
+            color={progress < 50 ? "red" : progress < 100 ? "orange" : "green"}
+          />
+          <Text>
+            {doneElem}/{totalElem} ({Math.floor(progress * 10) / 10}%)
+          </Text>
+        </Paper>
+      </MediaQuery>
+      <MediaQuery largerThan={"sm"} styles={{ display: "none" }}>
+        <Paper withBorder radius="md" p="xs">
+          <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
+            Progress of adding Locations
+          </Text>
+          <Progress
+            value={progress}
+            color={progress < 50 ? "red" : progress < 100 ? "orange" : "green"}
+          />
+          <Text>
+            {doneElem}/{totalElem} ({Math.floor(progress * 10) / 10}%)
+          </Text>
+        </Paper>
+      </MediaQuery>
+      <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+        <Paper
+          withBorder
+          radius="md"
+          p="xs"
+          style={{ height: "20vh", marginTop: theme.spacing.md }}
+        >
+          <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
+            How to
+          </Text>
+          <Text>
+            1. Enter the District you want to add block locations for. (eg:
+            Little Italy)
+            <br />
+            2. Enter the Block ID you want to add the locations for. (eg: 1)
+            <br />
+            3. Enter the first location you want to add. (eg: 40.71093308501933,
+            -74.00563970021507)
+            <br />
+            4. Click the button to add the location.
+            <br />
+            5. Once the location box is cleared add the next point.
+            <br />
+            You can click on a Block on the map and choose a edge point to add
+            it to your current block.
+          </Text>
+        </Paper>
+      </MediaQuery>
+
+      <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+        <Paper
+          withBorder
+          radius="md"
+          p="xs"
+          style={{ height: "35vh", marginTop: theme.spacing.md }}
+        >
+          <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
+            Map
+          </Text>
+          <SimpleGrid cols={2} spacing="md" style={{ height: "94%" }}>
+            <Map
+              width="100%"
+              height="100%"
+              polygon={{ data: data?.area || [] }}
+              components={data
+                ?.map((block: any) =>
+                  block.location != "[]"
+                    ? {
+                        type: "polygon",
+                        positions: JSON.parse(block.area),
+                        options: {
+                          color: `rgba(${
+                            progress == 0
+                              ? "194, 76, 60"
+                              : progress < 100
+                              ? "216, 108, 50"
+                              : "106, 186, 97"
+                          })`,
+                          opacity: block.uid == selected.uid ? 1 : 0.1,
                         },
-                      },
-                    }
-                  : null
-              )
-              .concat(
-                selected.uid != null
-                  ? JSON.parse(selected.area).map((block: any, i: number) =>
-                      block
-                        ? {
-                            type: "marker",
-                            position: block,
-                            tooltip: "Point " + (i + 1),
-                          }
-                        : null
-                    )
-                  : null
-              )}
-          />
+                        radius: 15,
+                        tooltip: "Block #" + block.uid,
+                        eventHandlers: {
+                          click: () => {
+                            setSelected(block);
+                          },
+                        },
+                      }
+                    : null
+                )
+                .concat(
+                  selected.uid != null
+                    ? JSON.parse(selected.area).map((block: any, i: number) =>
+                        block
+                          ? {
+                              type: "marker",
+                              position: block,
+                              tooltip: "Point " + (i + 1),
+                            }
+                          : null
+                      )
+                    : null
+                )}
+            />
 
-          <ScrollArea>
-            <Text
-              color="dimmed"
-              size="xs"
-              transform="uppercase"
-              weight={700}
-              style={{ marginBottom: theme.spacing.md }}
-            >
-              Coordinates for Block {selected?.uid}
-            </Text>
-            {selected
-              ? JSON.parse(selected?.area).map((point: any, i: number) => (
-                  <SimpleGrid key={i} cols={2}>
-                    <Text
-                      color="gray"
-                      onClick={() => {
-                        setLoc(point.join(", "));
-                        showNotification({
-                          message: "Coordinates Copied and Pasted",
-                          color: "lime",
-                        });
-                      }}
-                    >
-                      {i + 1}. {point.join(", ")}
-                    </Text>
-                    <ActionIcon onClick={(e: any) => handleDelete(e, i)}>
-                      <Trash color={theme.colors.red[7]} />
-                    </ActionIcon>
-                  </SimpleGrid>
-                ))
-              : null}
-          </ScrollArea>
-        </SimpleGrid>
-      </Paper>
-      <Paper
-        withBorder
-        radius="md"
-        p="xs"
-        style={{ marginTop: theme.spacing.md }}
-      >
-        <form onSubmit={handleSubmit}>
-          <Group position="center" grow>
+            <ScrollArea>
+              <Text
+                color="dimmed"
+                size="xs"
+                transform="uppercase"
+                weight={700}
+                style={{ marginBottom: theme.spacing.md }}
+              >
+                Coordinates for Block {selected?.uid}
+              </Text>
+              {selected
+                ? JSON.parse(selected?.area).map((point: any, i: number) => (
+                    <SimpleGrid key={i} cols={2}>
+                      <Text
+                        color="gray"
+                        onClick={() => {
+                          setLoc(point.join(", "));
+                          showNotification({
+                            message: "Coordinates Copied and Pasted",
+                            color: "lime",
+                          });
+                        }}
+                      >
+                        {i + 1}. {point.join(", ")}
+                      </Text>
+                      <ActionIcon onClick={(e: any) => handleDelete(e, i)}>
+                        <Trash color={theme.colors.red[7]} />
+                      </ActionIcon>
+                    </SimpleGrid>
+                  ))
+                : null}
+            </ScrollArea>
+          </SimpleGrid>
+        </Paper>
+      </MediaQuery>
+      <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+        <Paper
+          withBorder
+          radius="md"
+          p="xs"
+          style={{ marginTop: theme.spacing.md }}
+        >
+          <form onSubmit={handleSubmit}>
+            <Group position="center" grow>
+              <TextInput
+                label="District"
+                name="district"
+                value={district}
+                onChange={(e: any) => {
+                  setDistrict(e.currentTarget.value);
+                }}
+              />
+              <NumberInput
+                label="Block"
+                placeholder="Block"
+                name="blockID"
+                value={block}
+                onChange={(e: any) => {
+                  setBlock(parseInt(e));
+                }}
+              />
+            </Group>
             <TextInput
-              label="District"
-              name="district"
-              value={district}
+              label="Location"
+              name="location"
+              value={loc}
               onChange={(e: any) => {
-                setDistrict(e.currentTarget.value);
+                setLoc(e.currentTarget.value);
               }}
             />
-            <NumberInput
-              label="Block"
-              placeholder="Block"
-              name="blockID"
-              value={block}
-              onChange={(e: any) => {
-                setBlock(parseInt(e));
-              }}
-            />
-          </Group>
-          <TextInput
-            label="Location"
-            name="location"
-            value={loc}
-            onChange={(e: any) => {
-              setLoc(e.currentTarget.value);
-            }}
-          />
 
-          <Button
-            type="submit"
-            style={{ marginTop: theme.spacing.md }}
-            fullWidth
-          >
-            Add Location
-          </Button>
-        </form>
-      </Paper>
+            <Button
+              type="submit"
+              style={{ marginTop: theme.spacing.md }}
+              fullWidth
+            >
+              Add Location
+            </Button>
+          </form>
+        </Paper>
+      </MediaQuery>
     </Page>
   );
 };
