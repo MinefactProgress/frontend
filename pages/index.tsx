@@ -273,7 +273,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
             building Project.
           </Text>
         </Paper>
-        <Grid columns={20} sx={{ marginTop: theme.spacing.md }}>
+        <Grid columns={25} sx={{ marginTop: theme.spacing.md }}>
           <Grid.Col sm={5}>
           <StatsText
             title="Tracking since"

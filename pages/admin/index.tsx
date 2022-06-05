@@ -257,7 +257,7 @@ const AdminPage: NextPage = () => {
           </Paper>
         </Skeleton>
       </SimpleGrid>
-      <Grid sx={{ marginTop: theme.spacing.md }} columns={20} >
+      <Grid sx={{ marginTop: theme.spacing.md }} columns={25} >
         <Grid.Col sm={5}>
         <Skeleton
           height={PRIMARY_COL_HEIGHT / 2}
