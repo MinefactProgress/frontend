@@ -587,12 +587,12 @@ const DistrictPage = () => {
               marginBottom: theme.spacing.md,
             }}
           >
-            <Tabs
-              variant="outline"
-              tabPadding="md"
-              style={{ marginTop: theme.spacing.md }}
-            >
-              {(user.permission || 0) >= Permissions.Builder ? (
+            {(user.permission || 0) >= Permissions.Builder ? (
+              <Tabs
+                variant="outline"
+                tabPadding="md"
+                style={{ marginTop: theme.spacing.md }}
+              >
                 <Tabs.Tab label="Update Block" icon={<Edit size={14} />}>
                   <form onSubmit={handleSubtmit}>
                     <NumberInput
@@ -611,10 +611,7 @@ const DistrictPage = () => {
                       getCreateLabel={(query) => `+ Add ${query}`}
                       data={
                         selBlock
-                          ? [
-                              ...selBlock?.builders,
-                              user.username
-                            ]
+                          ? [...selBlock?.builders, user.username]
                           : [user.username]
                       }
                       value={selBlock?.builders}
@@ -669,25 +666,25 @@ const DistrictPage = () => {
                     </Button>
                   </form>
                 </Tabs.Tab>
-              ) : null}
-              {(user.permission || 0) >= Permissions.Moderator ? (
-                <Tabs.Tab label="Add Image" icon={<CameraPlus size={14} />}>
-                  <form onSubmit={imageForm.onSubmit(handleAddImage)}>
-                    <TextInput
-                      label="Image Link"
-                      name="link"
-                      placeholder="https://..."
-                      required
-                      style={{ marginBottom: theme.spacing.md }}
-                      {...imageForm.getInputProps("image")}
-                    />
-                    <Button type="submit" size="sm" mt="xs" mb="xs" fullWidth>
-                      Add Image
-                    </Button>
-                  </form>
-                </Tabs.Tab>
-              ) : null}
-            </Tabs>
+                {(user.permission || 0) >= Permissions.Moderator ? (
+                  <Tabs.Tab label="Add Image" icon={<CameraPlus size={14} />}>
+                    <form onSubmit={imageForm.onSubmit(handleAddImage)}>
+                      <TextInput
+                        label="Image Link"
+                        name="link"
+                        placeholder="https://..."
+                        required
+                        style={{ marginBottom: theme.spacing.md }}
+                        {...imageForm.getInputProps("image")}
+                      />
+                      <Button type="submit" size="sm" mt="xs" mb="xs" fullWidth>
+                        Add Image
+                      </Button>
+                    </form>
+                  </Tabs.Tab>
+                ) : null}
+              </Tabs>
+            ) : null}
           </Paper>
         </Grid.Col>
       </Grid>
