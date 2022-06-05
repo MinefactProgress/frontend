@@ -3,8 +3,10 @@ import {
   Badge,
   Center,
   Grid,
+  MediaQuery,
   Paper,
   Progress,
+  ScrollArea,
   Table,
   Text,
 } from "@mantine/core";
@@ -42,11 +44,18 @@ const DistrictsPage = () => {
         <thead>
           <tr>
             <th>Name</th>
-            <th>Status</th>
+            <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+              <th>Status</th>
+            </MediaQuery>
             <th>Progress</th>
-            <th>Blocks Done</th>
-            <th>Blocks Left</th>
-            <th>Completion Date</th>
+            <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+              
+              <th>Blocks Done</th>
+            
+              </MediaQuery><MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+              <th>Blocks Left</th>
+              </MediaQuery><MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+            <th>Completion Date</th></MediaQuery>
           </tr>
         </thead>
         <tbody>
@@ -60,11 +69,13 @@ const DistrictsPage = () => {
               key={i}
             >
               <td>{district.name}</td>
-              <td>
-                <Badge color={statusToColorName(district.status)}>
-                  {statusToName(district.status)}
-                </Badge>
-              </td>
+              <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+                <td>
+                  <Badge color={statusToColorName(district.status)}>
+                    {statusToName(district.status)}
+                  </Badge>
+                </td>
+              </MediaQuery>
               <td>
                 <Center>{district.progress.toFixed(2) + "%"}</Center>
                 <Progress
@@ -73,13 +84,18 @@ const DistrictsPage = () => {
                   color={progressToColorName(district.progress)}
                 />
               </td>
-              <td>{district.blocksCount.done}</td>
-              <td>{district.blocksCount.total - district.blocksCount.done}</td>
+              <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+                <td>{district.blocksCount.done}</td>
+              </MediaQuery><MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+                <td>
+                  {district.blocksCount.total - district.blocksCount.done}
+                </td>
+              </MediaQuery><MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
               <td>
                 {!district.completionDate
                   ? "---"
                   : new Date(district.completionDate).toLocaleDateString()}
-              </td>
+              </td></MediaQuery>
             </tr>
           ))}
         </tbody>
@@ -123,12 +139,19 @@ const DistrictsPage = () => {
             <Table>
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Status</th>
-                  <th>Progress</th>
-                  <th>Blocks Done</th>
-                  <th>Blocks Left</th>
-                  <th>Completion Date</th>
+                <th>Name</th>
+            <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+              <th>Status</th>
+            </MediaQuery>
+            <th>Progress</th>
+            <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+              
+              <th>Blocks Done</th>
+            
+              </MediaQuery><MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+              <th>Blocks Left</th>
+              </MediaQuery><MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+            <th>Completion Date</th></MediaQuery>
                 </tr>
               </thead>
               <tbody>
@@ -136,11 +159,13 @@ const DistrictsPage = () => {
                   ? boroughs?.map((district: any) => (
                       <tr key={district.name}>
                         <td>{district.name}</td>
+            <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
                         <td>
                           <Badge color={statusToColorName(district.status)}>
                             {statusToName(district.status)}
                           </Badge>
                         </td>
+            </MediaQuery>
                         <td>
                           <Center>{district.progress.toFixed(2) + "%"}</Center>
                           <Progress
@@ -149,9 +174,13 @@ const DistrictsPage = () => {
                             color={progressToColorName(district.progress)}
                           />
                         </td>
+            <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
                         <td>{district.blocks.done}</td>
+              </MediaQuery><MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
                         <td>{district.blocks.left}</td>
+              </MediaQuery><MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
                         <td>{district.completionDate || "---"}</td>
+              </MediaQuery>
                       </tr>
                     ))
                   : null}
