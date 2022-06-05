@@ -9,30 +9,27 @@ import {
   Legend,
   LineElement,
   LinearScale,
-  PointElement,
+  PointElement
 } from "chart.js";
 import {
   Badge,
   Button,
   Grid,
-  Group,
   NumberInput,
   Paper,
   RangeSlider,
   ScrollArea,
-  SimpleGrid,
-  Slider,
   Table,
   Text,
-  useMantineTheme,
+  useMantineTheme
 } from "@mantine/core";
-import { Bar, Line, Pie } from "react-chartjs-2";
 import { Calendar, Number0 } from "tabler-icons-react";
-import { useForm, useMediaQuery } from "@mantine/hooks";
 
 import { DatePicker } from "@mantine/dates";
+import { Line } from "react-chartjs-2";
 import Page from "../components/Page";
 import { showNotification } from "@mantine/notifications";
+import { useForm } from "@mantine/hooks";
 import useSWR from "swr";
 import { useState } from "react";
 import useUser from "../utils/hooks/useUser";
@@ -52,7 +49,6 @@ ChartJS.register(
 
 const ProjectsPage = () => {
   const theme = useMantineTheme();
-  const query = useMediaQuery("sm");
   const [user] = useUser();
   const { data } = useSWR("/api/projects/get");
   var projects: any = { labels: [], datasets: [] };

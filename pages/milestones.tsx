@@ -13,6 +13,7 @@ import { ArrowLeft } from "tabler-icons-react";
 import Confetti from "react-confetti";
 import CountUp from "react-countup";
 import Head from "next/head";
+import { useMediaQuery } from "@mantine/hooks";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 
@@ -65,6 +66,7 @@ const useStyles = createStyles((theme) => ({
 }));
 const MilestonesPage = () => {
   const router = useRouter();
+  const smallScreen = useMediaQuery("(max-width: 768px)")
   const { classes } = useStyles();
   const { data: projects } = useSWR("/api/projects/get");
   const { data: milestones } = useSWR("/api/projects/milestones/recent");
@@ -85,7 +87,7 @@ const MilestonesPage = () => {
           <CountUp end={projects ? projects.at(-1).projects : null} />
         </div>
         <Title className={classes.title}>
-          🎉We did it!
+          🎉{smallScreen?"":"We did it!"}
           {milestones
             ? " " + Math.floor(milestones[0]?.projects / 1000) * 1000 + " "
             : null}
