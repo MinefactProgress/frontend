@@ -12,6 +12,7 @@ import {
   Group,
   Paper,
   ScrollArea,
+  Space,
   Stack,
   Table,
   Text,
@@ -117,6 +118,18 @@ const UserPage = () => {
       district.blocks?.map((block: any) => {});
     });
   }
+  if (data?.error) {
+    return (
+      <Page>
+        <Center style={{ width: "100%", height: "90%" }}>
+          <div style={{textAlign:"center"}}>
+            <Title>{data?.message}</Title>
+            <Button variant="outline" style={{marginTop:theme.spacing.md}} onClick={() => router.push("/users")}>Back to Staff Overview</Button>
+          </div>
+        </Center>
+      </Page>
+    );
+  }
   return (
     <Page noMargin style={{ position: "relative" }} title={u?.toString()}>
       <div
@@ -154,9 +167,9 @@ const UserPage = () => {
               userSelect: "text",
             }}
           >
-            {data?.discord.split("#")[0] || u}
+            {data?.discord?.split("#")[0] || u}
           </Title>
-          <Text>#{data?.discord.split("#")[1]}</Text>
+          <Text>#{data?.discord?.split("#")[1]}</Text>
         </Stack>
       </Center>
       <Grid style={{ height: "54vh", width: "100%", overflow: "hidden" }}>
@@ -267,41 +280,42 @@ const UserPage = () => {
                       <p>{data?.about}</p>
                     </Paper>
                   </Grid.Col>
-                )}<Grid.Col span={12}>
-                <Paper withBorder radius="md" p="xs">
-                  <Text
-                    color="dimmed"
-                    size="xs"
-                    transform="uppercase"
-                    weight={700}
-                  >
-                    {u}´ most worked on Districts
-                  </Text>
-                  <Table>
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Blocks</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {districts &&
-                        Object.keys(districts).map(
-                          (district: string, i: number) => {
-                            if (i < 3) {
-                              return (
-                                <tr key={district}>
-                                  <td>{district}</td>
-                                  <td>{districts[district]}</td>
-                                </tr>
-                              );
+                )}
+                <Grid.Col span={12}>
+                  <Paper withBorder radius="md" p="xs">
+                    <Text
+                      color="dimmed"
+                      size="xs"
+                      transform="uppercase"
+                      weight={700}
+                    >
+                      {u}´ most worked on Districts
+                    </Text>
+                    <Table>
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Blocks</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {districts &&
+                          Object.keys(districts).map(
+                            (district: string, i: number) => {
+                              if (i < 3) {
+                                return (
+                                  <tr key={district}>
+                                    <td>{district}</td>
+                                    <td>{districts[district]}</td>
+                                  </tr>
+                                );
+                              }
                             }
-                          }
-                        )}
-                    </tbody>
-                  </Table>
-                </Paper>
-              </Grid.Col>
+                          )}
+                      </tbody>
+                    </Table>
+                  </Paper>
+                </Grid.Col>
                 <Grid.Col span={12}>
                   <Paper withBorder radius="md" p="xs">
                     <Text
