@@ -109,7 +109,7 @@ const DatabasePage = () => {
               </Paper>
             </Skeleton>
           </Grid.Col>
-          <Grid.Col span={6}>
+          <Grid.Col sm={6}>
             <Skeleton
               height={SECONDARY_COL_HEIGHT / 2}
               radius="md"
@@ -162,7 +162,7 @@ const DatabasePage = () => {
               </Paper>
             </Skeleton>
           </Grid.Col>
-          <Grid.Col span={6}>
+          <Grid.Col sm={6}>
             <Skeleton
               height={SECONDARY_COL_HEIGHT / 2}
               radius="md"
