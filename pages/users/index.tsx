@@ -15,11 +15,11 @@ import {
 import Page from "../../components/Page";
 import { Plus } from "tabler-icons-react";
 import ThemeSwitch from "../../components/ThemeSwitch";
+import { rankToColor } from "../../utils/userUtils";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import useUser from "../../utils/hooks/useUser";
 import { userInfo } from "os";
-import { rankToColor } from "../../utils/userUtils";
 
 const StaffPage = () => {
   const router = useRouter();
@@ -54,7 +54,7 @@ const StaffPage = () => {
     <Page title="Staff List">
       <Grid>
         {data?.map((user: any, i: number) => (
-          <Grid.Col key={i} span={2}>
+          <Grid.Col key={i} md={2}>
             <Paper withBorder radius="md" p="lg">
               <Avatar
                 src={"https://mc-heads.net/avatar/" + user.username}
