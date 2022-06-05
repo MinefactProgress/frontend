@@ -122,9 +122,15 @@ const UserPage = () => {
     return (
       <Page>
         <Center style={{ width: "100%", height: "90%" }}>
-          <div style={{textAlign:"center"}}>
+          <div style={{ textAlign: "center" }}>
             <Title>{data?.message}</Title>
-            <Button variant="outline" style={{marginTop:theme.spacing.md}} onClick={() => router.push("/users")}>Back to Staff Overview</Button>
+            <Button
+              variant="outline"
+              style={{ marginTop: theme.spacing.md }}
+              onClick={() => router.push("/users")}
+            >
+              Back to Staff Overview
+            </Button>
           </div>
         </Center>
       </Page>
@@ -150,10 +156,10 @@ const UserPage = () => {
           background: "rgba(0,0,0,0.7)",
         }}
       >
-        <MediaQuery smallerThan={"sm"} styles={{display:"none"}}>
-        <Avatar size={theme.spacing.xl * 6} src={data?.picture} radius={2000}>
-          {(u || [""]).toString().charAt(0)}
-        </Avatar>
+        <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+          <Avatar size={theme.spacing.xl * 6} src={data?.picture} radius={2000}>
+            {(u || [""]).toString().charAt(0)}
+          </Avatar>
         </MediaQuery>
         <Stack
           align="flex-start"
@@ -174,59 +180,119 @@ const UserPage = () => {
           <Text>#{data?.discord?.split("#")[1]}</Text>
         </Stack>
       </Center>
-     <MediaQuery smallerThan={"sm"} styles={{display:"none"}}>
-     <Grid style={{ height: "54vh", width: "100%", overflow: "hidden" }}>
-        <Grid.Col sm={6} style={{ height: "100%" }}>
-          <ScrollArea style={{ width: "100%", height: "100%" }}>
-            <div style={{ margin: theme.spacing.md }} id="i">
-              <Grid>
-                <Grid.Col span={6}>
-                  <StatsRing
-                    label="Reserved"
-                    stats={claims?.claims.reserved + "/" + claims?.claims.total}
-                    progress={
-                      (claims?.claims.reserved / claims?.claims.total) * 100
-                    }
-                    icon={<News />}
-                    color={colorFromStatus(1, false)}
-                  />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <StatsRing
-                    label="Building"
-                    stats={claims?.claims.building + "/" + claims?.claims.total}
-                    progress={
-                      (claims?.claims.building / claims?.claims.total) * 100
-                    }
-                    icon={<Backhoe />}
-                    color={colorFromStatus(2, false)}
-                  />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <StatsRing
-                    label="Detailing"
-                    stats={
-                      claims?.claims.detailing + "/" + claims?.claims.total
-                    }
-                    progress={
-                      (claims?.claims.detailing / claims?.claims.total) * 100
-                    }
-                    icon={<Armchair />}
-                    color={colorFromStatus(3, false)}
-                  />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <StatsRing
-                    label="Done"
-                    stats={claims?.claims.done + "/" + claims?.claims.total}
-                    progress={
-                      (claims?.claims.done / claims?.claims.total) * 100
-                    }
-                    icon={<BuildingSkyscraper />}
-                    color={colorFromStatus(4, false)}
-                  />
-                </Grid.Col>
-                {data?.about != "" && (
+      <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+        <Grid style={{ height: "54vh", width: "100%", overflow: "hidden" }}>
+          <Grid.Col sm={6}>
+            <div>
+              <Group
+                style={{
+                  position: "absolute",
+                  zIndex: 2,
+                  bottom: theme.spacing.md,
+                  left: theme.spacing.md,
+                }}
+                position="center"
+              >
+                {selectedBlock.block.uid != 0 && (
+                  <Button
+                    variant="filled"
+                    color="gray"
+                    radius="xl"
+                    size="md"
+                    onClick={() => {
+                      router.push(
+                        "/districts/" +
+                          selectedBlock.district +
+                          "/" +
+                          selectedBlock.block.id
+                      );
+                    }}
+                    style={{
+                      boxShadow: theme.shadows.md,
+                    }}
+                  >
+                    View Block Stats
+                  </Button>
+                )}
+              </Group>
+              <Map
+                width="100%"
+                height="53vh"
+                zoom={13}
+                mapStyle={{ zIndex: 0 }}
+                components={claimsPolygons}
+              ></Map>
+            </div>
+          </Grid.Col>
+          <Grid.Col sm={6} style={{ height: "100%" }}>
+            <ScrollArea style={{ width: "100%", height: "100%" }}>
+              <div style={{ margin: theme.spacing.md }} id="i">
+                <Grid>
+                  <Grid.Col span={6}>
+                    <StatsRing
+                      label="Reserved"
+                      stats={
+                        claims?.claims.reserved + "/" + claims?.claims.total
+                      }
+                      progress={
+                        (claims?.claims.reserved / claims?.claims.total) * 100
+                      }
+                      icon={<News />}
+                      color={colorFromStatus(1, false)}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={6}>
+                    <StatsRing
+                      label="Building"
+                      stats={
+                        claims?.claims.building + "/" + claims?.claims.total
+                      }
+                      progress={
+                        (claims?.claims.building / claims?.claims.total) * 100
+                      }
+                      icon={<Backhoe />}
+                      color={colorFromStatus(2, false)}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={6}>
+                    <StatsRing
+                      label="Detailing"
+                      stats={
+                        claims?.claims.detailing + "/" + claims?.claims.total
+                      }
+                      progress={
+                        (claims?.claims.detailing / claims?.claims.total) * 100
+                      }
+                      icon={<Armchair />}
+                      color={colorFromStatus(3, false)}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={6}>
+                    <StatsRing
+                      label="Done"
+                      stats={claims?.claims.done + "/" + claims?.claims.total}
+                      progress={
+                        (claims?.claims.done / claims?.claims.total) * 100
+                      }
+                      icon={<BuildingSkyscraper />}
+                      color={colorFromStatus(4, false)}
+                    />
+                  </Grid.Col>
+                  {data?.about != "" && (
+                    <Grid.Col span={12}>
+                      <Paper withBorder radius="md" p="xs">
+                        <Text
+                          color="dimmed"
+                          size="xs"
+                          transform="uppercase"
+                          weight={700}
+                        >
+                          About {u}
+                        </Text>
+                        <p>{data?.about}</p>
+                      </Paper>
+                    </Grid.Col>
+                  )}
                   <Grid.Col span={12}>
                     <Paper withBorder radius="md" p="xs">
                       <Text
@@ -235,259 +301,199 @@ const UserPage = () => {
                         transform="uppercase"
                         weight={700}
                       >
-                        About {u}
+                        {u}´ most worked on Districts
                       </Text>
-                      <p>{data?.about}</p>
+                      <Table>
+                        <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th>Blocks</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {districts &&
+                            Object.keys(districts).map(
+                              (district: string, i: number) => {
+                                if (i < 3) {
+                                  return (
+                                    <tr key={district}>
+                                      <td>{district}</td>
+                                      <td>{districts[district]}</td>
+                                    </tr>
+                                  );
+                                }
+                              }
+                            )}
+                        </tbody>
+                      </Table>
                     </Paper>
                   </Grid.Col>
-                )}
-                <Grid.Col span={12}>
-                  <Paper withBorder radius="md" p="xs">
-                    <Text
-                      color="dimmed"
-                      size="xs"
-                      transform="uppercase"
-                      weight={700}
-                    >
-                      {u}´ most worked on Districts
-                    </Text>
-                    <Table>
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Blocks</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {districts &&
-                          Object.keys(districts).map(
-                            (district: string, i: number) => {
-                              if (i < 3) {
-                                return (
-                                  <tr key={district}>
-                                    <td>{district}</td>
-                                    <td>{districts[district]}</td>
-                                  </tr>
-                                );
-                              }
-                            }
-                          )}
-                      </tbody>
-                    </Table>
-                  </Paper>
-                </Grid.Col>
-                <Grid.Col span={12}>
-                  <Paper withBorder radius="md" p="xs">
-                    <Text
-                      color="dimmed"
-                      size="xs"
-                      transform="uppercase"
-                      weight={700}
-                    >
-                      {u} worked together with
-                    </Text>
-                    <Table>
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Block</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {builders &&
-                          Object.keys(builders).map((builder: string) => {
-                            return (
-                              <tr key={builder}>
-                                <td>{builder}</td>
-                                <td>{builders[builder].join(", ")}</td>
-                              </tr>
-                            );
-                          })}
-                      </tbody>
-                    </Table>
-                  </Paper>
-                </Grid.Col>
-              </Grid>
-            </div>
-          </ScrollArea>
-        </Grid.Col>
-        <Grid.Col sm={6}>
-          <div>
-            <Group
-              style={{
-                position: "absolute",
-                zIndex: 2,
-                bottom: theme.spacing.md,
-                left: theme.spacing.md,
-              }}
-              position="center"
-            >
-              {selectedBlock.block.uid != 0 && (
-                <Button
-                  variant="filled"
-                  color="gray"
-                  radius="xl"
-                  size="md"
-                  onClick={() => {
-                    router.push(
-                      "/districts/" +
-                        selectedBlock.district +
-                        "/" +
-                        selectedBlock.block.id
-                    );
-                  }}
-                  style={{
-                    boxShadow: theme.shadows.md,
-                  }}
-                >
-                  View Block Stats
-                </Button>
-              )}
-            </Group>
-            <Map
-              width="100%"
-              height="53vh"
-              zoom={13}
-              mapStyle={{ zIndex: 0 }}
-              components={claimsPolygons}
-            ></Map>
-          </div>
-        </Grid.Col>
-      </Grid>
+                  <Grid.Col span={12}>
+                    <Paper withBorder radius="md" p="xs">
+                      <Text
+                        color="dimmed"
+                        size="xs"
+                        transform="uppercase"
+                        weight={700}
+                      >
+                        {u} worked together with
+                      </Text>
+                      <Table>
+                        <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th>Block</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {builders &&
+                            Object.keys(builders).map((builder: string) => {
+                              return (
+                                <tr key={builder}>
+                                  <td>{builder}</td>
+                                  <td>{builders[builder].join(", ")}</td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </Table>
+                    </Paper>
+                  </Grid.Col>
+                </Grid>
+              </div>
+            </ScrollArea>
+          </Grid.Col>
+        </Grid>
       </MediaQuery>
-      <MediaQuery largerThan={"sm"} styles={{display:"none"}}>
-      <div style={{ margin: theme.spacing.md }} id="i">
-              <Grid>
-                <Grid.Col span={6}>
-                  <StatsRing
-                    label="Reserved"
-                    stats={claims?.claims.reserved + "/" + claims?.claims.total}
-                    progress={
-                      (claims?.claims.reserved / claims?.claims.total) * 100
-                    }
-                    icon={<News />}
-                    color={colorFromStatus(1, false)}
-                  />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <StatsRing
-                    label="Building"
-                    stats={claims?.claims.building + "/" + claims?.claims.total}
-                    progress={
-                      (claims?.claims.building / claims?.claims.total) * 100
-                    }
-                    icon={<Backhoe />}
-                    color={colorFromStatus(2, false)}
-                  />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <StatsRing
-                    label="Detailing"
-                    stats={
-                      claims?.claims.detailing + "/" + claims?.claims.total
-                    }
-                    progress={
-                      (claims?.claims.detailing / claims?.claims.total) * 100
-                    }
-                    icon={<Armchair />}
-                    color={colorFromStatus(3, false)}
-                  />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <StatsRing
-                    label="Done"
-                    stats={claims?.claims.done + "/" + claims?.claims.total}
-                    progress={
-                      (claims?.claims.done / claims?.claims.total) * 100
-                    }
-                    icon={<BuildingSkyscraper />}
-                    color={colorFromStatus(4, false)}
-                  />
-                </Grid.Col>
-                {data?.about != "" && (
-                  <Grid.Col span={12}>
-                    <Paper withBorder radius="md" p="xs">
-                      <Text
-                        color="dimmed"
-                        size="xs"
-                        transform="uppercase"
-                        weight={700}
-                      >
-                        About {u}
-                      </Text>
-                      <p>{data?.about}</p>
-                    </Paper>
-                  </Grid.Col>
-                )}
-                <Grid.Col span={12}>
-                  <Paper withBorder radius="md" p="xs">
-                    <Text
-                      color="dimmed"
-                      size="xs"
-                      transform="uppercase"
-                      weight={700}
-                    >
-                      {u}´ most worked on Districts
-                    </Text>
-                    <Table>
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Blocks</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {districts &&
-                          Object.keys(districts).map(
-                            (district: string, i: number) => {
-                              if (i < 3) {
-                                return (
-                                  <tr key={district}>
-                                    <td>{district}</td>
-                                    <td>{districts[district]}</td>
-                                  </tr>
-                                );
-                              }
-                            }
-                          )}
-                      </tbody>
-                    </Table>
-                  </Paper>
-                </Grid.Col>
-                <Grid.Col span={12}>
-                  <Paper withBorder radius="md" p="xs">
-                    <Text
-                      color="dimmed"
-                      size="xs"
-                      transform="uppercase"
-                      weight={700}
-                    >
-                      {u} worked together with
-                    </Text>
-                    <Table>
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Block</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {builders &&
-                          Object.keys(builders).map((builder: string) => {
+      <MediaQuery largerThan={"sm"} styles={{ display: "none" }}>
+        <div style={{ margin: theme.spacing.md }} id="i">
+          <Grid>
+            <Grid.Col span={6}>
+              <StatsRing
+                label="Reserved"
+                stats={claims?.claims.reserved + "/" + claims?.claims.total}
+                progress={
+                  (claims?.claims.reserved / claims?.claims.total) * 100
+                }
+                icon={<News />}
+                color={colorFromStatus(1, false)}
+              />
+            </Grid.Col>
+            <Grid.Col span={6}>
+              <StatsRing
+                label="Building"
+                stats={claims?.claims.building + "/" + claims?.claims.total}
+                progress={
+                  (claims?.claims.building / claims?.claims.total) * 100
+                }
+                icon={<Backhoe />}
+                color={colorFromStatus(2, false)}
+              />
+            </Grid.Col>
+            <Grid.Col span={6}>
+              <StatsRing
+                label="Detailing"
+                stats={claims?.claims.detailing + "/" + claims?.claims.total}
+                progress={
+                  (claims?.claims.detailing / claims?.claims.total) * 100
+                }
+                icon={<Armchair />}
+                color={colorFromStatus(3, false)}
+              />
+            </Grid.Col>
+            <Grid.Col span={6}>
+              <StatsRing
+                label="Done"
+                stats={claims?.claims.done + "/" + claims?.claims.total}
+                progress={(claims?.claims.done / claims?.claims.total) * 100}
+                icon={<BuildingSkyscraper />}
+                color={colorFromStatus(4, false)}
+              />
+            </Grid.Col>
+            {data?.about != "" && (
+              <Grid.Col span={12}>
+                <Paper withBorder radius="md" p="xs">
+                  <Text
+                    color="dimmed"
+                    size="xs"
+                    transform="uppercase"
+                    weight={700}
+                  >
+                    About {u}
+                  </Text>
+                  <p>{data?.about}</p>
+                </Paper>
+              </Grid.Col>
+            )}
+            <Grid.Col span={12}>
+              <Paper withBorder radius="md" p="xs">
+                <Text
+                  color="dimmed"
+                  size="xs"
+                  transform="uppercase"
+                  weight={700}
+                >
+                  {u}´ most worked on Districts
+                </Text>
+                <Table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Blocks</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {districts &&
+                      Object.keys(districts).map(
+                        (district: string, i: number) => {
+                          if (i < 3) {
                             return (
-                              <tr key={builder}>
-                                <td>{builder}</td>
-                                <td>{builders[builder].join(", ")}</td>
+                              <tr key={district}>
+                                <td>{district}</td>
+                                <td>{districts[district]}</td>
                               </tr>
                             );
-                          })}
-                      </tbody>
-                    </Table>
-                  </Paper>
-                </Grid.Col>
-              </Grid>
-            </div>
-          </MediaQuery>
+                          }
+                        }
+                      )}
+                  </tbody>
+                </Table>
+              </Paper>
+            </Grid.Col>
+            <Grid.Col span={12}>
+              <Paper withBorder radius="md" p="xs">
+                <Text
+                  color="dimmed"
+                  size="xs"
+                  transform="uppercase"
+                  weight={700}
+                >
+                  {u} worked together with
+                </Text>
+                <Table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Block</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {builders &&
+                      Object.keys(builders).map((builder: string) => {
+                        return (
+                          <tr key={builder}>
+                            <td>{builder}</td>
+                            <td>{builders[builder].join(", ")}</td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </Table>
+              </Paper>
+            </Grid.Col>
+          </Grid>
+        </div>
+      </MediaQuery>
     </Page>
   );
 };
