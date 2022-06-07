@@ -43,6 +43,7 @@ import {
   Cross,
   Edit,
   Map as MapIcon,
+  MapPin,
   Photo,
   Users,
   X,
@@ -94,7 +95,6 @@ const DistrictPage = () => {
   const { data } = useSWR("/api/districts/get/" + district);
   const [selBlock, setSelBlock] = useState<any>(null);
   if (info?.at(1) && selBlock === null && data) {
-    console.log("block: ", info.at(1));
     setSelBlock(
       data?.blocks.blocks.find(
         (b: any) => b.id === parseInt(info?.at(1) || "1")
@@ -168,7 +168,6 @@ const DistrictPage = () => {
       });
     }
   };
-  console.log(selBlock);
   const handleAddImage = async () => {
     const images = data?.image;
     images.push(imageForm.values.image);
@@ -205,6 +204,16 @@ const DistrictPage = () => {
         icon: <Check />,
       });
     }
+  };
+  const handleCopyLocation = (loc: any) => {
+    navigator.clipboard.writeText(loc);
+    showNotification({
+      autoClose: 5000,
+      title: "Location copied",
+      message: `${loc} copied to your clipboard`,
+      color: "green",
+      icon: <Check />,
+    });
   };
 
   return (
@@ -245,55 +254,57 @@ const DistrictPage = () => {
               >
                 Blocks
               </Text>
-             <MediaQuery smallerThan={"sm"} styles={{display:"none"}}>
-             <Group style={{ float: "right" }}>
-                {user.uid > 0 ? (
-                  <Badge
-                    variant={statusFilter === 5 ? "filled" : "outline"}
-                    onClick={(e: any) => {
-                      setStatusFilter(5);
-                      router.push("/districts/" + data?.name + "?f=" + 5);
-                    }}
-                  >
-                    My Claims
-                  </Badge>
-                ) : null}
-
-                {[4, 3, 2, 1, 0].map((status) => (
-                  <Badge
-                    key={status}
-                    color={statusToColorName(status)}
-                    variant={statusFilter === status ? "filled" : "outline"}
-                    onClick={(e: any) => {
-                      setStatusFilter(status);
-                      router.push("/districts/" + data?.name + "?f=" + status);
-                    }}
-                  >
-                    {statusToName(status)}
-                  </Badge>
-                ))}
-                {statusFilter !== undefined ? (
-                  <Tooltip
-                    label="Clear Filter"
-                    placement="end"
-                    withArrow
-                    position="bottom"
-                  >
-                    <ActionIcon
-                      size="xs"
-                      radius="xl"
-                      variant="outline"
-                      onClick={() => {
-                        setStatusFilter(undefined);
-                        router.push("/districts/" + data?.name);
+              <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+                <Group style={{ float: "right" }}>
+                  {user.uid > 0 ? (
+                    <Badge
+                      variant={statusFilter === 5 ? "filled" : "outline"}
+                      onClick={(e: any) => {
+                        setStatusFilter(5);
+                        router.push("/districts/" + data?.name + "?f=" + 5);
                       }}
                     >
-                      <X size={16} />
-                    </ActionIcon>
-                  </Tooltip>
-                ) : null}
-              </Group>
-             </MediaQuery>
+                      My Claims
+                    </Badge>
+                  ) : null}
+
+                  {[4, 3, 2, 1, 0].map((status) => (
+                    <Badge
+                      key={status}
+                      color={statusToColorName(status)}
+                      variant={statusFilter === status ? "filled" : "outline"}
+                      onClick={(e: any) => {
+                        setStatusFilter(status);
+                        router.push(
+                          "/districts/" + data?.name + "?f=" + status
+                        );
+                      }}
+                    >
+                      {statusToName(status)}
+                    </Badge>
+                  ))}
+                  {statusFilter !== undefined ? (
+                    <Tooltip
+                      label="Clear Filter"
+                      placement="end"
+                      withArrow
+                      position="bottom"
+                    >
+                      <ActionIcon
+                        size="xs"
+                        radius="xl"
+                        variant="outline"
+                        onClick={() => {
+                          setStatusFilter(undefined);
+                          router.push("/districts/" + data?.name);
+                        }}
+                      >
+                        <X size={16} />
+                      </ActionIcon>
+                    </Tooltip>
+                  ) : null}
+                </Group>
+              </MediaQuery>
             </div>
             <ScrollArea style={{ height: "75vh" }}>
               <Table highlightOnHover>
@@ -305,7 +316,7 @@ const DistrictPage = () => {
                     <th>Details</th>
                     <th>Builder</th>
                     <th>Completion Date</th>
-                    {(user.permission || 0) >= Permissions.Builder && <th></th>}
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -360,15 +371,30 @@ const DistrictPage = () => {
                                     block.completionDate
                                   ).toLocaleDateString()}
                             </td>
-                            {(user.permission || 0) >= Permissions.Builder && (
-                              <td>
-                                <ActionIcon
-                                  onClick={(e: any) => handleClick(block.id)}
-                                >
-                                  <Edit size={20} />
-                                </ActionIcon>
-                              </td>
-                            )}
+                            <td>
+                              <Group>
+                                {block.center.length == 2 && (
+                                  <Tooltip label="Copy Location" withArrow>
+                                    <ActionIcon
+                                      onClick={(e: any) =>
+                                        handleCopyLocation(block.center)
+                                      }
+                                    >
+                                      <MapPin size={20}></MapPin>
+                                    </ActionIcon>
+                                  </Tooltip>
+                                )}
+
+                                {(user.permission || 0) >=
+                                  Permissions.Builder && (
+                                  <ActionIcon
+                                    onClick={(e: any) => handleClick(block.id)}
+                                  >
+                                    <Edit size={20} />
+                                  </ActionIcon>
+                                )}
+                              </Group>
+                            </td>
                           </tr>
                         ))
                     : null}
