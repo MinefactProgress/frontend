@@ -437,7 +437,7 @@ const DistrictPage = () => {
                     center={
                       data?.center?.length > 0
                         ? data?.center
-                        : data?.blocks.length > 0
+                        : data?.blocks.blocks.length > 0
                         ? data?.blocks.blocks[0].area[0]
                         : undefined
                     }
