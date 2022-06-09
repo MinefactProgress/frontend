@@ -42,6 +42,7 @@ import {
   Check,
   Cross,
   Edit,
+  Hash,
   Map as MapIcon,
   MapPin,
   Photo,
@@ -93,6 +94,10 @@ const DistrictPage = () => {
   const district = info?.at(0);
   const [user] = useUser();
   const { data } = useSWR("/api/districts/get/" + district);
+  const { data: users } = useSWR("/api/users/get");
+  const { data: adminsettings } = useSWR(
+    "/api/admin/settings/get/custom_builders"
+  );
   const [selBlock, setSelBlock] = useState<any>(null);
   if (info?.at(1) && selBlock === null && data) {
     setSelBlock(
@@ -119,7 +124,7 @@ const DistrictPage = () => {
     router.push("/districts/" + district + "/" + blockID);
     setSelBlock(data?.blocks.blocks.find((b: any) => b.id === blockID));
   };
-  const handleSubtmit = (event: any) => {
+  const handleSubmit = (event: any) => {
     event.preventDefault();
     if (
       selBlock &&
@@ -359,6 +364,7 @@ const DistrictPage = () => {
                               <Center>
                                 <Checkbox
                                   color="green"
+                                  readOnly
                                   checked={block.details}
                                 />
                               </Center>
@@ -431,7 +437,9 @@ const DistrictPage = () => {
                     center={
                       data?.center?.length > 0
                         ? data?.center
-                        : data?.blocks.blocks[0].area[0]
+                        : data?.blocks.length > 0
+                        ? data?.blocks.blocks[0].area[0]
+                        : undefined
                     }
                     polygon={{ data: data?.area || [] }}
                     components={data?.blocks.blocks.map((block: any) =>
@@ -623,26 +631,47 @@ const DistrictPage = () => {
                 style={{ marginTop: theme.spacing.md }}
               >
                 <Tabs.Tab label="Update Block" icon={<Edit size={14} />}>
-                  <form onSubmit={handleSubtmit}>
+                  <form onSubmit={handleSubmit}>
                     <NumberInput
                       label="Block"
                       min={1}
                       max={data?.blocks.blocks.length}
+                      icon={<Hash size={18} />}
                       value={selBlock?.id}
                       onChange={handleClick}
                     />
                     <MultiSelect
                       dropdownPosition="top"
                       label="Builders"
-                      creatable
                       searchable
+                      nothingFound="No builder found"
                       placeholder="Select Builders"
-                      getCreateLabel={(query) => `+ Add ${query}`}
-                      data={
-                        selBlock
-                          ? [...selBlock?.builders, user.username]
-                          : [user.username]
-                      }
+                      maxDropdownHeight={190}
+                      icon={<Users size={18} />}
+                      data={[
+                        {
+                          value: user?.username ? user.username : "",
+                          label: user?.username,
+                          group: "You",
+                        },
+                      ].concat(
+                        adminsettings?.value.map((s: any) => ({
+                          value: s,
+                          label: s,
+                          group: "Special",
+                        })),
+                        users
+                          ?.filter(
+                            (u: any) =>
+                              u.username !== "root" &&
+                              u.username !== user?.username
+                          )
+                          .map((u: any) => ({
+                            value: u.username,
+                            label: u.username,
+                            group: "Other Users",
+                          }))
+                      )}
                       value={selBlock?.builders}
                       onChange={(e: any) => {
                         setSelBlock({
