@@ -1,5 +1,6 @@
 import {
   BuildingCommunity,
+  BuildingSkyscraper,
   ChartBar,
   ChartInfographic,
   Database,
@@ -80,6 +81,13 @@ const pages = [
   {
     label: "Moderation",
     divider: true,
+    permission: 2,
+  },
+  {
+    icon: <BuildingSkyscraper size={16} />,
+    color: "cyan",
+    label: "Manage Landmarks",
+    href: "/admin/landmarks",
     permission: 2,
   },
   {
