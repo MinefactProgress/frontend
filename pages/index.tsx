@@ -91,6 +91,8 @@ const Home: NextPage = ({ user, setUser }: any) => {
   return (
     <Page noMargin style={{ position: "relative" }}>
       {/* Head Map */}
+      <div style={{width:"100%",
+          height: "calc(100vh - 60px)",position:"relative"}}>
       <Group
         style={{
           position: "absolute",
@@ -222,7 +224,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
       </Group>
       <Map
         width="100%"
-        height="calc(100vh - 60px)"
+        height="100%"
         zoom={13}
         polygon={{ data: data?.area || [] }}
         mapStyle={{ zIndex: 0 }}
@@ -256,6 +258,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
             : null
         )}
       ></Map>
+      </div>
       {/* Content */}
       <div style={{ margin: theme.spacing.md }} id="i">
         <Paper

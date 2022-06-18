@@ -404,7 +404,7 @@ export default function Page(props: {
           ...props.style,
         }}
       >
-        <ScrollArea sx={{ height: "100%" }}>
+        <ScrollArea sx={{ height: "100%",width:"100%" }} scrollHideDelay={0}>
           <div
             style={{
               width: "100%",
