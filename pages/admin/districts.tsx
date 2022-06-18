@@ -1,3 +1,6 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @next/next/no-img-element */
+
 import {
   ActionIcon,
   Button,
@@ -176,7 +179,7 @@ const DistrictsPage = () => {
                                 )[0].name
                               : "---"}
                           </td>
-                          <td>{district.image ? district.image : "---"}</td>
+                          <td>{district.image!="" ? <img src={district.image} height="20px" /> : "---"}</td>
                           <td>
                             <Group spacing="xs">
                               <Tooltip gutter={10} label="Delete" withArrow>
