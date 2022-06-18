@@ -21,7 +21,7 @@ import {
   Title,
   UnstyledButton,
   useMantineColorScheme,
-  useMantineTheme
+  useMantineTheme,
 } from "@mantine/core";
 import {
   ChevronLeft,
@@ -33,7 +33,7 @@ import {
   Search,
   Settings,
   Sun,
-  Trash
+  Trash,
 } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
@@ -139,7 +139,8 @@ export default function Page(props: {
                 )}
               </ScrollArea>
             </MediaQuery>
-            <MediaQuery largerThan={"sm"} styles={{ display: "none" }}><ScrollArea style={{ height: "77vh" }}>
+            <MediaQuery largerThan={"sm"} styles={{ display: "none" }}>
+              <ScrollArea style={{ height: "77vh" }}>
                 {/* Page Navigation */}
                 {pages.map((page) =>
                   page.permission <= (user.permission || 0) ? (
@@ -195,7 +196,7 @@ export default function Page(props: {
                   ) : null
                 )}
               </ScrollArea>
-              </MediaQuery>
+            </MediaQuery>
           </Navbar.Section>
           <Navbar.Section>
             {/* User Avatar */}
@@ -318,7 +319,11 @@ export default function Page(props: {
       }
       header={
         <Header height={70}>
-          <Group sx={{ height: "100%",width:"100%",overflow:"hidden" }} px={20} position="apart">
+          <Group
+            sx={{ height: "100%", width: "100%", overflow: "hidden" }}
+            px={20}
+            position="apart"
+          >
             <Group style={{ height: "100%" }}>
               <img
                 src="/logo.png"
@@ -347,7 +352,6 @@ export default function Page(props: {
               >
                 <Confetti size={16} />
               </ActionIcon>
-              
             </Group>
           </Group>
         </Header>
@@ -400,15 +404,22 @@ export default function Page(props: {
           ...props.style,
         }}
       >
-        <div style={{width:"100%",height:"100%",padding:props.noMargin ? 0 : theme.spacing.md}}>
-
-        {props.scroll ? (
-          <ScrollArea type="scroll">{props.children}</ScrollArea>
-          ) : (
-            props.children
+        <ScrollArea sx={{ height: "100%" }}>
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              padding: props.noMargin ? "0px" : theme.spacing.md,
+            }}
+          >
+            {props.scroll ? (
+              <ScrollArea type="scroll">{props.children}</ScrollArea>
+            ) : (
+              props.children
             )}
-            </div>
-      <Footer links={[]}/>
+          </div>
+          <Footer links={[]} />
+        </ScrollArea>
       </Box>
     </AppShell>
   );

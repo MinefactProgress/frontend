@@ -222,7 +222,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
       </Group>
       <Map
         width="100%"
-        height="100%"
+        height="calc(100vh - 60px)"
         zoom={13}
         polygon={{ data: data?.area || [] }}
         mapStyle={{ zIndex: 0 }}
