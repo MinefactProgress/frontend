@@ -37,6 +37,7 @@ import {
 } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
+import Footer from "./Footer";
 import Head from "next/head";
 import pages from "../components/routes";
 import { useRouter } from "next/router";
@@ -69,7 +70,7 @@ export default function Page(props: {
   }
   return (
     <AppShell
-      padding={props.noMargin ? 0 : "md"}
+      padding={0}
       navbarOffsetBreakpoint="sm"
       asideOffsetBreakpoint="sm"
       fixed
@@ -399,11 +400,15 @@ export default function Page(props: {
           ...props.style,
         }}
       >
+        <div style={{width:"100%",height:"100%",padding:props.noMargin ? 0 : theme.spacing.md}}>
+
         {props.scroll ? (
           <ScrollArea type="scroll">{props.children}</ScrollArea>
-        ) : (
-          props.children
-        )}
+          ) : (
+            props.children
+            )}
+            </div>
+      <Footer links={[]}/>
       </Box>
     </AppShell>
   );
