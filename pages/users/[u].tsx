@@ -137,7 +137,7 @@ const UserPage = () => {
     );
   }
   return (
-    <Page noMargin style={{ position: "relative" }} title={u?.toString()}>
+    <Page noMargin style={{ position: "relative" }} title={u?.toString()} noFooter>
       <div
         style={{
           backgroundColor: "white",

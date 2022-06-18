@@ -47,6 +47,7 @@ export default function Page(props: {
   children: React.ReactNode;
   scroll?: boolean;
   noMargin?: boolean;
+  noFooter?: boolean;
   style?: any;
   title?: string;
 }) {
@@ -418,7 +419,7 @@ export default function Page(props: {
               props.children
             )}
           </div>
-          <Footer links={[]} />
+          {!props.noFooter && <Footer links={[]} />}
         </ScrollArea>
       </Box>
     </AppShell>
