@@ -22,7 +22,6 @@ import {
   Hash,
   MapPins,
   Notes,
-  Scale,
   Trash,
 } from "tabler-icons-react";
 
@@ -48,7 +47,6 @@ const LandmarksPage = () => {
       name: "",
       district: "",
       blockID: "",
-      weight: "",
       location: "",
     },
   });
@@ -220,7 +218,7 @@ const LandmarksPage = () => {
               Create new Landmark
             </Text>
             <form onSubmit={createForm.onSubmit(handleAddLandmark)}>
-              <Group>
+              <Group grow>
                 <TextInput
                   label="Name"
                   name="name"
@@ -276,20 +274,7 @@ const LandmarksPage = () => {
                   placeholder="Block ID"
                   required
                   min={1}
-                  style={{ width: "10%" }}
                   {...createForm.getInputProps("blockID")}
-                />
-                <NumberInput
-                  label="Weight"
-                  name="weight"
-                  placeholder="Weight"
-                  required
-                  min={0}
-                  max={1}
-                  step={0.01}
-                  precision={2}
-                  style={{ width: "10%" }}
-                  {...createForm.getInputProps("weight")}
                 />
                 <TextInput
                   label="Location"
@@ -323,7 +308,6 @@ const LandmarksPage = () => {
                         <th>ID</th>
                         <th>Name</th>
                         <th>Block</th>
-                        <th>Weight</th>
                         <th>Location</th>
                         <th></th>
                       </tr>
@@ -335,7 +319,6 @@ const LandmarksPage = () => {
                               <td>{landmark.id}</td>
                               <td>{landmark.name}</td>
                               <td>{landmark.block}</td>
-                              <td>{landmark.weight}</td>
                               <td>{landmark.location.join(",")}</td>
                               <td>
                                 <Group>
@@ -447,23 +430,6 @@ const LandmarksPage = () => {
                   setSelLandmark({
                     ...selLandmark,
                     name: e.currentTarget.value,
-                  });
-                }}
-              />
-              <NumberInput
-                label="Weight"
-                name="weight"
-                placeholder="Weight"
-                min={0}
-                max={1}
-                step={0.01}
-                precision={2}
-                icon={<Scale size={18} />}
-                value={selLandmark?.weight}
-                onChange={(e: any) => {
-                  setSelLandmark({
-                    ...selLandmark,
-                    weight: e,
                   });
                 }}
               />

@@ -37,6 +37,7 @@ import {
 } from "chart.js";
 import {
   Backhoe,
+  BuildingSkyscraper,
   CameraPlus,
   ChartBar,
   Check,
@@ -346,7 +347,33 @@ const DistrictPage = () => {
                                   : undefined,
                             }}
                           >
-                            <td>{block.id}</td>
+                            <td>
+                              <Group>
+                                {block.id}
+                                {block.landmarks.length > 0
+                                  ? block.landmarks.map((landmark: any) => (
+                                      <Tooltip
+                                        key={landmark.id}
+                                        label={`Landmark | ${landmark.name}`}
+                                        withArrow
+                                      >
+                                        <ActionIcon>
+                                          <BuildingSkyscraper
+                                            size={20}
+                                            color={
+                                              landmark.completed
+                                                ? "green"
+                                                : landmark.builder.length > 0
+                                                ? "orange"
+                                                : "red"
+                                            }
+                                          />
+                                        </ActionIcon>
+                                      </Tooltip>
+                                    ))
+                                  : null}
+                              </Group>
+                            </td>
                             <td>
                               <Badge color={statusToColorName(block.status)}>
                                 {statusToName(block.status)}
