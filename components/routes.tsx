@@ -10,6 +10,7 @@ import {
   Map,
   MapPins,
   Settings,
+  UserPlus,
   Users,
 } from "tabler-icons-react";
 
@@ -61,6 +62,13 @@ const pages = [
   {
     label: "Staff",
     divider: true,
+    permission: 1,
+  },
+  {
+    icon: <UserPlus size={16} />,
+    color: "lime",
+    label: "Claim Landmarks",
+    href: "/landmarks",
     permission: 1,
   },
   {
