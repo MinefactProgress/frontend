@@ -23,7 +23,7 @@ const SettingsPage = () => {
   const { data } = useSWR("/api/users/get/" + user.username);
   const handleSubmit = async (values: typeof form.values) => {
     const result = await fetch(
-      "http://localhost:8080/api/users/update?key=" + user.apikey,
+      process.env.NEXT_PUBLIC_API_URL+"/api/users/update?key=" + user.apikey,
       {
         method: "POST",
         headers: {
