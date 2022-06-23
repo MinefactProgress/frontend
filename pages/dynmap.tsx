@@ -14,12 +14,10 @@ import Page from "../components/Page";
 const DynmapPage = () => {
   const theme = useMantineTheme();
   return (
-    <Page noMargin style={{overflow:"hidden"}}>
+    <Page noMargin noFooter style={{overflow:"hidden"}}>
      <iframe
           src="https://newyork.minefact.de/"
-          height="100%"
-          width="100%"
-          style={{ border: "none",padding:"none",margin:"none" }}
+          style={{ border: "none",padding:"none",margin:"none",height:"calc(100vh - 70px)",width:"100%" }}
         />
     </Page>
   );

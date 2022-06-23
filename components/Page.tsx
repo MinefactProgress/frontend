@@ -57,10 +57,11 @@ export default function Page(props: {
   const theme = useMantineTheme();
   const router = useRouter();
   const [user, setUser] = useUser();
+  
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 1000);
+    }, 10);
   });
   if (loading) {
     return (
