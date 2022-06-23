@@ -64,7 +64,7 @@ export default function Page(props: {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 10);
+    }, 500);
   });
   if (loading) {
     return (
