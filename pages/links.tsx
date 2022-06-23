@@ -34,7 +34,7 @@ const LinksPage = () => {
   });
   const handleSubmit = async (values: typeof form.values) => {
     const result = await fetch(
-      "/api/admin/settings/set",
+      process.env.NEXT_PUBLIC_API_URL+"/api/admin/settings/set",
       {
         method: "POST",
         headers: {
