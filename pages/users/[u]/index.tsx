@@ -1,6 +1,7 @@
 import {
   Armchair,
   Backhoe,
+  BrandDiscord,
   BuildingSkyscraper,
   News,
 } from "tabler-icons-react";
@@ -13,7 +14,6 @@ import {
   MediaQuery,
   Paper,
   ScrollArea,
-  Space,
   Stack,
   Table,
   Text,
@@ -137,7 +137,12 @@ const UserPage = () => {
     );
   }
   return (
-    <Page noMargin style={{ position: "relative" }} title={u?.toString()} noFooter>
+    <Page
+      noMargin
+      style={{ position: "relative" }}
+      title={u?.toString()}
+      noFooter
+    >
       <div
         style={{
           backgroundColor: "white",
@@ -175,9 +180,12 @@ const UserPage = () => {
               userSelect: "text",
             }}
           >
-            {data?.discord?.split("#")[0] || u}
+            {data?.username || u}
           </Title>
-          <Text>#{data?.discord?.split("#")[1]}</Text>
+          <Group>
+            <BrandDiscord />
+            <Text>{data?.discord}</Text>
+          </Group>
         </Stack>
       </Center>
       <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
