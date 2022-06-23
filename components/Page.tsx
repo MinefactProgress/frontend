@@ -34,6 +34,7 @@ import {
   Settings,
   Sun,
   Trash,
+  User,
 } from "tabler-icons-react";
 import { useEffect, useState } from "react";
 
@@ -41,6 +42,7 @@ import Footer from "./Footer";
 import Head from "next/head";
 import pages from "../components/routes";
 import { useRouter } from "next/router";
+import { useSpotlight } from "@mantine/spotlight";
 import useUser from "../utils/hooks/useUser";
 
 export default function Page(props: {
@@ -56,8 +58,9 @@ export default function Page(props: {
   const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();
   const router = useRouter();
+  const spotlight = useSpotlight();
   const [user, setUser] = useUser();
-  
+
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
@@ -260,8 +263,16 @@ export default function Page(props: {
                   {user.uid != 0 ? (
                     <>
                       <Menu.Label>Application</Menu.Label>
-                      <Menu.Item icon={<Settings size={14} />}>
-                        Settings
+                      <Menu.Item
+                        onClick={() => router.push("/users/" + user.username)}
+                        icon={<User size={14} />}
+                        rightSection={
+                          <Text size="xs" color="dimmed">
+                            ⌘ P
+                          </Text>
+                        }
+                      >
+                        Profile
                       </Menu.Item>
                       <Menu.Item
                         icon={
@@ -274,7 +285,7 @@ export default function Page(props: {
                         onClick={() => toggleColorScheme()}
                         rightSection={
                           <Text size="xs" color="dimmed">
-                            ⌘ J
+                            ⌘ T
                           </Text>
                         }
                       >
@@ -282,6 +293,7 @@ export default function Page(props: {
                       </Menu.Item>
                       <Menu.Item
                         icon={<Search size={14} />}
+                        onClick={spotlight.openSpotlight}
                         rightSection={
                           <Text size="xs" color="dimmed">
                             ⌘ K
@@ -293,6 +305,17 @@ export default function Page(props: {
                       <Divider />
                       <Menu.Label>Danger Zone</Menu.Label>
                       <Menu.Item
+                        icon={<Settings size={14} />}
+                        onClick={() => router.push("/users/" + user.username+"/settings")}
+                        rightSection={
+                          <Text size="xs" color="dimmed">
+                            ⌘ S
+                          </Text>
+                        }
+                      >
+                        Settings
+                      </Menu.Item>
+                      <Menu.Item
                         icon={<Logout size={14} />}
                         onClick={() => {
                           setUser({ uid: 0 });
@@ -300,9 +323,6 @@ export default function Page(props: {
                         }}
                       >
                         Log Out
-                      </Menu.Item>
-                      <Menu.Item color="red" icon={<Trash size={14} />}>
-                        Delete my account
                       </Menu.Item>
                     </>
                   ) : (
@@ -406,7 +426,7 @@ export default function Page(props: {
           ...props.style,
         }}
       >
-        <ScrollArea sx={{ height: "100%",width:"100%" }} scrollHideDelay={0}>
+        <ScrollArea sx={{ height: "100%", width: "100%" }} scrollHideDelay={0}>
           <div
             style={{
               width: "100%",
