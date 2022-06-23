@@ -21,14 +21,14 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 
-import Map from "../../components/Map";
-import Page from "../../components/Page";
-import { StatsRing } from "../../components/StatsRing";
-import { colorFromStatus } from "../../utils/blockUtils";
+import Map from "../../../components/Map";
+import Page from "../../../components/Page";
+import { StatsRing } from "../../../components/StatsRing";
+import { colorFromStatus } from "../../../utils/blockUtils";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { useState } from "react";
-import useUser from "../../utils/hooks/useUser";
+import useUser from "../../../utils/hooks/useUser";
 
 const UserPage = () => {
   const router = useRouter();
