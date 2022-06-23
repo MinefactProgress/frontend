@@ -16,37 +16,47 @@ import { useForm } from "@mantine/form";
 import useSWR from "swr";
 import useUser from "../../../utils/hooks/useUser";
 import { showNotification } from "@mantine/notifications";
-import {sign} from "../../../utils/jwt";
+import jwt, { sign } from "../../../utils/jwt";
 
 const SettingsPage = () => {
   const [user, setUser] = useUser();
   const { data } = useSWR("/api/users/get/" + user.username);
   const handleSubmit = async (values: typeof form.values) => {
-    const result = await fetch("http://localhost:8080/api/users/update?key="+user.apikey, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({
-        uid: user.uid,
-        values: {
-          password: values.password !=""?sign(values.password):undefined,
-          picture: values.picture !=""?values.picture:undefined,
-          image: values.image !=""?values.image:undefined,
-          about: values.about !=""?values.about:undefined,
-        }
-      }),
-    });
+    const result = await fetch(
+      "http://localhost:8080/api/users/update?key=" + user.apikey,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({
+          uid: user.uid,
+          values: {
+            password: values.password != "" ? sign(values.password) : undefined,
+            picture: values.picture != "" ? values.picture : undefined,
+            image: values.image != "" ? values.image : undefined,
+            about: values.about != "" ? values.about : undefined,
+          },
+        }),
+      }
+    );
     const data = await result.json();
     if (!data.error) {
-      form.reset()
-      showNotification({
-        title: "User updated",
-        message: "Data of your user has been updated",
-        color: "green",
-        icon: <Check />,
-      });
+      jwt.verify(
+        data.data.user,
+        "ShVmYq3t6w9z$C&E)H@McQfTjWnZr4u7",
+        (err: any, decoded: any) => {
+          setUser(JSON.parse(decoded.data));
+          form.reset();
+          showNotification({
+            title: "User updated",
+            message: "Data of your user has been updated",
+            color: "green",
+            icon: <Check />,
+          });
+        }
+      );
     } else {
       showNotification({
         title: "Error updating user",
