@@ -146,7 +146,7 @@ function ErrorPage(props: any) {
   const status = errors.find((e) => e.code === code) || {
     code: code,
     title: "You found a Error we dont even know of! ("+code+")",
-    message: "Something went wrong, please try again later and contact us.",
+    message: props.error.message||"Something went wrong, please try again later and contact us.",
   };
   const router = useRouter();
   return (

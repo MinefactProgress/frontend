@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { useHotkeys, useLocalStorage } from "@mantine/hooks";
 
 import type { AppProps } from "next/app";
+import { ErrorBoundary } from "react-error-boundary";
 import ErrorPage from "./_error";
 import { ModalsProvider } from "@mantine/modals";
 import { NotificationsProvider } from "@mantine/notifications";
@@ -39,8 +40,8 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   useHotkeys([
     ["mod+J", () => toggleColorScheme()],
-    ["mod+P", () => router.push("/users/"+user.username)],
-    ["mod+S", () => router.push("/users/"+user.username+"/settings")],
+    ["mod+P", () => router.push("/users/" + user.username)],
+    ["mod+S", () => router.push("/users/" + user.username + "/settings")],
     ["mod+1", () => router.push("/")],
     ["mod+2", () => router.push("/projects")],
     ["mod+3", () => router.push("/districts")],
@@ -103,7 +104,21 @@ function MyApp({ Component, pageProps }: AppProps) {
               <NotificationsProvider>
                 {(routes.find((route) => route.href === router.pathname)
                   ?.permission || 0) <= (user.permission || 0) ? (
-                  <Component {...pageProps} user={user} setUser={setUser} />
+                  <ErrorBoundary
+                    FallbackComponent={ErrorPage}
+                    onError={(error, info) => {
+                      console.log(
+                        "An error occoured, please report this to us."
+                      );
+                      console.log(" ");
+                      console.log(error);
+                      console.log(" ");
+                      console.log(info),
+                        console.log("at " + new Date().toISOString());
+                    }}
+                  >
+                    <Component {...pageProps} user={user} setUser={setUser} />
+                  </ErrorBoundary>
                 ) : (
                   <ErrorPage statuscode={401} />
                 )}
