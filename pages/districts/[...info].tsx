@@ -92,7 +92,7 @@ const DistrictPage = () => {
     setStatusFilter(parseInt(router.query.f as string));
   }
   const { info } = router.query;
-  const district = info ? info[0] : undefined;
+  const district = info?.[0];
   const [user] = useUser();
   const { data } = useSWR("/api/districts/get/" + district);
   const { data: users } = useSWR("/api/users/get");
@@ -100,11 +100,9 @@ const DistrictPage = () => {
     "/api/admin/settings/get/custom_builders"
   );
   const [selBlock, setSelBlock] = useState<any>(null);
-  if ((info ? info[1] : undefined) && selBlock === null && data) {
+  if (info?.[1] && selBlock === null && data) {
     setSelBlock(
-      data?.blocks.blocks.find(
-        (b: any) => b.id === parseInt((info ? info[1] : undefined) || "1")
-      )
+      data?.blocks.blocks.find((b: any) => b.id === parseInt(info?.[1] || "1"))
     );
   }
   const imageForm = useForm({
