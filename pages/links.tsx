@@ -33,7 +33,7 @@ const LinksPage = () => {
     },
   });
   const handleSubmit = async (values: typeof form.values) => {
-    /*const result = await fetch(
+    const result = await fetch(
       process.env.NEXT_PUBLIC_API_URL+"/api/admin/settings/set",
       {
         method: "POST",
@@ -67,8 +67,7 @@ const LinksPage = () => {
             icon: <Link />,
           });
         }
-      });*/
-      throw new Error("test error")
+      });
   };
   return (
     <Page>
