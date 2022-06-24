@@ -1,5 +1,5 @@
-export function colorFromStatus(status: number,short?:boolean) {
-  if(!short) {
+export function colorFromStatus(status: number, short?: boolean) {
+  if (!short) {
     switch (status) {
       case 0:
         return "#F03E3E";
@@ -14,7 +14,7 @@ export function colorFromStatus(status: number,short?:boolean) {
       default:
         return "#F03E3E";
     }
-  }else {
+  } else {
     switch (status) {
       case 0:
         return "#F03E3E";
@@ -58,6 +58,34 @@ export function statusToColorName(status: number) {
     case 3:
       return "yellow";
     case 4:
+      return "green";
+    default:
+      return "gray";
+  }
+}
+export function statusToNameLandmark(status: number) {
+  switch (status) {
+    case 0:
+      return "Not Claimed";
+    case 1:
+      return "Requested";
+    case 2:
+      return "Claimed";
+    case 3:
+      return "Done";
+    default:
+      return "Unknown";
+  }
+}
+export function statusToColorNameLandmark(status: number) {
+  switch (status) {
+    case 0:
+      return "red";
+    case 1:
+      return "cyan";
+    case 2:
+      return "orange";
+    case 3:
       return "green";
     default:
       return "gray";
