@@ -7,19 +7,35 @@ import {
   ScrollArea,
   Table,
   Text,
+  useMantineTheme,
 } from "@mantine/core";
-import { showNotification } from "@mantine/notifications";
-import useSWR, { mutate } from "swr";
 import { Check, Cross } from "tabler-icons-react";
+import useSWR, { mutate } from "swr";
+
 import Map from "../components/Map";
 import Page from "../components/Page";
-import useUser from "../utils/hooks/useUser";
 import { Permissions } from "../utils/hooks/usePermission";
+import { showNotification } from "@mantine/notifications";
+import { useState } from "react";
+import useUser from "../utils/hooks/useUser";
+
+interface landmark {
+  id: number;
+  name: string;
+  block: number;
+  completed: boolean;
+  requests: string[];
+  builder: string[];
+  completionDate: string;
+  location: string[];
+}
 
 const LandmarksPage = () => {
   const [user] = useUser();
   const { data } = useSWR("/api/landmarks/get");
   const { data: users } = useSWR("/api/users/get");
+  const [selected, setSelected] = useState<landmark | null>(null);
+  const theme = useMantineTheme();
 
   const handleRequest = (landmark: any) => {
     fetch(
@@ -187,6 +203,97 @@ const LandmarksPage = () => {
                   </tr>
                 </thead>
                 <tbody>
+                  {selected && (
+                    <tr
+                      key={selected.id}
+                      style={{
+                        backgroundColor:
+                          theme.colorScheme == "dark"
+                            ? theme.colors.dark[4]
+                            : theme.colors.gray[2],
+                      }}
+                    >
+                      <td width="20%">{selected.name}</td>
+                      <td>
+                        {selected.completed ? (
+                          <Badge color="green">Done</Badge>
+                        ) : selected.builder.length > 0 ? (
+                          <Badge color="orange">Claimed</Badge>
+                        ) : selected.requests.length > 0 ? (
+                          <Badge color="cyan">Requested</Badge>
+                        ) : (
+                          <Badge color="red">Not Claimed</Badge>
+                        )}
+                      </td>
+                      <td>
+                        {selected.builder.length > 0 ? (
+                          <Group>
+                            {selected.builder.map((u: any) => (
+                              <Badge
+                                key={u}
+                                variant="outline"
+                                onClick={() =>
+                                  handleRemoveBuilder(
+                                    selected,
+                                    users.find((e: any) => e.username === u).uid
+                                  )
+                                }
+                              >
+                                {u}
+                              </Badge>
+                            ))}
+                          </Group>
+                        ) : (
+                          "---"
+                        )}
+                      </td>
+                      <td>
+                        {selected.requests.length > 0 ? (
+                          <Group>
+                            {selected.requests.map((u: any) => (
+                              <Badge
+                                key={u}
+                                variant="outline"
+                                onClick={() =>
+                                  handleAddBuilder(
+                                    selected,
+                                    users.find((e: any) => e.username === u).uid
+                                  )
+                                }
+                              >
+                                {u}
+                              </Badge>
+                            ))}
+                          </Group>
+                        ) : (
+                          "---"
+                        )}
+                      </td>
+                      <td>
+                        {selected.requests.includes(user?.username || "d") ? (
+                          <Button
+                            color="red"
+                            disabled={
+                              selected.completed || selected.builder.length > 0
+                            }
+                            onClick={() => handleUnrequest(selected)}
+                          >
+                            Unapply
+                          </Button>
+                        ) : (
+                          <Button
+                            color="green"
+                            disabled={
+                              selected.completed || selected.builder.length > 0
+                            }
+                            onClick={() => handleRequest(selected)}
+                          >
+                            Apply
+                          </Button>
+                        )}
+                      </td>
+                    </tr>
+                  )}
                   {data
                     ? data?.map((landmark: any) => (
                         <tr key={landmark.id}>
@@ -303,12 +410,25 @@ const LandmarksPage = () => {
                 type: "circle",
                 center: landmark.location,
                 options: {
-                  color: landmark.completed ? "#37B24DFF" : "#F03E3EFF",
-                  opacity: 1,
+                  color:
+                    landmark.requests.length > 0
+                      ? landmark.builder.length > 0
+                        ? theme.colors.green[7]
+                        : theme.colors.cyan[7]
+                      : theme.colors.red[7], 
+                      opacity: selected
+                      ? selected.id == landmark.id
+                        ? 1
+                        : 0.05
+                      : 0.5,
                 },
                 radius: 15,
                 tooltip: landmark.name,
-                eventHandlers: {},
+                eventHandlers: {
+                  click: () => {
+                    setSelected(landmark);
+                  },
+                },
               }))}
             />
           </Paper>
