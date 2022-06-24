@@ -66,16 +66,16 @@ const useStyles = createStyles((theme) => ({
 }));
 const MilestonesPage = () => {
   const router = useRouter();
-  const smallScreen = useMediaQuery("(max-width: 768px)")
+  const smallScreen = useMediaQuery("(max-width: 768px)");
   const { classes } = useStyles();
   const { data: projects } = useSWR("/api/projects/get");
   const { data: milestones } = useSWR("/api/projects/milestones/recent");
   const size = useWindowSize();
   return (
     <>
-    <Head>
-      <title>Progress | Milestones</title>
-    </Head>
+      <Head>
+        <title>Progress | Milestones</title>
+      </Head>
       <Confetti
         numberOfPieces={1000}
         recycle={true}
@@ -84,10 +84,12 @@ const MilestonesPage = () => {
       />
       <Container className={classes.root}>
         <div className={classes.label}>
-          <CountUp end={projects ? projects.at(-1).projects : null} />
+          <CountUp
+            end={projects ? projects[projects.length - 1].projects : null}
+          />
         </div>
         <Title className={classes.title}>
-          🎉{smallScreen?"":"We did it!"}
+          🎉{smallScreen ? "" : "We did it!"}
           {milestones
             ? " " + Math.floor(milestones[0]?.projects / 1000) * 1000 + " "
             : null}
@@ -108,9 +110,13 @@ const MilestonesPage = () => {
           after {milestones ? milestones[0]?.days : null} Days
         </Text>
       </Container>
-        <ActionIcon variant="outline" style={{position:"absolute",top:20,left:20}} onClick={()=>router.back()}>
-          <ArrowLeft />
-        </ActionIcon>
+      <ActionIcon
+        variant="outline"
+        style={{ position: "absolute", top: 20, left: 20 }}
+        onClick={() => router.back()}
+      >
+        <ArrowLeft />
+      </ActionIcon>
     </>
   );
 };
