@@ -172,6 +172,7 @@ const DistrictPage = () => {
       });
     }
   };
+  const handleLandmarkSubmit = () => {};
   const handleAddImage = async () => {
     const images = data?.image;
     images.push(imageForm.values.image);
@@ -260,6 +261,14 @@ const DistrictPage = () => {
               </Text>
               <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
                 <Group style={{ float: "right" }}>
+                  <Text
+                    color="dimmed"
+                    size="xs"
+                    transform="uppercase"
+                    weight={700}
+                  >
+                    Filter
+                  </Text>
                   {user.uid > 0 ? (
                     <Badge
                       variant={statusFilter === 5 ? "filled" : "outline"}
@@ -467,29 +476,37 @@ const DistrictPage = () => {
                         : undefined
                     }
                     polygon={{ data: data?.area || [] }}
-                    components={data?.blocks.blocks.map((block: any) =>
-                      block.area.length !== 0
-                        ? {
-                            type: "polygon",
-                            positions: block.area,
-                            options: {
-                              color: `${colorFromStatus(block.status)}FF`,
-                              opacity: selBlock
-                                ? selBlock?.uid == block?.uid
-                                  ? 1
-                                  : 0.05
-                                : 0.5,
-                            },
-                            radius: 15,
-                            tooltip: "Block #" + block.id,
-                            eventHandlers: {
-                              click: () => {
-                                handleClick(block.id);
+                    components={data?.blocks.blocks
+                      .filter((block: any) =>
+                        statusFilter != null
+                          ? statusFilter === 5
+                            ? block.builders.includes(user.username)
+                            : block.status == statusFilter
+                          : true
+                      )
+                      .map((block: any) =>
+                        block.area.length !== 0
+                          ? {
+                              type: "polygon",
+                              positions: block.area,
+                              options: {
+                                color: `${colorFromStatus(block.status)}FF`,
+                                opacity: selBlock
+                                  ? selBlock?.uid == block?.uid
+                                    ? 1
+                                    : 0.05
+                                  : 0.5,
                               },
-                            },
-                          }
-                        : null
-                    )}
+                              radius: 15,
+                              tooltip: "Block #" + block.id,
+                              eventHandlers: {
+                                click: () => {
+                                  handleClick(block.id);
+                                },
+                              },
+                            }
+                          : null
+                      )}
                   />
                 </div>
               </Tabs.Tab>
