@@ -7,13 +7,25 @@ import {
   MediaQuery,
   Paper,
   ScrollArea,
+  Select,
+  Slider,
   Table,
   Text,
   TextInput,
   Tooltip,
   useMantineTheme,
 } from "@mantine/core";
-import { Check, Cross, X } from "tabler-icons-react";
+import {
+  Check,
+  Circle1,
+  Circle2,
+  Circle3,
+  Cross,
+  Number1,
+  Number2,
+  Number3,
+  X,
+} from "tabler-icons-react";
 import useSWR, { mutate } from "swr";
 
 import Map from "../components/Map";
@@ -207,6 +219,44 @@ const LandmarksPage = () => {
               "!",
             color: "green",
             icon: <Cross />,
+          });
+          mutate("/api/landmarks/get");
+        }
+      });
+  };
+  const handleEditPriority = (landmark: any, e: any) => {
+    fetch(
+      process.env.NEXT_PUBLIC_API_URL +
+        "/api/landmarks/edit?key=" +
+        user.apikey,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: landmark.id,
+          priority: {
+            user: user.uid,
+            priority: parseInt(e),
+          },
+        }),
+      }
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.error) {
+          showNotification({
+            title: "Error updating priority",
+            message: res.message,
+            color: "red",
+            icon: <Cross />,
+          });
+        } else {
+          showNotification({
+            title: "Updated priority",
+            message:
+              "You changed your priority of " + landmark.name + " to " + e,
+            color: "green",
+            icon: <Check />,
           });
           mutate("/api/landmarks/get");
         }
@@ -474,6 +524,18 @@ const LandmarksPage = () => {
                                     <Badge
                                       key={u.user}
                                       variant="outline"
+                                      leftSection={
+                                        <div style={{ paddingTop: 5 }}>
+                                          {u.priority === 1 ? (
+                                            <Number1 size={18} color="red" />
+                                          ) : u.priority === 2 ? (
+                                            <Number2 size={18} color="yellow" />
+                                          ) : (
+                                            <Number3 size={18} color="green" />
+                                          )}
+                                        </div>
+                                      }
+                                      sx={{ paddingLeft: 3 }}
                                       onClick={() =>
                                         handleAddBuilder(
                                           landmark,
@@ -491,20 +553,41 @@ const LandmarksPage = () => {
                                 "---"
                               )}
                             </td>
-                            <td>
+                            <td width="25%">
                               {landmark.requests.some(
                                 (r: any) => r.user === user?.username
                               ) ? (
-                                <Button
-                                  color="red"
-                                  disabled={
-                                    landmark.completed ||
-                                    landmark.builder.length > 0
-                                  }
-                                  onClick={() => handleUnrequest(landmark)}
-                                >
-                                  Unapply
-                                </Button>
+                                <Group>
+                                  <Button
+                                    color="red"
+                                    disabled={
+                                      landmark.completed ||
+                                      landmark.builder.length > 0
+                                    }
+                                    onClick={() => handleUnrequest(landmark)}
+                                  >
+                                    Unapply
+                                  </Button>
+                                  <Select
+                                    style={{ width: "40%" }}
+                                    disabled={landmark.builder.includes(
+                                      user?.username
+                                    )}
+                                    value={`${
+                                      landmark.requests.find(
+                                        (r: any) => r.user === user?.username
+                                      ).priority
+                                    }`}
+                                    data={[
+                                      { value: "1", label: "High" },
+                                      { value: "2", label: "Normal" },
+                                      { value: "3", label: "Low" },
+                                    ]}
+                                    onChange={(e: any) =>
+                                      handleEditPriority(landmark, e)
+                                    }
+                                  />
+                                </Group>
                               ) : (
                                 <Button
                                   color="green"
