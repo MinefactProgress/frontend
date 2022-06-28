@@ -33,7 +33,7 @@ interface landmark {
   name: string;
   block: number;
   completed: boolean;
-  requests: string[];
+  requests: any[];
   builder: string[];
   completionDate: string;
   location: string[];
@@ -349,16 +349,18 @@ const LandmarksPage = () => {
                           <Group>
                             {selected.requests.map((u: any) => (
                               <Badge
-                                key={u}
+                                key={u.user}
                                 variant="outline"
                                 onClick={() =>
                                   handleAddBuilder(
                                     selected,
-                                    users.find((e: any) => e.username === u).uid
+                                    users.find(
+                                      (e: any) => e.username === u.user
+                                    ).uid
                                   )
                                 }
                               >
-                                {u}
+                                {u.user}
                               </Badge>
                             ))}
                           </Group>
@@ -367,7 +369,9 @@ const LandmarksPage = () => {
                         )}
                       </td>
                       <td>
-                        {selected.requests.includes(user?.username || "d") ? (
+                        {selected.requests.some(
+                          (r: any) => r.user === user?.username
+                        ) ? (
                           <Button
                             color="red"
                             disabled={
@@ -417,7 +421,9 @@ const LandmarksPage = () => {
                             case 4:
                               return (
                                 landmark.builder.includes(user.username) ||
-                                landmark.requests.includes(user.username)
+                                landmark.requests.some(
+                                  (r: any) => r.user === user?.username
+                                )
                               );
                             default:
                               return true;
@@ -466,18 +472,18 @@ const LandmarksPage = () => {
                                 <Group>
                                   {landmark.requests.map((u: any) => (
                                     <Badge
-                                      key={u}
+                                      key={u.user}
                                       variant="outline"
                                       onClick={() =>
                                         handleAddBuilder(
                                           landmark,
                                           users.find(
-                                            (e: any) => e.username === u
+                                            (e: any) => e.username === u.user
                                           ).uid
                                         )
                                       }
                                     >
-                                      {u}
+                                      {u.user}
                                     </Badge>
                                   ))}
                                 </Group>
@@ -486,7 +492,9 @@ const LandmarksPage = () => {
                               )}
                             </td>
                             <td>
-                              {landmark.requests.includes(user?.username) ? (
+                              {landmark.requests.some(
+                                (r: any) => r.user === user?.username
+                              ) ? (
                                 <Button
                                   color="red"
                                   disabled={
@@ -558,7 +566,9 @@ const LandmarksPage = () => {
                     case 4:
                       return (
                         landmark.builder.includes(user.username) ||
-                        landmark.requests.includes(user.username)
+                        landmark.requests.some(
+                          (r: any) => r.user === user?.username
+                        )
                       );
                     default:
                       return true;
