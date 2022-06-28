@@ -92,7 +92,12 @@ export default function Page(props: {
                 {pages.map((page) =>
                   page.permission <= (user.permission || 0) ? (
                     page.divider ? (
-                      <Divider my="sm" size="sm" label={page.label} />
+                      <Divider
+                        key={page.label}
+                        my="sm"
+                        size="sm"
+                        label={page.label}
+                      />
                     ) : (
                       <UnstyledButton
                         onClick={() =>
@@ -150,7 +155,12 @@ export default function Page(props: {
                 {pages.map((page) =>
                   page.permission <= (user.permission || 0) ? (
                     page.divider ? (
-                      <Divider my="sm" size="sm" label={page.label} />
+                      <Divider
+                        key={page.label}
+                        my="sm"
+                        size="sm"
+                        label={page.label}
+                      />
                     ) : (
                       <UnstyledButton
                         onClick={() =>
@@ -306,7 +316,9 @@ export default function Page(props: {
                       <Menu.Label>Danger Zone</Menu.Label>
                       <Menu.Item
                         icon={<Settings size={14} />}
-                        onClick={() => router.push("/users/" + user.username+"/settings")}
+                        onClick={() =>
+                          router.push("/users/" + user.username + "/settings")
+                        }
                         rightSection={
                           <Text size="xs" color="dimmed">
                             ⌘ S
