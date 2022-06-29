@@ -546,11 +546,20 @@ const LandmarksPage = () => {
                                       leftSection={
                                         <div style={{ paddingTop: 5 }}>
                                           {u.priority === 1 ? (
-                                            <Number1 size={18} color="red" />
+                                            <Number1
+                                              size={18}
+                                              color={theme.colors.red[7]}
+                                            />
                                           ) : u.priority === 2 ? (
-                                            <Number2 size={18} color="yellow" />
+                                            <Number2
+                                              size={18}
+                                              color={theme.colors.yellow[5]}
+                                            />
                                           ) : (
-                                            <Number3 size={18} color="green" />
+                                            <Number3
+                                              size={18}
+                                              color={theme.colors.green[7]}
+                                            />
                                           )}
                                         </div>
                                       }

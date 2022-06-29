@@ -443,10 +443,10 @@ const DistrictPage = () => {
                                             size={20}
                                             color={
                                               landmark.completed
-                                                ? "green"
+                                                ? theme.colors.green[7]
                                                 : landmark.builder.length > 0
-                                                ? "orange"
-                                                : "red"
+                                                ? theme.colors.orange[7]
+                                                : theme.colors.red[7]
                                             }
                                           />
                                         </ActionIcon>
