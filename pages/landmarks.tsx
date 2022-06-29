@@ -497,6 +497,7 @@ const LandmarksPage = () => {
                               return true;
                           }
                         })
+                        .sort((a: any, b: any) => a.name.localeCompare(b.name))
                         .map((landmark: any) => (
                           <tr key={landmark.id}>
                             <td width="20%">{landmark.name}</td>
