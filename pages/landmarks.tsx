@@ -8,24 +8,12 @@ import {
   Paper,
   ScrollArea,
   Select,
-  Slider,
   Table,
   Text,
-  TextInput,
   Tooltip,
   useMantineTheme,
 } from "@mantine/core";
-import {
-  Check,
-  Circle1,
-  Circle2,
-  Circle3,
-  Cross,
-  Number1,
-  Number2,
-  Number3,
-  X,
-} from "tabler-icons-react";
+import { Check, Cross, Number1, Number2, Number3, X } from "tabler-icons-react";
 import useSWR, { mutate } from "swr";
 
 import Map from "../components/Map";
@@ -52,6 +40,7 @@ interface landmark {
 }
 
 const LandmarksPage = () => {
+  const theme = useMantineTheme();
   const router = useRouter();
   const [statusFilter, setStatusFilter] = useState<number | null | undefined>(
     undefined
@@ -63,7 +52,36 @@ const LandmarksPage = () => {
   const { data } = useSWR("/api/landmarks/get");
   const { data: users } = useSWR("/api/users/get");
   const [selected, setSelected] = useState<landmark | null>(null);
-  const theme = useMantineTheme();
+
+  const requests: { name: any; claims: number; requests: number }[] = [];
+  if (data) {
+    for (const landmark of data) {
+      // Claims
+      for (const user of landmark.builder) {
+        if (requests.some((e: any) => e.name === user.user)) {
+          requests.some((e: any) => {
+            if (e.name === user.user) {
+              e.claims++;
+            }
+          });
+        } else {
+          requests.push({ name: user.user, claims: 1, requests: 0 });
+        }
+      }
+      // Requests
+      for (const user of landmark.requests) {
+        if (requests.some((e: any) => e.name === user.user)) {
+          requests.some((e: any) => {
+            if (e.name === user.user) {
+              e.requests++;
+            }
+          });
+        } else {
+          requests.push({ name: user.user, claims: 0, requests: 1 });
+        }
+      }
+    }
+  }
 
   const getLandmarkStatus = (landmark: landmark | null) => {
     if (landmark === null) {
@@ -615,8 +633,9 @@ const LandmarksPage = () => {
             radius="md"
             p="xs"
             style={{
-              height: "100%",
+              height: "49%",
               width: "100%",
+              marginBottom: theme.spacing.md,
             }}
           >
             <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
@@ -624,7 +643,7 @@ const LandmarksPage = () => {
             </Text>
             <Map
               width="100%"
-              height="97%"
+              height="94%"
               style={{ zIndex: 10 }}
               zoom={12}
               components={data
@@ -682,6 +701,44 @@ const LandmarksPage = () => {
                   },
                 }))}
             />
+          </Paper>
+          <Paper
+            withBorder
+            radius="md"
+            p="xs"
+            style={{ height: "49%", marginBottom: theme.spacing.md }}
+          >
+            <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
+              Claims & Requests
+            </Text>
+            <ScrollArea style={{ height: "95%" }}>
+              <Table highlightOnHover>
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Claims</th>
+                    <th>Requests</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {requests
+                    ? requests
+                        ?.sort((a: any, b: any) => {
+                          return (
+                            b.claims + b.requests - (a.claims + a.requests)
+                          );
+                        })
+                        .map((request: any) => (
+                          <tr key={request.name}>
+                            <td>{request.name}</td>
+                            <td>{request.claims}</td>
+                            <td>{request.requests}</td>
+                          </tr>
+                        ))
+                    : null}
+                </tbody>
+              </Table>
+            </ScrollArea>
           </Paper>
         </Grid.Col>
       </Grid>
