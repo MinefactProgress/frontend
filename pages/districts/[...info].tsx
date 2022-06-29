@@ -43,6 +43,7 @@ import {
   Check,
   Cross,
   Edit,
+  ExclamationMark,
   Hash,
   Map as MapIcon,
   MapPin,
@@ -64,9 +65,10 @@ import { Permissions } from "../../utils/hooks/usePermission";
 import { showNotification } from "@mantine/notifications";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/router";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { useState } from "react";
 import useUser from "../../utils/hooks/useUser";
+import { useModals } from "@mantine/modals";
 
 ChartJS.register(
   BarElement,
@@ -84,6 +86,7 @@ ChartJS.register(
 const DistrictPage = () => {
   const theme = useMantineTheme();
   const router = useRouter();
+  const modals = useModals();
   const [activePage, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<number | null | undefined>(
     undefined
@@ -172,7 +175,6 @@ const DistrictPage = () => {
       });
     }
   };
-  const handleLandmarkSubmit = () => {};
   const handleAddImage = async () => {
     const images = data?.image;
     images.push(imageForm.values.image);
@@ -218,6 +220,74 @@ const DistrictPage = () => {
       message: `${loc} copied to your clipboard`,
       color: "green",
       icon: <Check />,
+    });
+  };
+  const handleEditLandmark = (landmark: any) => {
+    if (
+      !landmark.builder.includes(user?.username) &&
+      (user?.permission || 0) < Permissions.Moderator
+    ) {
+      showNotification({
+        title: "No permission",
+        message: "You need to claim this landmark in order to modify it",
+        color: "red",
+        icon: <Cross />,
+      });
+      return;
+    }
+    modals.openConfirmModal({
+      title: "Update Landmark?",
+      centered: true,
+      children: (
+        <Text>
+          Do you want to mark this Landmark as{" "}
+          <b>{landmark.completed ? "not" : ""} completed</b>?
+        </Text>
+      ),
+      labels: { confirm: "Update Landmark", cancel: "Cancel" },
+      onCancel: () => {
+        showNotification({
+          title: "Update cancelled",
+          message: "The Landmark was not updated",
+          icon: <Cross />,
+        });
+      },
+      onConfirm: () => {
+        fetch(
+          process.env.NEXT_PUBLIC_API_URL +
+            "/api/landmarks/edit?key=" +
+            user.apikey,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: landmark.id,
+              done: !landmark.completed,
+            }),
+          }
+        )
+          .then((res) => res.json())
+          .then((res) => {
+            if (res.error) {
+              showNotification({
+                title: "Error updating Landmark",
+                message: res.message,
+                color: "red",
+                icon: <Cross />,
+              });
+            } else {
+              showNotification({
+                title: "Landmark updated",
+                message: `${landmark.name} is now marked as ${
+                  landmark.complted ? "not" : ""
+                } completed`,
+                color: "green",
+                icon: <Check />,
+              });
+              mutate("/api/districts/get/" + district);
+            }
+          });
+      },
     });
   };
 
@@ -364,7 +434,11 @@ const DistrictPage = () => {
                                         label={`Landmark | ${landmark.name}`}
                                         withArrow
                                       >
-                                        <ActionIcon>
+                                        <ActionIcon
+                                          onClick={(e: any) =>
+                                            handleEditLandmark(landmark)
+                                          }
+                                        >
                                           <BuildingSkyscraper
                                             size={20}
                                             color={
@@ -673,6 +747,16 @@ const DistrictPage = () => {
                 style={{ marginTop: theme.spacing.md }}
               >
                 <Tabs.Tab label="Update Block" icon={<Edit size={14} />}>
+                  {selBlock && selBlock?.landmarks.length > 0 ? (
+                    <Center>
+                      <ExclamationMark size={18} color="red" />
+                      <Text>
+                        To edit
+                        {selBlock?.landmarks.length === 1 ? " the " : " a "}
+                        Landmark, click on the Landmark icon in the table.
+                      </Text>
+                    </Center>
+                  ) : null}
                   <form onSubmit={handleSubmit}>
                     <NumberInput
                       label="Block"
