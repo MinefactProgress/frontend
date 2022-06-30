@@ -169,7 +169,7 @@ const LocationsPage = () => {
             2. Enter the Block ID you want to add the locations for. (eg: 1)
             <br />
             3. Enter the first location you want to add. (eg: 40.71093308501933,
-            -74.00563970021507)
+            -74.00563970021507) Or click the position on the map
             <br />
             4. Click the button to add the location.
             <br />
@@ -196,6 +196,13 @@ const LocationsPage = () => {
               width="100%"
               height="100%"
               polygon={{ data: data?.area || [] }}
+              
+              mapEvents={{
+                click: (e:any) => {
+                  console.log(e.latlng)
+                  setLoc(e.latlng?.lat+", "+e.latlng?.lng)
+                },
+              }}
               components={data
                 ?.map((block: any) =>
                   block.location != "[]"
@@ -234,7 +241,12 @@ const LocationsPage = () => {
                           : null
                       )
                     : null
-                )}
+                ).concat({
+                  type: "marker",
+                  position: loc?loc.split(", "):[0,0],
+                  tooltip: "Added Point",
+                })
+              }
             />
 
             <ScrollArea>

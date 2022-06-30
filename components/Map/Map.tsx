@@ -11,11 +11,16 @@ import {
   Popup,
   TileLayer,
   Tooltip,
+  useMapEvents,
 } from "react-leaflet";
+import React, { useState } from "react";
 
-import React from "react";
 import { useMantineTheme } from "@mantine/core";
 
+function MapEvent(props: any) {
+  const map = useMapEvents(props.events);
+  return null;
+}
 const Map = (props: any) => {
   const theme = useMantineTheme();
   return (
@@ -25,6 +30,7 @@ const Map = (props: any) => {
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors &copy; | <a href="https://carto.com/">CARTO</a>'
         zoom={props.zoom || 12}
         scrollWheelZoom={!props.noScroll}
+        e
         style={{
           height: "100%",
           width: "100%",
@@ -37,8 +43,10 @@ const Map = (props: any) => {
             <noscript>You need to enable JavaScript to see this map.</noscript>
           </p>
         }
+        onClick={props?.onClick}
         {...props.leafletOptions}
       >
+        {props?.mapEvents && <MapEvent events={props?.mapEvents} />}
         <LayersControl
           // @ts-ignore
           position="topleft"
