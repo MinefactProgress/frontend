@@ -52,6 +52,7 @@ export default function Page(props: {
   noFooter?: boolean;
   style?: any;
   title?: string;
+  delay?: number;
 }) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [loading, setLoading] = useState(true);
@@ -64,7 +65,7 @@ export default function Page(props: {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 500);
+    }, props?.delay || 500);
   });
   if (loading) {
     return (

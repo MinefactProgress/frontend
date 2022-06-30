@@ -292,7 +292,7 @@ const DistrictPage = () => {
   };
 
   return (
-    <Page title={data?.name}>
+    <Page title={data?.name} delay={1000}>
       <Grid>
         <Grid.Col sm={8}>
           <Paper
@@ -308,7 +308,7 @@ const DistrictPage = () => {
               size="xl"
               value={data?.progress}
               color={progressToColorName(data?.progress)}
-              label={data?.progress.toFixed(2) + "%"}
+              label={Math.round(data?.progress * 100) / 100 + " %"}
             />
           </Paper>
           <Paper
@@ -404,7 +404,7 @@ const DistrictPage = () => {
                 </thead>
                 <tbody>
                   {data
-                    ? data?.blocks.blocks
+                    ? data?.blocks?.blocks
                         .filter((block: any) =>
                           statusFilter != null
                             ? statusFilter === 5
@@ -461,7 +461,9 @@ const DistrictPage = () => {
                               </Badge>
                             </td>
                             <td>
-                              <Center>{block.progress.toFixed(2) + "%"}</Center>
+                              <Center>
+                                {Math.round(block.progress * 100) / 100 + " %"}
+                              </Center>
                               <Progress
                                 size="sm"
                                 value={block.progress}
@@ -545,12 +547,12 @@ const DistrictPage = () => {
                     center={
                       data?.center?.length > 0
                         ? data?.center
-                        : data?.blocks.blocks.length > 0
+                        : data?.blocks?.blocks.length > 0
                         ? data?.blocks.blocks[0].area[0]
                         : undefined
                     }
                     polygon={{ data: data?.area || [] }}
-                    components={data?.blocks.blocks
+                    components={data?.blocks?.blocks
                       .filter((block: any) =>
                         statusFilter != null
                           ? statusFilter === 5
@@ -585,7 +587,7 @@ const DistrictPage = () => {
                 </div>
               </Tabs.Tab>
               <Tabs.Tab label="Image Gallery" icon={<Photo size={14} />}>
-                {data?.image.length > 0 ? (
+                {data?.image?.length > 0 ? (
                   <div>
                     <Image
                       width="53vh"
@@ -629,7 +631,7 @@ const DistrictPage = () => {
                           color: "#9848d533",
                         },
                         min: 0,
-                        max: data?.blocks.blocks.length,
+                        max: data?.blocks?.blocks.length,
                       },
                     },
                     plugins: {
@@ -654,8 +656,9 @@ const DistrictPage = () => {
                       {
                         label: "Done",
                         data: [
-                          data?.blocks.blocks.filter((b: any) => b.status === 4)
-                            .length,
+                          data?.blocks?.blocks.filter(
+                            (b: any) => b.status === 4
+                          ).length,
                         ],
                         backgroundColor: theme.colors.green[7] + "0f",
                         borderColor: theme.colors.green[7],
@@ -664,8 +667,9 @@ const DistrictPage = () => {
                       {
                         label: "Detailing",
                         data: [
-                          data?.blocks.blocks.filter((b: any) => b.status === 3)
-                            .length,
+                          data?.blocks?.blocks.filter(
+                            (b: any) => b.status === 3
+                          ).length,
                         ],
                         backgroundColor: theme.colors.yellow[7] + "0f",
                         borderColor: theme.colors.yellow[7],
@@ -674,8 +678,9 @@ const DistrictPage = () => {
                       {
                         label: "Building",
                         data: [
-                          data?.blocks.blocks.filter((b: any) => b.status === 2)
-                            .length,
+                          data?.blocks?.blocks.filter(
+                            (b: any) => b.status === 2
+                          ).length,
                         ],
                         backgroundColor: theme.colors.orange[7] + "0f",
                         borderColor: theme.colors.orange[7],
@@ -684,8 +689,9 @@ const DistrictPage = () => {
                       {
                         label: "Reserved",
                         data: [
-                          data?.blocks.blocks.filter((b: any) => b.status === 1)
-                            .length,
+                          data?.blocks?.blocks.filter(
+                            (b: any) => b.status === 1
+                          ).length,
                         ],
                         backgroundColor: theme.colors.cyan[7] + "0f",
                         borderColor: theme.colors.cyan[7],
@@ -694,8 +700,9 @@ const DistrictPage = () => {
                       {
                         label: "Not Started",
                         data: [
-                          data?.blocks.blocks.filter((b: any) => b.status === 0)
-                            .length,
+                          data?.blocks?.blocks.filter(
+                            (b: any) => b.status === 0
+                          ).length,
                         ],
                         backgroundColor: theme.colors.red[7] + "0f",
                         borderColor: theme.colors.red[7],
@@ -717,7 +724,7 @@ const DistrictPage = () => {
                   <tbody>
                     {data
                       ? data?.builders
-                          .slice(0, 7)
+                          ?.slice(0, 7)
                           .map((builder: any, i: number) => (
                             <tr key={i}>
                               <td>{i + 1}</td>
@@ -761,7 +768,7 @@ const DistrictPage = () => {
                     <NumberInput
                       label="Block"
                       min={1}
-                      max={data?.blocks.blocks.length}
+                      max={data?.blocks?.blocks.length}
                       icon={<Hash size={18} />}
                       value={selBlock?.id}
                       onChange={handleClick}
@@ -803,12 +810,6 @@ const DistrictPage = () => {
                         setSelBlock({
                           ...selBlock,
                           builders: e,
-                        });
-                      }}
-                      onCreate={(e: any) => {
-                        setSelBlock({
-                          ...selBlock,
-                          builders: [...selBlock.builders, e],
                         });
                       }}
                     />
