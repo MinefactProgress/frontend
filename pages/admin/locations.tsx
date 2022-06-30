@@ -17,7 +17,7 @@ import { Pin, Trash } from "tabler-icons-react";
 import Map from "../../components/Map";
 import Page from "../../components/Page";
 import { showNotification } from "@mantine/notifications";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { useState } from "react";
 import useUser from "../../utils/hooks/useUser";
 
@@ -196,11 +196,10 @@ const LocationsPage = () => {
               width="100%"
               height="100%"
               polygon={{ data: data?.area || [] }}
-              
               mapEvents={{
-                click: (e:any) => {
-                  console.log(e.latlng)
-                  setLoc(e.latlng?.lat+", "+e.latlng?.lng)
+                click: (e: any) => {
+                  console.log(e.latlng);
+                  setLoc(e.latlng?.lat + ", " + e.latlng?.lng);
                 },
               }}
               components={data
@@ -241,12 +240,12 @@ const LocationsPage = () => {
                           : null
                       )
                     : null
-                ).concat({
+                )
+                .concat({
                   type: "marker",
-                  position: loc?loc.split(", "):[0,0],
+                  position: loc ? loc.split(", ") : [0, 0],
                   tooltip: "Added Point",
-                })
-              }
+                })}
             />
 
             <ScrollArea>
@@ -308,6 +307,7 @@ const LocationsPage = () => {
                 value={block}
                 onChange={(e: any) => {
                   setBlock(parseInt(e));
+                  mutate("/api/blocks/get");
                 }}
               />
             </Group>
