@@ -395,16 +395,18 @@ const LandmarksPage = () => {
                           <Group>
                             {selected.builder.map((u: any) => (
                               <Badge
-                                key={u}
+                                key={u.user}
                                 variant="outline"
                                 onClick={() =>
                                   handleRemoveBuilder(
                                     selected,
-                                    users.find((e: any) => e.username === u).uid
+                                    users.find(
+                                      (e: any) => e.username === u.user
+                                    ).uid
                                   )
                                 }
                               >
-                                {u}
+                                {u.user}
                               </Badge>
                             ))}
                           </Group>
@@ -488,7 +490,9 @@ const LandmarksPage = () => {
                               return landmark.completed;
                             case 4:
                               return (
-                                landmark.builder.includes(user.username) ||
+                                landmark.builder.some(
+                                  (b: any) => b.user === user?.username
+                                ) ||
                                 landmark.requests.some(
                                   (r: any) => r.user === user?.username
                                 )
@@ -517,18 +521,18 @@ const LandmarksPage = () => {
                                 <Group>
                                   {landmark.builder.map((u: any) => (
                                     <Badge
-                                      key={u}
+                                      key={u.user}
                                       variant="outline"
                                       onClick={() =>
                                         handleRemoveBuilder(
                                           landmark,
                                           users.find(
-                                            (e: any) => e.username === u
+                                            (e: any) => e.username === u.user
                                           ).uid
                                         )
                                       }
                                     >
-                                      {u}
+                                      {u.user}
                                     </Badge>
                                   ))}
                                 </Group>
@@ -598,8 +602,8 @@ const LandmarksPage = () => {
                                   </Button>
                                   <Select
                                     style={{ width: "40%" }}
-                                    disabled={landmark.builder.includes(
-                                      user?.username
+                                    disabled={landmark.builder.some(
+                                      (b: any) => b.user === user?.username
                                     )}
                                     value={`${
                                       landmark.requests.find(
@@ -677,7 +681,9 @@ const LandmarksPage = () => {
                       return landmark.completed;
                     case 4:
                       return (
-                        landmark.builder.includes(user.username) ||
+                        landmark.builder.some(
+                          (b: any) => b.user === user?.username
+                        ) ||
                         landmark.requests.some(
                           (r: any) => r.user === user?.username
                         )
