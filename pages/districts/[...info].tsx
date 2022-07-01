@@ -799,11 +799,25 @@ const DistrictPage = () => {
                               u.username !== "root" &&
                               u.username !== user?.username
                           )
+                          .sort((a: any, b: any) =>
+                            a.username.localeCompare(b.username)
+                          )
                           .map((u: any) => ({
                             value: u.username,
                             label: u.username,
                             group: "Other Users",
-                          }))
+                          })),
+                        selBlock?.builders
+                          .filter(
+                            (b: any) =>
+                              !adminsettings?.value.some((s: any) => s === b) &&
+                              !users?.some((u: any) => u.username === b)
+                          )
+                          .map((b: any) => ({
+                            value: b,
+                            label: b,
+                            group: "Special",
+                          })) || []
                       )}
                       value={selBlock?.builders}
                       onChange={(e: any) => {
