@@ -23,18 +23,17 @@ const LinksPage = () => {
   const theme = useMantineTheme();
   const router = useRouter();
   const [user] = useUser();
-  const { data } = useSWR(
-    "/api/admin/settings/get/links"
-  );
+  const { data } = useSWR("/api/admin/settings/get/links");
   const form = useForm({
     initialValues: {
       name: "",
       link: "",
+      short: "",
     },
   });
   const handleSubmit = async (values: typeof form.values) => {
     const result = await fetch(
-      process.env.NEXT_PUBLIC_API_URL+"/api/admin/settings/set",
+      process.env.NEXT_PUBLIC_API_URL + "/api/admin/settings/set",
       {
         method: "POST",
         headers: {
@@ -45,7 +44,10 @@ const LinksPage = () => {
           key: user.apikey,
           name: "links",
           permission: 1,
-          value: [{ name: values.name, link: values.link }, ...data.value],
+          value: [
+            { name: values.name, link: values.link, short: values.short },
+            ...data.value,
+          ],
         }),
       }
     )
@@ -101,7 +103,11 @@ const LinksPage = () => {
                 label="Link"
                 placeholder="Website Link"
                 {...form.getInputProps("link")}
-              ></TextInput>
+              ></TextInput><TextInput
+              label="Redirect"
+              placeholder="Text behind https://progress.minefact.de/l/ to get redirected to this URL"
+              {...form.getInputProps("short")}
+            ></TextInput>
             </Group>
             <Button
               type="submit"
@@ -117,21 +123,20 @@ const LinksPage = () => {
       ) : null}
       <Grid>
         {data?.value?.map((link: any, i: number) => (
-          <Grid.Col sm={12} md={4}
-          key={i}>
+          <Grid.Col sm={12} md={4} key={i}>
             <Paper
-            withBorder
-            radius="md"
-            p="xs"
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              window.open(link.link, "_blank");
-            }}
-          >
-            <Text>{link.name}</Text>
-          </Paper>
+              withBorder
+              radius="md"
+              p="xs"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                window.open(link.link, "_blank");
+              }}
+            >
+              <Text>{link.name}</Text>
+            </Paper>
           </Grid.Col>
         ))}
       </Grid>
