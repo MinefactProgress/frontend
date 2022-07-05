@@ -94,6 +94,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
       <div style={{width:"100%",
           height: "calc(100vh - 60px)",position:"relative"}}>
       <Group
+      position="right"
         style={{
           position: "absolute",
           zIndex: 2,
