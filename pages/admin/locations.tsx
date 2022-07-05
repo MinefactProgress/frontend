@@ -7,6 +7,7 @@ import {
   Paper,
   Progress,
   ScrollArea,
+  Select,
   SimpleGrid,
   Text,
   TextInput,
@@ -17,13 +18,13 @@ import { Pin, Trash } from "tabler-icons-react";
 import Map from "../../components/Map";
 import Page from "../../components/Page";
 import { showNotification } from "@mantine/notifications";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { useState } from "react";
 import useUser from "../../utils/hooks/useUser";
 
 const LocationsPage = () => {
   const [block, setBlock] = useState(1);
-  const [district, setDistrict] = useState("");
+  const [district, setDistrict] = useState(0);
   const [loc, setLoc] = useState("");
   const theme = useMantineTheme();
   const [selected, setSelected] = useState({
@@ -36,6 +37,7 @@ const LocationsPage = () => {
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
   });
+  const { data: districts } = useSWR("/api/districts/get");
   var doneElem = 0;
   var totalElem = 0;
   for (var i = 0; i < data?.length; i++) {
@@ -196,11 +198,10 @@ const LocationsPage = () => {
               width="100%"
               height="100%"
               polygon={{ data: data?.area || [] }}
-              
               mapEvents={{
-                click: (e:any) => {
-                  console.log(e.latlng)
-                  setLoc(e.latlng?.lat+", "+e.latlng?.lng)
+                click: (e: any) => {
+                  console.log(e.latlng);
+                  setLoc(e.latlng?.lat + ", " + e.latlng?.lng);
                 },
               }}
               components={data
@@ -241,12 +242,12 @@ const LocationsPage = () => {
                           : null
                       )
                     : null
-                ).concat({
+                )
+                .concat({
                   type: "marker",
-                  position: loc?loc.split(", "):[0,0],
+                  position: loc ? loc.split(", ") : [0, 0],
                   tooltip: "Added Point",
-                })
-              }
+                })}
             />
 
             <ScrollArea>
@@ -293,12 +294,47 @@ const LocationsPage = () => {
         >
           <form onSubmit={handleSubmit}>
             <Group position="center" grow>
-              <TextInput
+              <Select
                 label="District"
                 name="district"
-                value={district}
+                searchable
+                clearable
+                dropdownPosition="bottom"
+                maxDropdownHeight={120}
+                data={
+                  districts
+                    ? districts
+                        ?.filter(
+                          (district: any) =>
+                            !districts.some(
+                              (d: any) => d.parent === district.id
+                            )
+                        )
+                        .sort((a: any, b: any) => a.name.localeCompare(b.name))
+                        .map((district: any) => {
+                          const filter = districts?.filter(
+                            (d: any) => d.name === district.name
+                          );
+                          if (filter.length > 1) {
+                            return {
+                              value: district.id,
+                              label: `${district.name} (${
+                                districts?.find(
+                                  (d: any) => d.id === district.parent
+                                ).name
+                              })`,
+                            };
+                          } else {
+                            return {
+                              value: district.id,
+                              label: district.name,
+                            };
+                          }
+                        })
+                    : []
+                }
                 onChange={(e: any) => {
-                  setDistrict(e.currentTarget.value);
+                  setDistrict(e);
                 }}
               />
               <NumberInput
@@ -308,6 +344,7 @@ const LocationsPage = () => {
                 value={block}
                 onChange={(e: any) => {
                   setBlock(parseInt(e));
+                  mutate("/api/blocks/get");
                 }}
               />
             </Group>
