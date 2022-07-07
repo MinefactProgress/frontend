@@ -221,7 +221,10 @@ const LocationsPage = () => {
                           opacity: block.uid == selected.uid ? 1 : 0.1,
                         },
                         radius: 15,
-                        tooltip: "Block #" + block.uid,
+                        tooltip: `${
+                          districts?.find((d: any) => d.id === block.district)
+                            .name
+                        } #${block.id} (#${block.uid})`,
                         eventHandlers: {
                           click: () => {
                             setSelected(block);
