@@ -696,12 +696,13 @@ const LandmarksPage = () => {
                   type: "circle",
                   center: landmark.location,
                   options: {
-                    color:
-                      landmark.requests.length > 0
-                        ? landmark.builder.length > 0
-                          ? theme.colors.green[7]
-                          : theme.colors.cyan[7]
-                        : theme.colors.red[7],
+                    color: landmark.completed
+                      ? theme.colors.green[7]
+                      : landmark.requests.length > 0
+                      ? landmark.builder.length > 0
+                        ? theme.colors.orange[6]
+                        : theme.colors.cyan[7]
+                      : theme.colors.red[7],
                     opacity: selected
                       ? selected.id == landmark.id
                         ? 1
