@@ -9,7 +9,7 @@ import {
   Legend,
   LineElement,
   LinearScale,
-  PointElement
+  PointElement,
 } from "chart.js";
 import {
   Badge,
@@ -21,7 +21,7 @@ import {
   ScrollArea,
   Table,
   Text,
-  useMantineTheme
+  useMantineTheme,
 } from "@mantine/core";
 import { Calendar, Number0 } from "tabler-icons-react";
 
@@ -52,9 +52,20 @@ const ProjectsPage = () => {
   const [user] = useUser();
   const { data } = useSWR("/api/projects/get");
   var projects: any = { labels: [], datasets: [] };
-  const [rangeValue, setRangeValue] = useState<[number, number]>([-30, -1]);
+  var reverseData: any = null;
+  if (data && !reverseData) {
+    reverseData = data.slice().reverse();
+  }
+  const daysSinceStart = Math.floor(
+    (new Date().getTime() - new Date("2020-04-13").getTime()) /
+      (1000 * 3600 * 24)
+  );
+  const [rangeValue, setRangeValue] = useState<[number, number]>([
+    daysSinceStart - 30,
+    daysSinceStart - 1,
+  ]);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  data?.slice(rangeValue[0] - 1, rangeValue[1]).forEach((element: any) => {
+  data?.slice(rangeValue[0] - 1, rangeValue[1]+2).forEach((element: any) => {
     projects.labels.push(new Date(element.date).toLocaleDateString());
     projects.datasets.push(element.projects);
   });
@@ -92,6 +103,7 @@ const ProjectsPage = () => {
         }
       });
   };
+
   return (
     <Page>
       <Grid>
@@ -208,7 +220,7 @@ const ProjectsPage = () => {
               }
             </Text>
           </Paper>
-          {(user.permission || 0) >= 1 && (
+          {(user.permission || 0) >= 2 && (
             <Paper
               withBorder
               radius="md"
@@ -274,24 +286,39 @@ const ProjectsPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data
-                    ? data.map((item: any, i: number) => (
-                        <tr key={i}>
-                          <td>{new Date(item.date).toLocaleDateString()}</td>
+                  {reverseData
+                    ? reverseData.map((item: any, i: number) => (
+                        <tr
+                          key={i}
+                          style={{
+                            backgroundColor:
+                              i == 0
+                                ? theme.colorScheme == "dark"
+                                  ? theme.colors.dark[4]
+                                  : theme.colors.gray[2]
+                                : undefined,
+                          }}
+                        >
+                          <td>{new Date(item.date).toLocaleDateString()} {i == 0?"(Today)":null}</td>
                           <td>
                             {item.projects}
                             <Badge
                               color={
-                                !isNaN(item.projects - data[i - 1]?.projects) &&
-                                item.projects - data[i - 1]?.projects > 0
+                                !isNaN(
+                                  item.projects - reverseData[i + 1]?.projects
+                                ) &&
+                                item.projects - reverseData[i + 1]?.projects > 0
                                   ? "green"
                                   : "red"
                               }
                               style={{ marginLeft: theme.spacing.md }}
                             >
-                              {!isNaN(item.projects - data[i - 1]?.projects)
-                                ? "+ " + (item.projects - data[i - 1]?.projects)
-                                : "+0"}
+                              {!isNaN(
+                                item.projects - reverseData[i + 1]?.projects
+                              )
+                                ? "+ " +
+                                  (item.projects - reverseData[i + 1]?.projects)
+                                : "+ 0"}
                             </Badge>
                           </td>
                         </tr>
