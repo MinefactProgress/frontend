@@ -14,16 +14,16 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { Pin, Trash } from "tabler-icons-react";
+import useSWR, { mutate } from "swr";
 
 import Map from "../../components/Map";
 import Page from "../../components/Page";
 import { showNotification } from "@mantine/notifications";
-import useSWR, { mutate } from "swr";
 import { useState } from "react";
 import useUser from "../../utils/hooks/useUser";
 
 const LocationsPage = () => {
-  const [block, setBlock] = useState(1);
+  const [block, setBlock] = useState(0);
   const [district, setDistrict] = useState(0);
   const [loc, setLoc] = useState("");
   const theme = useMantineTheme();
@@ -50,6 +50,13 @@ const LocationsPage = () => {
 
   const progress = (doneElem / totalElem) * 100;
   const handleSubmit = (e: any) => {
+    if (block === 0) {
+      handleDistrict(e);
+    } else {
+      handleBlock(e);
+    }
+  };
+  const handleBlock = (e: any) => {
     e.preventDefault();
     fetch(
       process.env.NEXT_PUBLIC_API_URL +
@@ -118,6 +125,40 @@ const LocationsPage = () => {
               " of block " +
               block +
               " has been deleted",
+            color: "green",
+            icon: <Pin />,
+          });
+        }
+      });
+  };
+  const handleDistrict = (e: any) => {
+    e.preventDefault();
+    fetch(
+      process.env.NEXT_PUBLIC_API_URL +
+        "/api/districts/edit?key=e9299168-9a87-4a44-801b-4214449e46be",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          key: "e9299168-9a87-4a44-801b-4214449e46be",
+          district: district,
+          areaadd: loc,
+        }),
+      }
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.error) {
+          showNotification({
+            title: "Error Adding Location",
+            message: res.message,
+            color: "red",
+          });
+        } else {
+          setLoc("");
+          showNotification({
+            title: "Location Added",
+            message: "The Location of Distrct " + district + " has been added",
             color: "green",
             icon: <Pin />,
           });
@@ -206,7 +247,7 @@ const LocationsPage = () => {
               }}
               components={data
                 ?.map((block: any) =>
-                  block.location != "[]"
+                  block.location != "[]" && (district?block.district == district:true)
                     ? {
                         type: "polygon",
                         positions: JSON.parse(block.area),
@@ -359,14 +400,18 @@ const LocationsPage = () => {
                 setLoc(e.currentTarget.value);
               }}
             />
-
-            <Button
-              type="submit"
-              style={{ marginTop: theme.spacing.md }}
-              fullWidth
-            >
-              Add Location
-            </Button>
+            <Group grow>
+              <Button type="submit" style={{ marginTop: theme.spacing.md }}>
+                Add Block Location
+              </Button>
+              <Button
+                type="submit"
+                style={{ marginTop: theme.spacing.md }}
+                variant="outline"
+              >
+                Add District Location
+              </Button>
+            </Group>
           </form>
         </Paper>
       </MediaQuery>
