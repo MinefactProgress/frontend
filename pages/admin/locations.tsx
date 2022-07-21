@@ -29,9 +29,9 @@ const LocationsPage = () => {
   const theme = useMantineTheme();
   const [selected, setSelected] = useState({
     uid: null,
-    area: "[[],[]]",
+    area: [[], []],
     id: null,
-    district:null
+    district: null,
   });
   const [user, setUser] = useUser();
   const { data } = useSWR("/api/blocks/get", {
@@ -44,7 +44,7 @@ const LocationsPage = () => {
   for (var i = 0; i < data?.length; i++) {
     const elem = data[i];
     totalElem++;
-    if (elem.area != "[]") {
+    if (elem.area.length > 0) {
       doneElem++;
     }
   }
@@ -252,7 +252,7 @@ const LocationsPage = () => {
                   (district ? block.district == district : true)
                     ? {
                         type: "polygon",
-                        positions: JSON.parse(block.area),
+                        positions: block.area,
                         options: {
                           color: `rgba(${
                             progress == 0
@@ -278,7 +278,7 @@ const LocationsPage = () => {
                 )
                 .concat(
                   selected.uid != null
-                    ? JSON.parse(selected.area).map((block: any, i: number) =>
+                    ? selected.area.map((block: any, i: number) =>
                         block
                           ? {
                               type: "marker",
@@ -291,7 +291,7 @@ const LocationsPage = () => {
                 )
                 .concat(
                   districts?.map((district: any) =>
-                    district.location != [] && district.id >1
+                    district.location != [] && district.id > 1
                       ? {
                           type: "polygon",
                           positions: district.area,
@@ -303,7 +303,7 @@ const LocationsPage = () => {
                           tooltip: `${district.name}`,
                           eventHandlers: {
                             click: () => {
-                              setDistrict(district.id)
+                              setDistrict(district.id);
                             },
                           },
                         }
@@ -328,7 +328,7 @@ const LocationsPage = () => {
                 Coordinates for Block {selected?.uid}
               </Text>
               {selected
-                ? JSON.parse(selected?.area).map((point: any, i: number) => (
+                ? selected?.area.map((point: any, i: number) => (
                     <SimpleGrid key={i} cols={2}>
                       <Text
                         color="gray"

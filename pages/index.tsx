@@ -91,174 +91,190 @@ const Home: NextPage = ({ user, setUser }: any) => {
   return (
     <Page noMargin style={{ position: "relative" }}>
       {/* Head Map */}
-      <div style={{width:"100%",
-          height: "calc(100vh - 60px)",position:"relative"}}>
-      <Group
-      position="right"
+      <div
         style={{
-          position: "absolute",
-          zIndex: 2,
-          top: theme.spacing.md,
-          right: theme.spacing.md,
-        }}
-      >
-        <Badge
-          color="red"
-          size="lg"
-          variant={selectedBlock.status == 0|| selectedBlock.status == 1 ? "filled" : "dot"}
-          style={{
-            backgroundColor:
-              selectedBlock.status != 0 && selectedBlock.status != 1
-                ? theme.colorScheme === "dark"
-                  ? "black"
-                  : "white"
-                : undefined,
-          }}
-        >
-          Not Started
-        </Badge>
-        <Badge
-          color="yellow"
-          size="lg"
-          variant={selectedBlock.status == 2|| selectedBlock.status == 3 ? "filled" : "dot"}
-          style={{
-            backgroundColor:
-              selectedBlock.status != 2&& selectedBlock.status != 3
-                ? theme.colorScheme === "dark"
-                  ? "black"
-                  : "white"
-                : undefined,
-          }}
-        >
-          Building
-        </Badge>
-        <Badge
-          color="green"
-          size="lg"
-          variant={selectedBlock.status == 4 ? "filled" : "dot"}
-          style={{
-            backgroundColor:
-              selectedBlock.status != 4
-                ? theme.colorScheme === "dark"
-                  ? "black"
-                  : "white"
-                : undefined,
-          }}
-        >
-          Completed
-        </Badge>
-        {selectedBlock.uid != 0 && (
-          <Tooltip
-            label="Clear selection"
-            withArrow
-            placement="start"
-            position="bottom"
-          >
-            <ActionIcon
-              size="sm"
-              radius="xl"
-              variant="outline"
-              style={{
-                backgroundColor:
-                  theme.colorScheme === "dark" ? "black" : "white",
-              }}
-              onClick={() => {
-                setSelectedBlock({
-                  uid: 0,
-                  id: 0,
-                  district: -1,
-                  status: -1,
-                  progress: 0,
-                  details: false,
-                  builder: "",
-                  completionDate: null,
-                  area: "[]",
-                });
-              }}
-            >
-              <X size={16} />
-            </ActionIcon>
-          </Tooltip>
-        )}
-      </Group>
-      <Group
-        style={{
-          position: "absolute",
-          zIndex: 2,
-          bottom: theme.spacing.md,
           width: "100%",
+          height: "calc(100vh - 60px)",
+          position: "relative",
         }}
-        position="center"
       >
-        <Button
-          variant={selectedBlock.uid != 0 ? "light" : "filled"}
-          color="gray"
-          radius="xl"
-          size="md"
-          onClick={() => {
-            router.push("#i");
-          }}
+        <Group
+          position="right"
           style={{
-            boxShadow: theme.shadows.md,
+            position: "absolute",
+            zIndex: 2,
+            top: theme.spacing.md,
+            right: theme.spacing.md,
           }}
         >
-          View More
-        </Button>
-        {selectedBlock.uid != 0 && (
+          <Badge
+            color="red"
+            size="lg"
+            variant={
+              selectedBlock.status == 0 || selectedBlock.status == 1
+                ? "filled"
+                : "dot"
+            }
+            style={{
+              backgroundColor:
+                selectedBlock.status != 0 && selectedBlock.status != 1
+                  ? theme.colorScheme === "dark"
+                    ? "black"
+                    : "white"
+                  : undefined,
+            }}
+          >
+            Not Started
+          </Badge>
+          <Badge
+            color="yellow"
+            size="lg"
+            variant={
+              selectedBlock.status == 2 || selectedBlock.status == 3
+                ? "filled"
+                : "dot"
+            }
+            style={{
+              backgroundColor:
+                selectedBlock.status != 2 && selectedBlock.status != 3
+                  ? theme.colorScheme === "dark"
+                    ? "black"
+                    : "white"
+                  : undefined,
+            }}
+          >
+            Building
+          </Badge>
+          <Badge
+            color="green"
+            size="lg"
+            variant={selectedBlock.status == 4 ? "filled" : "dot"}
+            style={{
+              backgroundColor:
+                selectedBlock.status != 4
+                  ? theme.colorScheme === "dark"
+                    ? "black"
+                    : "white"
+                  : undefined,
+            }}
+          >
+            Completed
+          </Badge>
+          {selectedBlock.uid != 0 && (
+            <Tooltip
+              label="Clear selection"
+              withArrow
+              placement="start"
+              position="bottom"
+            >
+              <ActionIcon
+                size="sm"
+                radius="xl"
+                variant="outline"
+                style={{
+                  backgroundColor:
+                    theme.colorScheme === "dark" ? "black" : "white",
+                }}
+                onClick={() => {
+                  setSelectedBlock({
+                    uid: 0,
+                    id: 0,
+                    district: -1,
+                    status: -1,
+                    progress: 0,
+                    details: false,
+                    builder: "",
+                    completionDate: null,
+                    area: "[]",
+                  });
+                }}
+              >
+                <X size={16} />
+              </ActionIcon>
+            </Tooltip>
+          )}
+        </Group>
+        <Group
+          style={{
+            position: "absolute",
+            zIndex: 2,
+            bottom: theme.spacing.md,
+            width: "100%",
+          }}
+          position="center"
+        >
           <Button
-            variant="filled"
+            variant={selectedBlock.uid != 0 ? "light" : "filled"}
             color="gray"
             radius="xl"
             size="md"
             onClick={() => {
-              router.push(
-                "/districts/" + districts[selectedBlock.district-1].name + "/" + selectedBlock.id
-              );
+              router.push("#i");
             }}
             style={{
               boxShadow: theme.shadows.md,
             }}
           >
-            View Block Stats
+            View More
           </Button>
-        )}
-      </Group>
-      <Map
-        width="100%"
-        height="100%"
-        zoom={13}
-        polygon={{ data: data?.area || [] }}
-        mapStyle={{ zIndex: 0 }}
-        components={data?.map((block: any) =>
-          block.location != "[]"
-            ? {
-                type: "polygon",
-                positions: JSON.parse(block.area),
-                options: {
-                  color: `${colorFromStatus(block.status, true)}FF`,
-                  opacity:
-                    selectedBlock.uid != 0
-                      ? block.uid == selectedBlock.uid
-                        ? 1
-                        : 0.05
-                      : 0.5,
-                },
-                radius: 15,
-                tooltip:
-                  (districts ? districts[block.district - 1].name : "") +
-                  " #" +
-                  block.id +
-                  " | " +
-                  (block.status == 1 ? block.builder : block.progress + "%"),
-                eventHandlers: {
-                  click: () => {
-                    setSelectedBlock(block);
+          {selectedBlock.uid != 0 && (
+            <Button
+              variant="filled"
+              color="gray"
+              radius="xl"
+              size="md"
+              onClick={() => {
+                router.push(
+                  "/districts/" +
+                    districts[selectedBlock.district - 1].name +
+                    "/" +
+                    selectedBlock.id
+                );
+              }}
+              style={{
+                boxShadow: theme.shadows.md,
+              }}
+            >
+              View Block Stats
+            </Button>
+          )}
+        </Group>
+        <Map
+          width="100%"
+          height="100%"
+          zoom={13}
+          polygon={{ data: data?.area || [] }}
+          mapStyle={{ zIndex: 0 }}
+          components={data?.map((block: any) =>
+            block.location != "[]"
+              ? {
+                  type: "polygon",
+                  positions: block.area,
+                  options: {
+                    color: `${colorFromStatus(block.status, true)}FF`,
+                    opacity:
+                      selectedBlock.uid != 0
+                        ? block.uid == selectedBlock.uid
+                          ? 1
+                          : 0.05
+                        : 0.5,
                   },
-                },
-              }
-            : null
-        )}
-      ></Map>
+                  radius: 15,
+                  tooltip:
+                    (districts ? districts[block.district - 1].name : "") +
+                    " #" +
+                    block.id +
+                    " | " +
+                    (block.status == 1 ? block.builder : block.progress + "%"),
+                  eventHandlers: {
+                    click: () => {
+                      setSelectedBlock(block);
+                    },
+                  },
+                }
+              : null
+          )}
+        ></Map>
       </div>
       {/* Content */}
       <div style={{ margin: theme.spacing.md }} id="i">
@@ -279,49 +295,54 @@ const Home: NextPage = ({ user, setUser }: any) => {
         </Paper>
         <Grid columns={25} sx={{ marginTop: theme.spacing.md }}>
           <Grid.Col sm={5}>
-          <StatsText
-            title="Tracking since"
-            style={{ height: "100%" }}
-            icon={<Calendar />}
-          >
-            {Math.floor(
-              (new Date().getTime() - new Date("2020-04-13").getTime()) /
-                (1000 * 3600 * 24)
-            )}{" "}
-            Days
-          </StatsText></Grid.Col>
+            <StatsText
+              title="Tracking since"
+              style={{ height: "100%" }}
+              icon={<Calendar />}
+            >
+              {Math.floor(
+                (new Date().getTime() - new Date("2020-04-13").getTime()) /
+                  (1000 * 3600 * 24)
+              )}{" "}
+              Days
+            </StatsText>
+          </Grid.Col>
           <Grid.Col sm={5}>
-          <StatsText
-            title="Total Progress"
-            style={{ height: "100%" }}
-            icon={<ChartBubble />}
-          >
-            {Math.round(progress?.progress)}%
-          </StatsText></Grid.Col>
+            <StatsText
+              title="Total Progress"
+              style={{ height: "100%" }}
+              icon={<ChartBubble />}
+            >
+              {Math.round(progress?.progress)}%
+            </StatsText>
+          </Grid.Col>
           <Grid.Col sm={5}>
-          <StatsText
-            title="Helping hands"
-            style={{ height: "100%" }}
-            icon={<Users />}
-          >
-            {progress?.builders.length} Builders
-          </StatsText></Grid.Col>
+            <StatsText
+              title="Helping hands"
+              style={{ height: "100%" }}
+              icon={<Users />}
+            >
+              {progress?.builders.length} Builders
+            </StatsText>
+          </Grid.Col>
           <Grid.Col sm={5}>
-          <StatsText
-            title="In-Progress Blocks"
-            style={{ height: "100%" }}
-            icon={<Backhoe />}
-          >
-            {progress?.blocksCount.building} Blocks
-          </StatsText></Grid.Col>
+            <StatsText
+              title="In-Progress Blocks"
+              style={{ height: "100%" }}
+              icon={<Backhoe />}
+            >
+              {progress?.blocksCount.building} Blocks
+            </StatsText>
+          </Grid.Col>
           <Grid.Col sm={5}>
-          <StatsText
-            title="Total Blocks"
-            style={{ height: "100%" }}
-            icon={<BuildingCommunity />}
-          >
-            {progress?.blocksCount.total} Blocks
-          </StatsText></Grid.Col>
+            <StatsText
+              title="Total Blocks"
+              style={{ height: "100%" }}
+              icon={<BuildingCommunity />}
+            >
+              {progress?.blocksCount.total} Blocks
+            </StatsText>
+          </Grid.Col>
         </Grid>
         <Paper
           withBorder
@@ -378,7 +399,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
                 },
               },
             }}
-            height={smallScreen?"120px":"38px"}
+            height={smallScreen ? "120px" : "38px"}
             data={{
               labels: [
                 progress?.name,
@@ -461,7 +482,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
                 },
               },
             }}
-            height={smallScreen?"160px":"50px"}
+            height={smallScreen ? "160px" : "50px"}
             data={{
               labels: projects.labels,
               datasets: [
@@ -519,7 +540,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
                 },
               },
             }}
-            height={smallScreen?"160px":"50px"}
+            height={smallScreen ? "160px" : "50px"}
             data={{
               labels: players.labels,
               datasets: [
