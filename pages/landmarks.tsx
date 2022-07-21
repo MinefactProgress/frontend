@@ -53,7 +53,12 @@ const LandmarksPage = () => {
   const { data: users } = useSWR("/api/users/get");
   const [selected, setSelected] = useState<landmark | null>(null);
 
-  const requests: { name: any; claims: number; requests: number }[] = [];
+  const requests: {
+    name: any;
+    done: number;
+    claims: number;
+    requests: number[];
+  }[] = [];
   if (data) {
     for (const landmark of data) {
       // Claims
@@ -61,11 +66,29 @@ const LandmarksPage = () => {
         if (requests.some((e: any) => e.name === user.user)) {
           requests.some((e: any) => {
             if (e.name === user.user) {
-              e.claims++;
+              if (landmark.completed) {
+                e.done++;
+              } else {
+                e.claims++;
+              }
             }
           });
         } else {
-          requests.push({ name: user.user, claims: 1, requests: 0 });
+          if (landmark.completed) {
+            requests.push({
+              name: user.user,
+              done: 1,
+              claims: 0,
+              requests: [0, 0, 0],
+            });
+          } else {
+            requests.push({
+              name: user.user,
+              done: 0,
+              claims: 1,
+              requests: [0, 0, 0],
+            });
+          }
         }
       }
       // Requests
@@ -73,15 +96,39 @@ const LandmarksPage = () => {
         if (requests.some((e: any) => e.name === user.user)) {
           requests.some((e: any) => {
             if (e.name === user.user) {
-              e.requests++;
+              e.requests[user.priority - 1]++;
             }
           });
         } else {
-          requests.push({ name: user.user, claims: 0, requests: 1 });
+          requests.push({
+            name: user.user,
+            done: 0,
+            claims: 0,
+            requests: [
+              +(user.priority === 1),
+              +(user.priority === 2),
+              +(user.priority === 3),
+            ],
+          });
         }
       }
     }
   }
+  requests.sort((a: any, b: any) => {
+    if (a.done === b.done) {
+      if (a.claims === b.claims) {
+        if (a.requests === b.requests) {
+          return a.name.localeCompare(b.name);
+        }
+        return (
+          b.requests.reduce((a: number, b: number) => a + b, 0) -
+          a.requests.reduce((a: number, b: number) => a + b, 0)
+        );
+      }
+      return b.claims - a.claims;
+    }
+    return b.done - a.done;
+  });
 
   const getLandmarkStatus = (landmark: landmark | null) => {
     if (landmark === null) {
@@ -733,25 +780,21 @@ const LandmarksPage = () => {
                 <thead>
                   <tr>
                     <th>User</th>
+                    <th>Finished</th>
                     <th>Claims</th>
                     <th>Requests</th>
                   </tr>
                 </thead>
                 <tbody>
                   {requests
-                    ? requests
-                        ?.sort((a: any, b: any) => {
-                          return (
-                            b.claims + b.requests - (a.claims + a.requests)
-                          );
-                        })
-                        .map((request: any) => (
-                          <tr key={request.name}>
-                            <td>{request.name}</td>
-                            <td>{request.claims}</td>
-                            <td>{request.requests}</td>
-                          </tr>
-                        ))
+                    ? requests?.map((request: any) => (
+                        <tr key={request.name}>
+                          <td>{request.name}</td>
+                          <td>{request.done}</td>
+                          <td>{request.claims}</td>
+                          <td>{request.requests.join(" | ")}</td>
+                        </tr>
+                      ))
                     : null}
                 </tbody>
               </Table>
