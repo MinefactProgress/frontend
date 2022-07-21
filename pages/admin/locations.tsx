@@ -31,6 +31,7 @@ const LocationsPage = () => {
     uid: null,
     area: "[[],[]]",
     id: null,
+    district:null
   });
   const [user, setUser] = useUser();
   const { data } = useSWR("/api/blocks/get", {
@@ -247,7 +248,8 @@ const LocationsPage = () => {
               }}
               components={data
                 ?.map((block: any) =>
-                  block.location != "[]" && (district?block.district == district:true)
+                  block.location != "[]" &&
+                  (district ? block.district == district : true)
                     ? {
                         type: "polygon",
                         positions: JSON.parse(block.area),
@@ -286,6 +288,27 @@ const LocationsPage = () => {
                           : null
                       )
                     : null
+                )
+                .concat(
+                  districts?.map((district: any) =>
+                    district.location != [] && district.id >1
+                      ? {
+                          type: "polygon",
+                          positions: district.area,
+                          options: {
+                            color: `blue`,
+                            opacity: district.id == selected.district ? 1 : 0.1,
+                          },
+                          radius: 15,
+                          tooltip: `${district.name}`,
+                          eventHandlers: {
+                            click: () => {
+                              setDistrict(district.id)
+                            },
+                          },
+                        }
+                      : null
+                  )
                 )
                 .concat({
                   type: "marker",
