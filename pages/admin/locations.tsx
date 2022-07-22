@@ -42,7 +42,7 @@ const LocationsPage = () => {
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
   });
-  const { data: districts } = useSWR("/api/districts/get",{
+  const { data: districts } = useSWR("/api/districts/get", {
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
   });
@@ -278,8 +278,7 @@ const LocationsPage = () => {
                 checked
                 name="Blocks"
                 components={data?.map((block: any) =>
-                  block.location != "[]" &&
-                  (district ? block.district == district : true)
+                  block.location != "[]"
                     ? {
                         type: "polygon",
                         positions: block.area,
@@ -291,7 +290,14 @@ const LocationsPage = () => {
                               ? "216, 108, 50"
                               : "106, 186, 97"
                           })`,
-                          opacity: block.uid == selected.uid ? 1 : 0.1,
+                          opacity:
+                            block.uid == selected.uid
+                              ? 1
+                              : district
+                              ? block.district == district
+                                ? 1
+                                : 0.1
+                              : 0.4,
                         },
                         radius: 15,
                         tooltip: `${
