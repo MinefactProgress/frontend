@@ -4,6 +4,7 @@ import "leaflet/dist/leaflet.css";
 
 import {
   Circle,
+  LayerGroup,
   LayersControl,
   MapContainer,
   Marker,
@@ -88,7 +89,25 @@ const Map = (props: any) => {
           </LayersControl.BaseLayer>
 
           {props.children}
+          <MapLayer
+            checked
+            name={props.defaultLayerName || "Default Layer"}
+            components={props.components}
+          />
         </LayersControl>
+      </MapContainer>
+    </div>
+  );
+};
+
+export function MapLayer(props: {
+  name: string;
+  components?: any;
+  checked?: boolean;
+}) {
+  return (
+    <LayersControl.Overlay name={props.name} checked={props.checked}>
+      <LayerGroup>
         {props.components?.map((component: any) => {
           if (component == null) return null;
           if (component.type === "polygon") {
@@ -149,9 +168,9 @@ const Map = (props: any) => {
             );
           }
         })}
-      </MapContainer>
-    </div>
+      </LayerGroup>
+    </LayersControl.Overlay>
   );
-};
+}
 
 export default Map;
