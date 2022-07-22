@@ -42,7 +42,10 @@ const LocationsPage = () => {
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
   });
-  const { data: districts } = useSWR("/api/districts/get");
+  const { data: districts } = useSWR("/api/districts/get",{
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+  });
   var doneElem = 0;
   var totalElem = 0;
   for (var i = 0; i < data?.length; i++) {
