@@ -286,7 +286,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
                     positions: district.area,
                     options: {
                       color: `${colorFromStatus(district.status, true)}FF`,
-                      opacity: district.id == selectedBlock.district ? 1 : 0.1,
+                      opacity: selectedBlock.uid !=0?district.id == selectedBlock.district ? 1 : 0.1:1,
                     },
                     radius: 15,
                     tooltip: `${district.name}`,
