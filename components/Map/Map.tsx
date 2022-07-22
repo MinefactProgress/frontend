@@ -91,7 +91,7 @@ const Map = (props: any) => {
 
           {props.children}
           <MapLayer
-            checked
+            checked={props.defaultLayerChecked!=null?props.defaultLayerChecked:true}
             name={props.defaultLayerName || "Default Layer"}
             components={props.components}
           />
