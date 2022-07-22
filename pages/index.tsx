@@ -245,6 +245,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
           height="100%"
           zoom={13}
           defaultLayerName="Block Borders"
+          defaultLayerChecked={router.query.d}
           polygon={{ data: data?.area || [] }}
           mapStyle={{ zIndex: 0 }}
           components={data?.map((block: any) =>
@@ -279,6 +280,8 @@ const Home: NextPage = ({ user, setUser }: any) => {
         >
           <MapLayer
             name="District Borders"
+            
+          checked={!router.query.d}
             components={districts?.map((district: any) =>
               district.location != [] && district.id > 1
                 ? {
