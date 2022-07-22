@@ -17,6 +17,7 @@ import { Pin, Trash } from "tabler-icons-react";
 import useSWR, { mutate } from "swr";
 
 import Map from "../../components/Map";
+import MapLayer from "../../components/MapLayer";
 import Page from "../../components/Page";
 import { showNotification } from "@mantine/notifications";
 import { useState } from "react";
@@ -29,7 +30,10 @@ const LocationsPage = () => {
   const theme = useMantineTheme();
   const [selected, setSelected] = useState({
     uid: null,
-    area: [[], []],
+    area: [
+      [0, 0],
+      [0, 0],
+    ],
     id: null,
     district: null,
   });
@@ -240,14 +244,37 @@ const LocationsPage = () => {
               width="100%"
               height="100%"
               polygon={{ data: data?.area || [] }}
+              defaultLayerName="Location Markers"
               mapEvents={{
                 click: (e: any) => {
-                  console.log(e.latlng);
                   setLoc(e.latlng?.lat + ", " + e.latlng?.lng);
                 },
               }}
-              components={data
-                ?.map((block: any) =>
+              components={[
+                {
+                  type: "marker",
+                  position: loc ? loc.split(", ") : [0, 0],
+                  tooltip: "Added Point",
+                },
+              ]}
+            >
+              <MapLayer
+                checked
+                name="Block Points"
+                components={selected?.area.map((point: any, i: number) =>
+                  point != []
+                    ? {
+                        type: "marker",
+                        position: point,
+                        tooltip: "Point " + (i + 1),
+                      }
+                    : null
+                )}
+              />
+              <MapLayer
+                checked
+                name="Blocks"
+                components={data?.map((block: any) =>
                   block.location != "[]" &&
                   (district ? block.district == district : true)
                     ? {
@@ -275,48 +302,26 @@ const LocationsPage = () => {
                         },
                       }
                     : null
-                )
-                .concat(
-                  selected.uid != null
-                    ? selected.area.map((block: any, i: number) =>
-                        block
-                          ? {
-                              type: "marker",
-                              position: block,
-                              tooltip: "Point " + (i + 1),
-                            }
-                          : null
-                      )
+                )}
+              />
+              <MapLayer
+                name="Districts"
+                components={districts?.map((district: any) =>
+                  district.location != [] && district.id > 1
+                    ? {
+                        type: "polygon",
+                        positions: district.area,
+                        options: {
+                          color: `orange`,
+                          opacity: 1,
+                        },
+                        radius: 15,
+                        tooltip: district.name,
+                      }
                     : null
-                )
-                .concat(
-                  districts?.map((district: any) =>
-                    district.location != [] && district.id > 1
-                      ? {
-                          type: "polygon",
-                          positions: district.area,
-                          options: {
-                            color: `blue`,
-                            opacity: district.id == selected.district ? 1 : 0.1,
-                          },
-                          radius: 15,
-                          tooltip: `${district.name}`,
-                          eventHandlers: {
-                            click: () => {
-                              setDistrict(district.id);
-                            },
-                          },
-                        }
-                      : null
-                  )
-                )
-                .concat({
-                  type: "marker",
-                  position: loc ? loc.split(", ") : [0, 0],
-                  tooltip: "Added Point",
-                })}
-            />
-
+                )}
+              />
+            </Map>
             <ScrollArea>
               <Text
                 color="dimmed"

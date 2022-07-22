@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
 
-export default dynamic(import("./Map"), {
+export default dynamic(import("./MapLayer"), {
   ssr: false,
 });

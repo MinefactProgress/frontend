@@ -36,7 +36,7 @@ import { Bar, Line } from "react-chartjs-2";
 import { useHotkeys, useMediaQuery, useScrollLock } from "@mantine/hooks";
 
 import Map from "../components/Map";
-import { MapLayer } from "../components/Map/Map";
+import MapLayer from "../components/MapLayer";
 import type { NextPage } from "next";
 import Page from "../components/Page";
 import StatsText from "../components/StatsText";
