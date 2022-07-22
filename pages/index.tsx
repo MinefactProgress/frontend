@@ -36,6 +36,7 @@ import { Bar, Line } from "react-chartjs-2";
 import { useHotkeys, useMediaQuery, useScrollLock } from "@mantine/hooks";
 
 import Map from "../components/Map";
+import { MapLayer } from "../components/Map/Map";
 import type { NextPage } from "next";
 import Page from "../components/Page";
 import StatsText from "../components/StatsText";
@@ -243,6 +244,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
           width="100%"
           height="100%"
           zoom={13}
+          defaultLayerName="Block Borders"
           polygon={{ data: data?.area || [] }}
           mapStyle={{ zIndex: 0 }}
           components={data?.map((block: any) =>
@@ -274,7 +276,25 @@ const Home: NextPage = ({ user, setUser }: any) => {
                 }
               : null
           )}
-        ></Map>
+        >
+          <MapLayer
+            name="District Borders"
+            components={districts?.map((district: any) =>
+              district.location != [] && district.id > 1
+                ? {
+                    type: "polygon",
+                    positions: district.area,
+                    options: {
+                      color: `${colorFromStatus(district.status, true)}FF`,
+                      opacity: district.id == selectedBlock.district ? 1 : 0.1,
+                    },
+                    radius: 15,
+                    tooltip: `${district.name}`,
+                  }
+                : null
+            )}
+          />
+        </Map>
       </div>
       {/* Content */}
       <div style={{ margin: theme.spacing.md }} id="i">
