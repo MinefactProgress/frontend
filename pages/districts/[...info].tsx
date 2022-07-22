@@ -57,6 +57,7 @@ import {
   statusToColorName,
   statusToName,
 } from "../../utils/blockUtils";
+import useSWR, { mutate } from "swr";
 
 import { Bar } from "react-chartjs-2";
 import Map from "../../components/Map";
@@ -64,11 +65,10 @@ import Page from "../../components/Page";
 import { Permissions } from "../../utils/hooks/usePermission";
 import { showNotification } from "@mantine/notifications";
 import { useForm } from "@mantine/form";
+import { useModals } from "@mantine/modals";
 import { useRouter } from "next/router";
-import useSWR, { mutate } from "swr";
 import { useState } from "react";
 import useUser from "../../utils/hooks/useUser";
-import { useModals } from "@mantine/modals";
 
 ChartJS.register(
   BarElement,
@@ -542,6 +542,7 @@ const DistrictPage = () => {
                   <Map
                     width="100%"
                     height="94%"
+                    defaultLayerName="Blocks"
                     style={{ zIndex: 10 }}
                     zoom={14}
                     center={

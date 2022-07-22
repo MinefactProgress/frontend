@@ -14,19 +14,19 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { Check, Cross, Number1, Number2, Number3, X } from "tabler-icons-react";
+import {
+  statusToColorNameLandmark,
+  statusToNameLandmark,
+} from "../utils/blockUtils";
 import useSWR, { mutate } from "swr";
 
 import Map from "../components/Map";
 import Page from "../components/Page";
 import { Permissions } from "../utils/hooks/usePermission";
-import {
-  statusToNameLandmark,
-  statusToColorNameLandmark,
-} from "../utils/blockUtils";
 import { showNotification } from "@mantine/notifications";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import useUser from "../utils/hooks/useUser";
-import { useRouter } from "next/router";
 
 interface landmark {
   id: number;
@@ -705,6 +705,7 @@ const LandmarksPage = () => {
             <Map
               width="100%"
               height="94%"
+              defaultLayerName="Landmarks"
               style={{ zIndex: 10 }}
               zoom={12}
               components={data

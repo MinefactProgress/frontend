@@ -226,6 +226,7 @@ const UserPage = () => {
               <Map
                 width="100%"
                 height="53vh"
+                defaultLayerName="Blocks"
                 zoom={13}
                 mapStyle={{ zIndex: 0 }}
                 components={claimsPolygons}
