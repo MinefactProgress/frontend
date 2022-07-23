@@ -293,6 +293,11 @@ const Home: NextPage = ({ user, setUser }: any) => {
                     },
                     radius: 15,
                     tooltip: `${district.name}`,
+                    eventHandlers: {
+                      click: () => {
+                        router.push("/districts/"+district.name)
+                      },
+                    }
                   }
                 : null
             )}

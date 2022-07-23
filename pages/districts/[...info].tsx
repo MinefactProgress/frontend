@@ -189,7 +189,7 @@ const DistrictPage = () => {
           "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify({
-          district: data?.name,
+          district: data?.id,
           image: JSON.stringify(images),
         }),
       }
