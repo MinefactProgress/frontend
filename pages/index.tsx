@@ -281,7 +281,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
           <MapLayer
             name="District Borders"
             
-          checked={!router.query.d}
+          checked={router.query.d!=null}
             components={districts?.map((district: any) =>
               district.location != [] && district.id > 1
                 ? {
