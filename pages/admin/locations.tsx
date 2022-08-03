@@ -1,34 +1,73 @@
 import {
   ActionIcon,
   Button,
+  Divider,
   Group,
   MediaQuery,
   NumberInput,
-  Paper,
-  Progress,
   ScrollArea,
+  SegmentedControl,
   Select,
   SimpleGrid,
+  Switch,
   Text,
   TextInput,
+  ThemeIcon,
+  UnstyledButton,
   useMantineTheme,
 } from "@mantine/core";
-import { Pin, Trash } from "tabler-icons-react";
+import {
+  CursorText,
+  DragDrop,
+  Pin,
+  Pinned,
+  PinnedOff,
+  Select as TSelect,
+  Trash,
+} from "tabler-icons-react";
 import useSWR, { mutate } from "swr";
 
 import Map from "../../components/Map";
 import MapLayer from "../../components/MapLayer";
 import Page from "../../components/Page";
+import markerIcon from "../../public/markerIcon.svg";
 import { showNotification } from "@mantine/notifications";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import useUser from "../../utils/hooks/useUser";
 
+const tools = [
+  { id: 3, name: "Move View", color: "orange", icon: <DragDrop size={16} /> },
+  { id: 1, name: "Add Marker", color: "green", icon: <Pin size={16} /> },
+  { id: 2, name: "Delete Marker", color: "red", icon: <PinnedOff size={16} /> },
+  { id: 4, name: "Select Block", color: "green", icon: <TSelect size={16} /> },
+];
+
 const LocationsPage = () => {
+  const theme = useMantineTheme();
+  const router = useRouter();
+  const { data } = useSWR("/api/blocks/get", {
+    refreshInterval: 60000,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+  });
+  const { data: districts } = useSWR("/api/districts/get", {
+    refreshInterval: 60000,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+  });
+  const [tool, setTool] = useState({
+    id: 3,
+    name: "Move View",
+    color: "orange",
+    icon: <DragDrop size={16} />,
+  });
+  const [edgeMarkers, setEdgeMarkers] = useState(true);
+  const [editType, setEditType] = useState("b");
+  const [location, setLocation] = useState("");
   const [block, setBlock] = useState(0);
   const [district, setDistrict] = useState(0);
-  const [loc, setLoc] = useState("");
-  const theme = useMantineTheme();
-  const [selected, setSelected] = useState({
+  const [selectedBlock, setSelectedBlock] = useState({
     uid: null,
     area: [
       [0, 0],
@@ -37,35 +76,15 @@ const LocationsPage = () => {
     id: null,
     district: null,
   });
-  const [user, setUser] = useUser();
-  const { data } = useSWR("/api/blocks/get", {
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
-  });
-  const { data: districts } = useSWR("/api/districts/get", {
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
-  });
-  var doneElem = 0;
-  var totalElem = 0;
-  for (var i = 0; i < data?.length; i++) {
-    const elem = data[i];
-    totalElem++;
-    if (elem.area.length > 0) {
-      doneElem++;
-    }
-  }
 
-  const progress = (doneElem / totalElem) * 100;
-  const handleSubmit = (e: any) => {
-    if (block === 0) {
-      handleDistrict(e);
+  const handleSubmit = (loc?: string) => {
+    if (editType == "b") {
+      handleBlock(loc);
     } else {
-      handleBlock(e);
+      handleDistrict(loc);
     }
   };
-  const handleBlock = (e: any) => {
-    e.preventDefault();
+  const handleBlock = (loc?: string) => {
     fetch(
       process.env.NEXT_PUBLIC_API_URL +
         "/api/blocks/addLocation?key=e9299168-9a87-4a44-801b-4214449e46be",
@@ -74,9 +93,9 @@ const LocationsPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           key: "e9299168-9a87-4a44-801b-4214449e46be",
-          district: district,
+          district,
           blockID: block,
-          location: loc,
+          location: loc || location,
         }),
       }
     )
@@ -89,18 +108,52 @@ const LocationsPage = () => {
             color: "red",
           });
         } else {
-          setLoc("");
+          setLocation("");
           showNotification({
             title: "Location Added",
             message: "The Location of block " + block + " has been added",
             color: "green",
             icon: <Pin />,
           });
+          mutate("/api/blocks/get");
+          mutate("/api/blocks/get");
         }
       });
   };
-  const handleDelete = (e: any, i: number) => {
-    e.preventDefault();
+  const handleDistrict = (loc?: string) => {
+    fetch(
+      process.env.NEXT_PUBLIC_API_URL +
+        "/api/districts/edit?key=e9299168-9a87-4a44-801b-4214449e46be",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          key: "e9299168-9a87-4a44-801b-4214449e46be",
+          district,
+          areaadd: loc || location,
+        }),
+      }
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.error) {
+          showNotification({
+            title: "Error Adding Location",
+            message: res.message,
+            color: "red",
+          });
+        } else {
+          showNotification({
+            title: "Location Added",
+            message: "The Location of Distrct " + district + " has been added",
+            color: "green",
+            icon: <Pin />,
+          });
+          mutate("/api/districts/get");
+        }
+      });
+  };
+  const handleDelete = (i: number) => {
     fetch(
       process.env.NEXT_PUBLIC_API_URL +
         "/api/blocks/removeLocation?key=e9299168-9a87-4a44-801b-4214449e46be",
@@ -109,7 +162,7 @@ const LocationsPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           key: "e9299168-9a87-4a44-801b-4214449e46be",
-          uid: selected.uid,
+          uid: selectedBlock.uid,
           index: i,
         }),
       }
@@ -124,7 +177,7 @@ const LocationsPage = () => {
             icon: <Trash />,
           });
         } else {
-          setLoc("");
+          setLocation("");
           showNotification({
             title: "Location Deleted",
             message:
@@ -136,322 +189,343 @@ const LocationsPage = () => {
             color: "green",
             icon: <Pin />,
           });
+          mutate("/api/blocks/get");
         }
       });
   };
-  const handleDistrict = (e: any) => {
-    e.preventDefault();
-    fetch(
-      process.env.NEXT_PUBLIC_API_URL +
-        "/api/districts/edit?key=e9299168-9a87-4a44-801b-4214449e46be",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          key: "e9299168-9a87-4a44-801b-4214449e46be",
-          district: district,
-          areaadd: loc,
-        }),
-      }
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.error) {
-          showNotification({
-            title: "Error Adding Location",
-            message: res.message,
-            color: "red",
-          });
-        } else {
-          setLoc("");
-          showNotification({
-            title: "Location Added",
-            message: "The Location of Distrct " + district + " has been added",
-            color: "green",
-            icon: <Pin />,
-          });
-        }
-      });
-  };
-  return (
-    <Page>
-      <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
-        <Paper withBorder radius="md" p="xs" style={{ height: "8vh" }}>
-          <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
-            Progress of adding Locations
-          </Text>
-          <Progress
-            value={progress}
-            color={progress < 50 ? "red" : progress < 100 ? "orange" : "green"}
-          />
-          <Text>
-            {doneElem}/{totalElem} ({Math.floor(progress * 10) / 10}%)
-          </Text>
-        </Paper>
-      </MediaQuery>
-      <MediaQuery largerThan={"sm"} styles={{ display: "none" }}>
-        <Paper withBorder radius="md" p="xs">
-          <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
-            Progress of adding Locations
-          </Text>
-          <Progress
-            value={progress}
-            color={progress < 50 ? "red" : progress < 100 ? "orange" : "green"}
-          />
-          <Text>
-            {doneElem}/{totalElem} ({Math.floor(progress * 10) / 10}%)
-          </Text>
-        </Paper>
-      </MediaQuery>
-      <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
-        <Paper
-          withBorder
-          radius="md"
-          p="xs"
-          style={{ height: "20vh", marginTop: theme.spacing.md }}
-        >
-          <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
-            How to
-          </Text>
-          <Text>
-            1. Enter the District you want to add block locations for. (eg:
-            Little Italy)
-            <br />
-            2. Enter the Block ID you want to add the locations for. (eg: 1)
-            <br />
-            3. Enter the first location you want to add. (eg: 40.71093308501933,
-            -74.00563970021507) Or click the position on the map
-            <br />
-            4. Click the button to add the location.
-            <br />
-            5. Once the location box is cleared add the next point.
-            <br />
-            You can click on a Block on the map and choose a edge point to add
-            it to your current block.
-          </Text>
-        </Paper>
-      </MediaQuery>
 
-      <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
-        <Paper
-          withBorder
-          radius="md"
-          p="xs"
-          style={{ height: "35vh", marginTop: theme.spacing.md }}
-        >
-          <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
-            Map
-          </Text>
-          <SimpleGrid cols={2} spacing="md" style={{ height: "94%" }}>
-            <Map
-              width="100%"
-              height="100%"
-              polygon={{ data: data?.area || [] }}
-              defaultLayerName="Location Markers"
-              mapEvents={{
-                click: (e: any) => {
-                  setLoc(e.latlng?.lat + ", " + e.latlng?.lng);
-                },
-              }}
-              components={[
-                {
-                  type: "marker",
-                  position: loc ? loc.split(", ") : [0, 0],
-                  tooltip: "Added Point",
-                },
-              ]}
-            >
-              <MapLayer
-                checked
-                name="Block Points"
-                components={selected?.area.map((point: any, i: number) =>
-                  point != []
-                    ? {
-                        type: "marker",
-                        position: point,
-                        tooltip: "Point " + (i + 1),
-                      }
-                    : null
-                )}
-              />
-              <MapLayer
-                checked
-                name="Blocks"
-                components={data?.map((block: any) =>
-                  block.location != "[]"
-                    ? {
-                        type: "polygon",
-                        positions: block.area,
-                        options: {
-                          color: `rgba(${
-                            progress == 0
-                              ? "194, 76, 60"
-                              : progress < 100
-                              ? "216, 108, 50"
-                              : "106, 186, 97"
-                          })`,
-                          opacity:
-                            block.uid == selected.uid
-                              ? 1
-                              : district
-                              ? block.district == district
-                                ? 1
-                                : 0.1
-                              : 0.4,
-                        },
-                        radius: 15,
-                        tooltip: `${
-                          districts?.find((d: any) => d.id === block.district)
-                            .name
-                        } #${block.id} (#${block.uid})`,
-                        eventHandlers: {
-                          click: () => {
-                            setSelected(block);
-                          },
-                        },
-                      }
-                    : null
-                )}
-              />
-              <MapLayer
-                name="Districts"
-                components={districts?.map((district: any) =>
-                  district.location != [] && district.id > 1
-                    ? {
-                        type: "polygon",
-                        positions: district.area,
-                        options: {
-                          color: `orange`,
-                          opacity: 1,
-                        },
-                        radius: 15,
-                        tooltip: district.name,
-                      }
-                    : null
-                )}
-              />
-            </Map>
-            <ScrollArea>
-              <Text
-                color="dimmed"
-                size="xs"
-                transform="uppercase"
-                weight={700}
-                style={{ marginBottom: theme.spacing.md }}
+  return (
+    <Page
+      noMargin
+      navbar={
+        <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+          <ScrollArea style={{ height: "82vh" }}>
+            {tools.map((t) => (
+              <UnstyledButton
+                onClick={() => {
+                  setTool(t);
+                }}
+                sx={(theme) => ({
+                  display: "block",
+                  width: "100%",
+                  padding: theme.spacing.xs,
+                  borderRadius: theme.radius.sm,
+                  marginTop: theme.spacing.xs / 2,
+                  color:
+                    theme.colorScheme === "dark"
+                      ? theme.colors.dark[0]
+                      : theme.black,
+                  backgroundColor:
+                    t.id == tool.id
+                      ? theme.colorScheme === "dark"
+                        ? theme.colors.dark[5]
+                        : theme.colors.gray[1]
+                      : undefined,
+                  "&:hover": {
+                    backgroundColor:
+                      theme.colorScheme === "dark"
+                        ? theme.colors.dark[6]
+                        : theme.colors.gray[0],
+                  },
+                })}
+                key={t.id}
               >
-                Coordinates for Block {selected?.uid}
-              </Text>
-              {selected
-                ? selected?.area.map((point: any, i: number) => (
-                    <SimpleGrid key={i} cols={2}>
-                      <Text
-                        color="gray"
+                <Group>
+                  <ThemeIcon color={t.color} variant="light">
+                    {t.icon}
+                  </ThemeIcon>
+                  <Text size="sm">{t.name}</Text>
+                </Group>
+              </UnstyledButton>
+            ))}
+
+            <Divider my="sm" size="sm" />
+
+            {(tool.id == 1 || tool.id == 2 || tool.id == 4) && (
+              <form>
+                <Text
+                  color="dimmed"
+                  size="xs"
+                  transform="uppercase"
+                  weight={700}
+                  style={{ marginBottom: theme.spacing.md }}
+                >
+                  {tool.id == 2 || tool.id == 4
+                    ? "Search a block"
+                    : "Block to add marker"}
+                </Text>
+                <Select
+                  label="District"
+                  name="district"
+                  searchable
+                  clearable
+                  dropdownPosition="bottom"
+                  data={
+                    districts
+                      ? districts
+                          ?.filter(
+                            (district: any) =>
+                              !districts.some(
+                                (d: any) => d.parent === district.id
+                              )
+                          )
+                          .sort((a: any, b: any) =>
+                            a.name.localeCompare(b.name)
+                          )
+                          .map((district: any) => {
+                            const filter = districts?.filter(
+                              (d: any) => d.name === district.name
+                            );
+                            if (filter.length > 1) {
+                              return {
+                                value: district.id,
+                                label: `${district.name} (${
+                                  districts?.find(
+                                    (d: any) => d.id === district.parent
+                                  ).name
+                                })`,
+                              };
+                            } else {
+                              return {
+                                value: district.id,
+                                label: district.name,
+                              };
+                            }
+                          })
+                      : []
+                  }
+                  onChange={(e: any) => {
+                    setDistrict(e);
+                  }}
+                />
+                <NumberInput
+                  label="Block"
+                  placeholder="Block"
+                  name="blockID"
+                  value={block}
+                  min={0}
+                  onChange={(e: any) => {
+                    setBlock(parseInt(e));
+                    mutate("/api/blocks/get");
+                    if (tool.id == 2 || tool.id == 4) {
+                      const found = data?.find(
+                        (b: any) => b.id === block && b.district === district
+                      );
+                      if (found) {
+                        setSelectedBlock(found);
+                      }
+                    }
+                  }}
+                />
+                {tool.id == 1 && (
+                  <>
+                    <TextInput
+                      label="Location"
+                      name="location"
+                      value={location}
+                      onChange={(e: any) => {
+                        setLocation(e.currentTarget.value);
+                      }}
+                    />
+                    <Button
+                      type="submit"
+                      style={{ marginTop: theme.spacing.md }}
+                    >
+                      Add Block Location
+                    </Button>
+                  </>
+                )}
+              </form>
+            )}
+
+            {tool.id == 2 && (
+              <>
+                <Divider my="sm" size="sm" />
+                <Text
+                  color="dimmed"
+                  size="xs"
+                  transform="uppercase"
+                  weight={700}
+                  style={{ marginBottom: theme.spacing.md }}
+                >
+                  Block`s Markers
+                </Text>
+                {selectedBlock.uid != null
+                  ? selectedBlock?.area.map((point: any, i: number) => (
+                      <UnstyledButton
                         onClick={() => {
-                          setLoc(point.join(", "));
-                          showNotification({
-                            message: "Coordinates Copied and Pasted",
-                            color: "lime",
-                          });
+                          console.log(i);
+                          handleDelete(i);
                         }}
+                        sx={(theme) => ({
+                          display: "block",
+                          width: "100%",
+                          padding: theme.spacing.xs,
+                          borderRadius: theme.radius.sm,
+                          marginTop: theme.spacing.xs / 2,
+                          color:
+                            theme.colorScheme === "dark"
+                              ? theme.colors.dark[0]
+                              : theme.black,
+                          backgroundColor: false
+                            ? theme.colorScheme === "dark"
+                              ? theme.colors.dark[5]
+                              : theme.colors.gray[1]
+                            : undefined,
+                          "&:hover": {
+                            backgroundColor:
+                              theme.colorScheme === "dark"
+                                ? theme.colors.dark[6]
+                                : theme.colors.gray[0],
+                          },
+                        })}
+                        key={i}
                       >
-                        {i + 1}. {point.join(", ")}
-                      </Text>
-                      <ActionIcon onClick={(e: any) => handleDelete(e, i)}>
-                        <Trash color={theme.colors.red[7]} />
-                      </ActionIcon>
-                    </SimpleGrid>
-                  ))
-                : null}
-            </ScrollArea>
-          </SimpleGrid>
-        </Paper>
-      </MediaQuery>
-      <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
-        <Paper
-          withBorder
-          radius="md"
-          p="xs"
-          style={{ marginTop: theme.spacing.md }}
-        >
-          <form onSubmit={handleSubmit}>
-            <Group position="center" grow>
-              <Select
-                label="District"
-                name="district"
-                searchable
-                clearable
-                dropdownPosition="bottom"
-                maxDropdownHeight={120}
-                data={
-                  districts
-                    ? districts
-                        ?.filter(
-                          (district: any) =>
-                            !districts.some(
-                              (d: any) => d.parent === district.id
-                            )
-                        )
-                        .sort((a: any, b: any) => a.name.localeCompare(b.name))
-                        .map((district: any) => {
-                          const filter = districts?.filter(
-                            (d: any) => d.name === district.name
-                          );
-                          if (filter.length > 1) {
-                            return {
-                              value: district.id,
-                              label: `${district.name} (${
-                                districts?.find(
-                                  (d: any) => d.id === district.parent
-                                ).name
-                              })`,
-                            };
-                          } else {
-                            return {
-                              value: district.id,
-                              label: district.name,
-                            };
-                          }
-                        })
-                    : []
-                }
-                onChange={(e: any) => {
-                  setDistrict(e);
-                }}
-              />
-              <NumberInput
-                label="Block"
-                placeholder="Block"
-                name="blockID"
-                value={block}
-                onChange={(e: any) => {
-                  setBlock(parseInt(e));
-                  mutate("/api/blocks/get");
-                }}
-              />
-            </Group>
-            <TextInput
-              label="Location"
-              name="location"
-              value={loc}
-              onChange={(e: any) => {
-                setLoc(e.currentTarget.value);
-              }}
+                        <Text size="sm">{point.join(", ")}</Text>
+                      </UnstyledButton>
+                    ))
+                  : null}
+              </>
+            )}
+
+            <Divider my="sm" size="sm" />
+            <Text
+              color="dimmed"
+              size="xs"
+              transform="uppercase"
+              weight={700}
+              style={{ marginBottom: theme.spacing.md }}
+            >
+              Settings
+            </Text>
+            <SegmentedControl
+              style={{ marginBottom: theme.spacing.md }}
+              fullWidth
+              value={editType}
+              onChange={setEditType}
+              data={[
+                { label: "Edit Block", value: "b" },
+                { label: "Edit District", value: "d" },
+              ]}
             />
-            <Group grow>
-              <Button type="submit" style={{ marginTop: theme.spacing.md }}>
-                Add Block Location
-              </Button>
-              <Button
-                type="submit"
-                style={{ marginTop: theme.spacing.md }}
-                variant="outline"
-              >
-                Add District Location
-              </Button>
-            </Group>
-          </form>
-        </Paper>
-      </MediaQuery>
+            <Switch
+              checked={edgeMarkers}
+              onChange={(event) => setEdgeMarkers(event.currentTarget.checked)}
+              label="Selected Markers"
+            />
+          </ScrollArea>
+        </MediaQuery>
+      }
+    >
+      <div
+        style={{
+          width: "100%",
+          height: "calc(100vh - 60px)",
+          position: "relative",
+        }}
+      >
+        <Map
+          width="100%"
+          height="100%"
+          polygon={{ data: data?.area || [] }}
+          defaultLayerName="Location Markers"
+          mapEvents={{
+            click: (e: any) => {
+              if (tool.id == 1) {
+                setLocation(e.latlng?.lat + ", " + e.latlng?.lng);
+                handleSubmit(e.latlng?.lat + ", " + e.latlng?.lng);
+              }
+            },
+          }}
+          components={[]}
+        >
+          <MapLayer
+            checked={edgeMarkers}
+            name="Block Points"
+            components={
+              edgeMarkers
+                ? selectedBlock?.area.map((point: any, i: number) =>
+                    point != []
+                      ? {
+                          type: "marker",
+                          position: point,
+                          tooltip: "Point " + (i + 1),
+                          eventHandlers: {
+                            click: () => {
+                              if (tool.id == 1) {
+                                setLocation(point.join(", "));
+                                handleSubmit(point.join(", "));
+                              } else if (tool.id == 2) {
+                                console.log(i);
+                                handleDelete(i);
+                              }
+                            },
+                          },
+                        }
+                      : null
+                  )
+                : null
+            }
+          />
+          <MapLayer
+            checked
+            name="Blocks"
+            components={data?.map((block: any) =>
+              block.location != "[]"
+                ? {
+                    type: "polygon",
+                    positions: block.area,
+                    options: {
+                      color: block.uid == selectedBlock.uid
+                      ? theme.colors.green[7]
+                      : district
+                      ? block.district == district
+                        ? theme.colors.teal[7]
+                        : theme.colors.blue[7]
+                      : theme.colors.cyan[7],
+                      opacity:
+                        block.uid == selectedBlock.uid
+                          ? 1
+                          : district
+                          ? block.district == district
+                            ? 0.5
+                            : 0.05
+                          : 0.4,
+                    },
+                    radius: 15,
+                    tooltip: `${
+                      districts?.find((d: any) => d.id === block.district).name
+                    } #${block.id} (#${block.uid})`,
+                    eventHandlers: {
+                      click: () => {
+                        tool.id == 4 || tool.id == 2
+                          ? setSelectedBlock(block)
+                          : null;
+                      },
+                    },
+                  }
+                : null
+            )}
+          />
+          <MapLayer
+            name="Districts"
+            components={districts?.map((district: any) =>
+              district.location != [] && district.id > 1
+                ? {
+                    type: "polygon",
+                    positions: district.area,
+                    options: {
+                      color: `orange`,
+                      opacity: 1,
+                    },
+                    radius: 15,
+                    tooltip: district.name,
+                  }
+                : null
+            )}
+          />
+        </Map>
+      </div>
     </Page>
   );
 };

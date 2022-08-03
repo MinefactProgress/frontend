@@ -36,7 +36,7 @@ import {
   Trash,
   User,
 } from "tabler-icons-react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Footer from "./Footer";
 import Head from "next/head";
@@ -53,6 +53,7 @@ export default function Page(props: {
   style?: any;
   title?: string;
   delay?: number;
+  navbar?: any;
 }) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [loading, setLoading] = useState(true);
@@ -87,132 +88,146 @@ export default function Page(props: {
           width={{ sm: 200, lg: 300 }}
         >
           <Navbar.Section grow p="sm">
-            <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
-              <ScrollArea style={{ height: "82vh" }}>
-                {/* Page Navigation */}
-                {pages.map((page) =>
-                  page.permission <= (user.permission || 0) ? (
-                    page.divider ? (
-                      <Divider
-                        key={page.label}
-                        my="sm"
-                        size="sm"
-                        label={page.label}
-                      />
-                    ) : (
-                      <UnstyledButton
-                        onClick={() =>
-                          (window.location.href = page.href || "/")
-                        }
-                        sx={(theme) => ({
-                          display: "block",
-                          width: "100%",
-                          padding: theme.spacing.xs,
-                          borderRadius: theme.radius.sm,
-                          marginTop: theme.spacing.xs / 2,
-                          color:
-                            theme.colorScheme === "dark"
-                              ? theme.colors.dark[0]
-                              : theme.black,
-                          backgroundColor:
-                            router.pathname === page.href
-                              ? theme.colorScheme === "dark"
-                                ? theme.colors.dark[5]
-                                : theme.colors.gray[1]
-                              : undefined,
-                          "&:hover": {
-                            backgroundColor:
-                              theme.colorScheme === "dark"
-                                ? theme.colors.dark[6]
-                                : theme.colors.gray[0],
-                          },
-                        })}
-                        key={page.label}
-                      >
-                        <Group>
-                          {page.badge ? (
-                            <Indicator color={page.badge} size={12} withBorder>
-                              <ThemeIcon color={page.color} variant="light">
-                                {page.icon}
-                              </ThemeIcon>
-                            </Indicator>
-                          ) : (
-                            <ThemeIcon color={page.color} variant="light">
-                              {page.icon}
-                            </ThemeIcon>
-                          )}
+            {props.navbar ? (
+              props.navbar
+            ) : (
+              <>
+                <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+                  <ScrollArea style={{ height: "82vh" }}>
+                    {/* Page Navigation */}
+                    {pages.map((page) =>
+                      page.permission <= (user.permission || 0) ? (
+                        page.divider ? (
+                          <Divider
+                            key={page.label}
+                            my="sm"
+                            size="sm"
+                            label={page.label}
+                          />
+                        ) : (
+                          <UnstyledButton
+                            onClick={() =>
+                              (window.location.href = page.href || "/")
+                            }
+                            sx={(theme) => ({
+                              display: "block",
+                              width: "100%",
+                              padding: theme.spacing.xs,
+                              borderRadius: theme.radius.sm,
+                              marginTop: theme.spacing.xs / 2,
+                              color:
+                                theme.colorScheme === "dark"
+                                  ? theme.colors.dark[0]
+                                  : theme.black,
+                              backgroundColor:
+                                router.pathname === page.href
+                                  ? theme.colorScheme === "dark"
+                                    ? theme.colors.dark[5]
+                                    : theme.colors.gray[1]
+                                  : undefined,
+                              "&:hover": {
+                                backgroundColor:
+                                  theme.colorScheme === "dark"
+                                    ? theme.colors.dark[6]
+                                    : theme.colors.gray[0],
+                              },
+                            })}
+                            key={page.label}
+                          >
+                            <Group>
+                              {page.badge ? (
+                                <Indicator
+                                  color={page.badge}
+                                  size={12}
+                                  withBorder
+                                >
+                                  <ThemeIcon color={page.color} variant="light">
+                                    {page.icon}
+                                  </ThemeIcon>
+                                </Indicator>
+                              ) : (
+                                <ThemeIcon color={page.color} variant="light">
+                                  {page.icon}
+                                </ThemeIcon>
+                              )}
 
-                          <Text size="sm">{page.label}</Text>
-                        </Group>
-                      </UnstyledButton>
-                    )
-                  ) : null
-                )}
-              </ScrollArea>
-            </MediaQuery>
-            <MediaQuery largerThan={"sm"} styles={{ display: "none" }}>
-              <ScrollArea style={{ height: "77vh" }}>
-                {/* Page Navigation */}
-                {pages.map((page) =>
-                  page.permission <= (user.permission || 0) ? (
-                    page.divider ? (
-                      <Divider
-                        key={page.label}
-                        my="sm"
-                        size="sm"
-                        label={page.label}
-                      />
-                    ) : (
-                      <UnstyledButton
-                        onClick={() =>
-                          (window.location.href = page.href || "/")
-                        }
-                        sx={(theme) => ({
-                          display: "block",
-                          width: "100%",
-                          padding: theme.spacing.xs,
-                          borderRadius: theme.radius.sm,
-                          marginTop: theme.spacing.xs / 2,
-                          color:
-                            theme.colorScheme === "dark"
-                              ? theme.colors.dark[0]
-                              : theme.black,
-                          backgroundColor:
-                            router.pathname === page.href
-                              ? theme.colorScheme === "dark"
-                                ? theme.colors.dark[5]
-                                : theme.colors.gray[1]
-                              : undefined,
-                          "&:hover": {
-                            backgroundColor:
-                              theme.colorScheme === "dark"
-                                ? theme.colors.dark[6]
-                                : theme.colors.gray[0],
-                          },
-                        })}
-                        key={page.label}
-                      >
-                        <Group>
-                          {page.badge ? (
-                            <Indicator color={page.badge} size={12} withBorder>
-                              <ThemeIcon color={page.color} variant="light">
-                                {page.icon}
-                              </ThemeIcon>
-                            </Indicator>
-                          ) : (
-                            <ThemeIcon color={page.color} variant="light">
-                              {page.icon}
-                            </ThemeIcon>
-                          )}
+                              <Text size="sm">{page.label}</Text>
+                            </Group>
+                          </UnstyledButton>
+                        )
+                      ) : null
+                    )}
+                  </ScrollArea>
+                </MediaQuery>
+                <MediaQuery largerThan={"sm"} styles={{ display: "none" }}>
+                  <ScrollArea style={{ height: "77vh" }}>
+                    {/* Page Navigation */}
+                    {pages.map((page) =>
+                      page.permission <= (user.permission || 0) ? (
+                        page.divider ? (
+                          <Divider
+                            key={page.label}
+                            my="sm"
+                            size="sm"
+                            label={page.label}
+                          />
+                        ) : (
+                          <UnstyledButton
+                            onClick={() =>
+                              (window.location.href = page.href || "/")
+                            }
+                            sx={(theme) => ({
+                              display: "block",
+                              width: "100%",
+                              padding: theme.spacing.xs,
+                              borderRadius: theme.radius.sm,
+                              marginTop: theme.spacing.xs / 2,
+                              color:
+                                theme.colorScheme === "dark"
+                                  ? theme.colors.dark[0]
+                                  : theme.black,
+                              backgroundColor:
+                                router.pathname === page.href
+                                  ? theme.colorScheme === "dark"
+                                    ? theme.colors.dark[5]
+                                    : theme.colors.gray[1]
+                                  : undefined,
+                              "&:hover": {
+                                backgroundColor:
+                                  theme.colorScheme === "dark"
+                                    ? theme.colors.dark[6]
+                                    : theme.colors.gray[0],
+                              },
+                            })}
+                            key={page.label}
+                          >
+                            <Group>
+                              {page.badge ? (
+                                <Indicator
+                                  color={page.badge}
+                                  size={12}
+                                  withBorder
+                                >
+                                  <ThemeIcon color={page.color} variant="light">
+                                    {page.icon}
+                                  </ThemeIcon>
+                                </Indicator>
+                              ) : (
+                                <ThemeIcon color={page.color} variant="light">
+                                  {page.icon}
+                                </ThemeIcon>
+                              )}
 
-                          <Text size="sm">{page.label}</Text>
-                        </Group>
-                      </UnstyledButton>
-                    )
-                  ) : null
-                )}
-              </ScrollArea>
-            </MediaQuery>
+                              <Text size="sm">{page.label}</Text>
+                            </Group>
+                          </UnstyledButton>
+                        )
+                      ) : null
+                    )}
+                  </ScrollArea>
+                </MediaQuery>
+              </>
+            )}
           </Navbar.Section>
           <Navbar.Section>
             {/* User Avatar */}
