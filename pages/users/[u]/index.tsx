@@ -310,13 +310,13 @@ const UserPage = () => {
                         transform="uppercase"
                         weight={700}
                       >
-                        {u}´ most worked on Districts
+                        {u} worked on
                       </Text>
                       <Table>
                         <thead>
                           <tr>
-                            <th>Name</th>
-                            <th>Blocks</th>
+                            <th>District</th>
+                            <th>Block(s)</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -350,8 +350,8 @@ const UserPage = () => {
                       <Table>
                         <thead>
                           <tr>
-                            <th>Name</th>
-                            <th>Block</th>
+                            <th>Builder</th>
+                            <th>Block(s)</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -360,7 +360,7 @@ const UserPage = () => {
                               return (
                                 <tr key={builder}>
                                   <td>{builder}</td>
-                                  <td>{builders[builder].join(", ")}</td>
+                                  <td>{builders[builder].length}</td>
                                 </tr>
                               );
                             })}

@@ -32,15 +32,16 @@ import MapLayer from "../../components/MapLayer";
 import Page from "../../components/Page";
 import markerIcon from "../../public/markerIcon.svg";
 import { showNotification } from "@mantine/notifications";
+import { useHotkeys } from "@mantine/hooks";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import useUser from "../../utils/hooks/useUser";
 
 const tools = [
   { id: 3, name: "Move View", color: "orange", icon: <DragDrop size={16} /> },
-  { id: 1, name: "Add Marker", color: "green", icon: <Pin size={16} /> },
+  { id: 1, name: "Add Marker", color: "green", icon: <Pin size={16} />,right:<Text size="xs" color="dimmed">X</Text> },
   { id: 2, name: "Delete Marker", color: "red", icon: <PinnedOff size={16} /> },
-  { id: 4, name: "Select Block", color: "green", icon: <TSelect size={16} /> },
+  { id: 4, name: "Select Block", color: "green", icon: <TSelect size={16} />,right:<Text size="xs" color="dimmed">Y</Text> },
 ];
 
 const LocationsPage = () => {
@@ -194,6 +195,11 @@ const LocationsPage = () => {
       });
   };
 
+  useHotkeys([
+    ['y', () => {setTool(tools[3])}],
+    ['x', () => {setTool(tools[1])}],
+  ]);
+
   return (
     <Page
       noMargin
@@ -229,12 +235,14 @@ const LocationsPage = () => {
                   },
                 })}
                 key={t.id}
+                
               >
                 <Group>
                   <ThemeIcon color={t.color} variant="light">
                     {t.icon}
                   </ThemeIcon>
                   <Text size="sm">{t.name}</Text>
+                  {t.right}
                 </Group>
               </UnstyledButton>
             ))}
@@ -498,9 +506,10 @@ const LocationsPage = () => {
                     } #${block.id} (#${block.uid})`,
                     eventHandlers: {
                       click: () => {
-                        tool.id == 4 || tool.id == 2
-                          ? setSelectedBlock(block)
-                          : null;
+                       if( tool.id == 4 || tool.id == 2) {
+                        setSelectedBlock(block);
+                        setTool(tools[1]);
+                       }
                       },
                     },
                   }
