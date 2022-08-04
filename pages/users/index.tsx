@@ -57,7 +57,7 @@ const StaffPage = () => {
           <Grid.Col key={i} md={2}>
             <Paper withBorder radius="md" p="lg">
               <Avatar
-                src={"https://mc-heads.net/avatar/" + user.username}
+                src={user.picture||"https://mc-heads.net/avatar/" + user.username}
                 size={120}
                 radius={120}
                 mx="auto"
