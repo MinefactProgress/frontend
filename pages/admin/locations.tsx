@@ -1,5 +1,4 @@
 import {
-  ActionIcon,
   Button,
   Divider,
   Group,
@@ -8,7 +7,6 @@ import {
   ScrollArea,
   SegmentedControl,
   Select,
-  SimpleGrid,
   Switch,
   Text,
   TextInput,
@@ -17,10 +15,8 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import {
-  CursorText,
   DragDrop,
   Pin,
-  Pinned,
   PinnedOff,
   Select as TSelect,
   Trash,
@@ -30,23 +26,41 @@ import useSWR, { mutate } from "swr";
 import Map from "../../components/Map";
 import MapLayer from "../../components/MapLayer";
 import Page from "../../components/Page";
-import markerIcon from "../../public/markerIcon.svg";
 import { showNotification } from "@mantine/notifications";
 import { useHotkeys } from "@mantine/hooks";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import useUser from "../../utils/hooks/useUser";
 
 const tools = [
   { id: 3, name: "Move View", color: "orange", icon: <DragDrop size={16} /> },
-  { id: 1, name: "Add Marker", color: "green", icon: <Pin size={16} />,right:<Text size="xs" color="dimmed">X</Text> },
+  {
+    id: 1,
+    name: "Add Marker",
+    color: "green",
+    icon: <Pin size={16} />,
+    right: (
+      <Text size="xs" color="dimmed">
+        X
+      </Text>
+    ),
+  },
   { id: 2, name: "Delete Marker", color: "red", icon: <PinnedOff size={16} /> },
-  { id: 4, name: "Select Block", color: "green", icon: <TSelect size={16} />,right:<Text size="xs" color="dimmed">Y</Text> },
+  {
+    id: 4,
+    name: "Select Block",
+    color: "green",
+    icon: <TSelect size={16} />,
+    right: (
+      <Text size="xs" color="dimmed">
+        Y
+      </Text>
+    ),
+  },
 ];
 
 const LocationsPage = () => {
   const theme = useMantineTheme();
-  const router = useRouter();
+  const [user] = useUser();
   const { data } = useSWR("/api/blocks/get", {
     refreshInterval: 60000,
     revalidateOnFocus: true,
@@ -77,6 +91,7 @@ const LocationsPage = () => {
     id: null,
     district: null,
   });
+  const [createBlocks, setCreateBlocks] = useState(0);
 
   const handleSubmit = (loc?: string) => {
     if (editType == "b") {
@@ -194,10 +209,58 @@ const LocationsPage = () => {
         }
       });
   };
+  const handleCreateBlocks = () => {
+    if (!district) {
+      showNotification({
+        title: "No district selected",
+        message: "Select a district before adding new blocks",
+        color: "red",
+        icon: <Trash />,
+      });
+      return;
+    }
+    fetch(process.env.NEXT_PUBLIC_API_URL + "/api/blocks/createmultiple", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        key: user.apikey,
+        district: district,
+        number: createBlocks,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.error) {
+          showNotification({
+            title: "Error Creating new Blocks",
+            message: res.message,
+            color: "red",
+            icon: <Trash />,
+          });
+        } else {
+          showNotification({
+            title: "Blocks created",
+            message: `${createBlocks} blocks created successfully`,
+            color: "green",
+            icon: <Pin />,
+          });
+        }
+      });
+  };
 
   useHotkeys([
-    ['y', () => {setTool(tools[3])}],
-    ['x', () => {setTool(tools[1])}],
+    [
+      "y",
+      () => {
+        setTool(tools[3]);
+      },
+    ],
+    [
+      "x",
+      () => {
+        setTool(tools[1]);
+      },
+    ],
   ]);
 
   return (
@@ -235,7 +298,6 @@ const LocationsPage = () => {
                   },
                 })}
                 key={t.id}
-                
               >
                 <Group>
                   <ThemeIcon color={t.color} variant="light">
@@ -421,6 +483,26 @@ const LocationsPage = () => {
               onChange={(event) => setEdgeMarkers(event.currentTarget.checked)}
               label="Selected Markers"
             />
+            <NumberInput
+              label="Create Blocks"
+              placeholder="Number of Blocks"
+              name="numberOfBlocks"
+              value={createBlocks}
+              min={0}
+              onChange={(e: any) => {
+                setCreateBlocks(parseInt(e));
+              }}
+            />
+            <Button
+              variant="outline"
+              style={{ marginTop: theme.spacing.md, width: "100%" }}
+              onClick={() => {
+                handleCreateBlocks();
+                setCreateBlocks(0);
+              }}
+            >
+              Create Blocks
+            </Button>
           </ScrollArea>
         </MediaQuery>
       }
@@ -484,13 +566,14 @@ const LocationsPage = () => {
                     type: "polygon",
                     positions: block.area,
                     options: {
-                      color: block.uid == selectedBlock.uid
-                      ? theme.colors.green[7]
-                      : district
-                      ? block.district == district
-                        ? theme.colors.teal[7]
-                        : theme.colors.blue[7]
-                      : theme.colors.cyan[7],
+                      color:
+                        block.uid == selectedBlock.uid
+                          ? theme.colors.green[7]
+                          : district
+                          ? block.district == district
+                            ? theme.colors.teal[7]
+                            : theme.colors.blue[7]
+                          : theme.colors.cyan[7],
                       opacity:
                         block.uid == selectedBlock.uid
                           ? 1
@@ -506,10 +589,10 @@ const LocationsPage = () => {
                     } #${block.id} (#${block.uid})`,
                     eventHandlers: {
                       click: () => {
-                       if( tool.id == 4 || tool.id == 2) {
-                        setSelectedBlock(block);
-                        setTool(tools[1]);
-                       }
+                        if (tool.id == 4 || tool.id == 2) {
+                          setSelectedBlock(block);
+                          setTool(tools[1]);
+                        }
                       },
                     },
                   }
