@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Button,
   Center,
+  Checkbox,
   Grid,
   Group,
   NumberInput,
@@ -55,6 +56,13 @@ const LandmarksPage = () => {
     setSelLandmark(data?.find((l: any) => l.id === id));
   };
   const handleAddLandmark = async (e: any) => {
+    if (!createForm.values.location.includes(", ")) {
+      createForm.values.location = createForm.values.location.replace(
+        ",",
+        ", "
+      );
+    }
+
     const result = await fetch(
       process.env.NEXT_PUBLIC_API_URL +
         "/api/landmarks/create?key=" +
@@ -201,6 +209,42 @@ const LandmarksPage = () => {
       });
     }
   };
+  const setClaimable = (landmark: any, claimable: boolean) => {
+    fetch(
+      process.env.NEXT_PUBLIC_API_URL +
+        "/api/landmarks/edit?key=" +
+        user.apikey,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: landmark.id,
+          enabled: claimable,
+        }),
+      }
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.error) {
+          showNotification({
+            title: "Error updating Landmark",
+            message: res.message,
+            color: "red",
+            icon: <Cross />,
+          });
+        } else {
+          showNotification({
+            title: "Landmark updated",
+            message: `The landmark ${landmark.name} has been ${
+              claimable ? " enabled" : " disabled"
+            }`,
+            color: "green",
+            icon: <Check />,
+          });
+          mutate("/api/landmarks/get");
+        }
+      });
+  };
 
   return (
     <Page title="Manage Landmarks">
@@ -309,6 +353,7 @@ const LandmarksPage = () => {
                         <th>Name</th>
                         <th>Block</th>
                         <th>Location</th>
+                        <th>Claimable</th>
                         <th></th>
                       </tr>
                     </thead>
@@ -320,6 +365,18 @@ const LandmarksPage = () => {
                               <td>{landmark.name}</td>
                               <td>{landmark.block}</td>
                               <td>{landmark.location.join(",")}</td>
+                              <td>
+                                <Checkbox
+                                  color="green"
+                                  checked={landmark.enabled}
+                                  onChange={(e: any) =>
+                                    setClaimable(
+                                      landmark,
+                                      e.currentTarget.checked
+                                    )
+                                  }
+                                />
+                              </td>
                               <td>
                                 <Group>
                                   <Tooltip label="Edit" withArrow>
@@ -387,7 +444,11 @@ const LandmarksPage = () => {
                 type: "circle",
                 center: landmark.location,
                 options: {
-                  color: landmark.completed ? "#37B24DFF" : "#F03E3EFF",
+                  color: !landmark.enabled
+                    ? theme.colors.grape[9]
+                    : landmark.completed
+                    ? theme.colors.green[7]
+                    : theme.colors.red[7],
                   opacity: 1,
                 },
                 radius: 15,

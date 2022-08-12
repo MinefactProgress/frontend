@@ -9,11 +9,22 @@ import {
   ScrollArea,
   Select,
   Table,
+  Tabs,
   Text,
   Tooltip,
   useMantineTheme,
 } from "@mantine/core";
-import { Check, Cross, Number1, Number2, Number3, X } from "tabler-icons-react";
+import {
+  Check,
+  CircleCheck,
+  Clock,
+  Cross,
+  Number1,
+  Number2,
+  Number3,
+  UserPlus,
+  X,
+} from "tabler-icons-react";
 import {
   statusToColorNameLandmark,
   statusToNameLandmark,
@@ -380,6 +391,16 @@ const LandmarksPage = () => {
                       {statusToNameLandmark(status)}
                     </Badge>
                   ))}
+                  <Badge
+                    color="violet"
+                    variant={statusFilter === 5 ? "filled" : "outline"}
+                    onClick={(e: any) => {
+                      setStatusFilter(5);
+                      router.push("/landmarks?f=5");
+                    }}
+                  >
+                    Not Available
+                  </Badge>
                   {statusFilter !== undefined ? (
                     <Tooltip
                       label="Clear Filter"
@@ -403,289 +424,721 @@ const LandmarksPage = () => {
                 </Group>
               </MediaQuery>
             </div>
-            <ScrollArea style={{ height: "75vh" }}>
-              <Table highlightOnHover>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Status</th>
-                    <th>Builder</th>
-                    <th>Requesters</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selected && (
-                    <tr
-                      key={selected.id}
-                      style={{
-                        backgroundColor:
-                          theme.colorScheme == "dark"
-                            ? theme.colors.dark[4]
-                            : theme.colors.gray[2],
-                      }}
-                    >
-                      <td width="20%">{selected.name}</td>
-                      <td>
-                        {selected.completed ? (
-                          <Badge color="green">Done</Badge>
-                        ) : selected.builder.length > 0 ? (
-                          <Badge color="orange">Claimed</Badge>
-                        ) : selected.requests.length > 0 ? (
-                          <Badge color="cyan">Requested</Badge>
-                        ) : (
-                          <Badge color="red">Not Claimed</Badge>
-                        )}
-                      </td>
-                      <td>
-                        {selected.builder.length > 0 ? (
-                          <Group>
-                            {selected.builder.map((u: any) => (
-                              <Badge
-                                key={u.user}
-                                variant="outline"
-                                onClick={() =>
-                                  handleRemoveBuilder(
-                                    selected,
-                                    users.find(
-                                      (e: any) => e.username === u.user
-                                    ).uid
-                                  )
-                                }
-                              >
-                                {u.user}
-                              </Badge>
-                            ))}
-                          </Group>
-                        ) : (
-                          "---"
-                        )}
-                      </td>
-                      <td>
-                        {selected.requests.length > 0 ? (
-                          <Group>
-                            {selected.requests.map((u: any) => (
-                              <Badge
-                                key={u.user}
-                                variant="outline"
-                                onClick={() =>
-                                  handleAddBuilder(
-                                    selected,
-                                    users.find(
-                                      (e: any) => e.username === u.user
-                                    ).uid
-                                  )
-                                }
-                              >
-                                {u.user}
-                              </Badge>
-                            ))}
-                          </Group>
-                        ) : (
-                          "---"
-                        )}
-                      </td>
-                      <td>
-                        {selected.requests.some(
-                          (r: any) => r.user === user?.username
-                        ) ? (
-                          <Button
-                            color="red"
-                            disabled={
-                              selected.completed || selected.builder.length > 0
-                            }
-                            onClick={() => handleUnrequest(selected)}
-                          >
-                            Unapply
-                          </Button>
-                        ) : (
-                          <Button
-                            color="green"
-                            disabled={
-                              selected.completed || selected.builder.length > 0
-                            }
-                            onClick={() => handleRequest(selected)}
-                          >
-                            Apply
-                          </Button>
-                        )}
-                      </td>
-                    </tr>
-                  )}
-                  {data
-                    ? data
-                        ?.filter((landmark: any) => {
-                          switch (statusFilter) {
-                            case 0:
-                              return (
-                                landmark.requests.length === 0 &&
-                                landmark.builder.length === 0 &&
-                                !landmark.completed
-                              );
-                            case 1:
-                              return (
-                                landmark.requests.length > 0 &&
-                                landmark.builder.length === 0 &&
-                                !landmark.completed
-                              );
-                            case 2:
-                              return (
-                                landmark.builder.length > 0 &&
-                                !landmark.completed
-                              );
-                            case 3:
-                              return landmark.completed;
-                            case 4:
-                              return (
-                                landmark.builder.some(
-                                  (b: any) => b.user === user?.username
-                                ) ||
-                                landmark.requests.some(
-                                  (r: any) => r.user === user?.username
-                                )
-                              );
-                            default:
-                              return true;
-                          }
-                        })
-                        .sort((a: any, b: any) => a.name.localeCompare(b.name))
-                        .map((landmark: any) => (
-                          <tr key={landmark.id}>
-                            <td width="20%">{landmark.name}</td>
-                            <td>
-                              {landmark.completed ? (
-                                <Badge color="green">Done</Badge>
-                              ) : landmark.builder.length > 0 ? (
-                                <Badge color="orange">Claimed</Badge>
-                              ) : landmark.requests.length > 0 ? (
-                                <Badge color="cyan">Requested</Badge>
-                              ) : (
-                                <Badge color="red">Not Claimed</Badge>
-                              )}
-                            </td>
-                            <td>
-                              {landmark.builder.length > 0 ? (
-                                <Group>
-                                  {landmark.builder.map((u: any) => (
-                                    <Badge
-                                      key={u.user}
-                                      variant="outline"
-                                      onClick={() =>
-                                        handleRemoveBuilder(
-                                          landmark,
-                                          users.find(
-                                            (e: any) => e.username === u.user
-                                          ).uid
-                                        )
-                                      }
-                                    >
-                                      {u.user}
-                                    </Badge>
-                                  ))}
-                                </Group>
-                              ) : (
-                                "---"
-                              )}
-                            </td>
-                            <td>
-                              {landmark.requests.length > 0 ? (
-                                <Group>
-                                  {landmark.requests.map((u: any) => (
-                                    <Badge
-                                      key={u.user}
-                                      variant="outline"
-                                      leftSection={
-                                        <div style={{ paddingTop: 5 }}>
-                                          {u.priority === 1 ? (
-                                            <Number1
-                                              size={18}
-                                              color={theme.colors.red[7]}
-                                            />
-                                          ) : u.priority === 2 ? (
-                                            <Number2
-                                              size={18}
-                                              color={theme.colors.yellow[5]}
-                                            />
-                                          ) : (
-                                            <Number3
-                                              size={18}
-                                              color={theme.colors.green[7]}
-                                            />
-                                          )}
-                                        </div>
-                                      }
-                                      sx={{ paddingLeft: 3 }}
-                                      onClick={() =>
-                                        handleAddBuilder(
-                                          landmark,
-                                          users.find(
-                                            (e: any) => e.username === u.user
-                                          ).uid
-                                        )
-                                      }
-                                    >
-                                      {u.user}
-                                    </Badge>
-                                  ))}
-                                </Group>
-                              ) : (
-                                "---"
-                              )}
-                            </td>
-                            <td width="25%">
-                              {landmark.requests.some(
-                                (r: any) => r.user === user?.username
-                              ) ? (
-                                <Group>
-                                  <Button
-                                    color="red"
-                                    disabled={
-                                      landmark.completed ||
-                                      landmark.builder.length > 0
+            <Tabs>
+              <Tabs.Tab
+                label="Claimable Landmarks"
+                icon={<UserPlus size={16} />}
+              >
+                <ScrollArea style={{ height: "79vh" }}>
+                  <Table highlightOnHover>
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Builder</th>
+                        <th>Requesters</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {selected && (
+                        <tr
+                          key={selected.id}
+                          style={{
+                            backgroundColor:
+                              theme.colorScheme == "dark"
+                                ? theme.colors.dark[4]
+                                : theme.colors.gray[2],
+                          }}
+                        >
+                          <td width="20%">{selected.name}</td>
+                          <td>
+                            {selected.completed ? (
+                              <Badge color="green">Done</Badge>
+                            ) : selected.builder.length > 0 ? (
+                              <Badge color="orange">Claimed</Badge>
+                            ) : selected.requests.length > 0 ? (
+                              <Badge color="cyan">Requested</Badge>
+                            ) : (
+                              <Badge color="red">Not Claimed</Badge>
+                            )}
+                          </td>
+                          <td>
+                            {selected.builder.length > 0 ? (
+                              <Group>
+                                {selected.builder.map((u: any) => (
+                                  <Badge
+                                    key={u.user}
+                                    variant="outline"
+                                    onClick={() =>
+                                      handleRemoveBuilder(
+                                        selected,
+                                        users.find(
+                                          (e: any) => e.username === u.user
+                                        ).uid
+                                      )
                                     }
-                                    onClick={() => handleUnrequest(landmark)}
                                   >
-                                    Unapply
-                                  </Button>
-                                  <Select
-                                    style={{ width: "40%" }}
-                                    disabled={landmark.builder.some(
-                                      (b: any) => b.user === user?.username
-                                    )}
-                                    value={`${
-                                      landmark.requests.find(
-                                        (r: any) => r.user === user?.username
-                                      ).priority
-                                    }`}
-                                    data={[
-                                      { value: "1", label: "High" },
-                                      { value: "2", label: "Normal" },
-                                      { value: "3", label: "Low" },
-                                    ]}
-                                    onChange={(e: any) =>
-                                      handleEditPriority(landmark, e)
+                                    {u.user}
+                                  </Badge>
+                                ))}
+                              </Group>
+                            ) : (
+                              "---"
+                            )}
+                          </td>
+                          <td>
+                            {selected.requests.length > 0 ? (
+                              <Group>
+                                {selected.requests.map((u: any) => (
+                                  <Badge
+                                    key={u.user}
+                                    variant="outline"
+                                    onClick={() =>
+                                      handleAddBuilder(
+                                        selected,
+                                        users.find(
+                                          (e: any) => e.username === u.user
+                                        ).uid
+                                      )
                                     }
-                                  />
-                                </Group>
-                              ) : (
-                                <Button
-                                  color="green"
-                                  disabled={
-                                    landmark.completed ||
-                                    landmark.builder.length > 0
-                                  }
-                                  onClick={() => handleRequest(landmark)}
-                                >
-                                  Apply
-                                </Button>
-                              )}
-                            </td>
-                          </tr>
-                        ))
-                    : null}
-                </tbody>
-              </Table>
-            </ScrollArea>
+                                  >
+                                    {u.user}
+                                  </Badge>
+                                ))}
+                              </Group>
+                            ) : (
+                              "---"
+                            )}
+                          </td>
+                          <td>
+                            {selected.requests.some(
+                              (r: any) => r.user === user?.username
+                            ) ? (
+                              <Button
+                                color="red"
+                                disabled={
+                                  selected.completed ||
+                                  selected.builder.length > 0
+                                }
+                                onClick={() => handleUnrequest(selected)}
+                              >
+                                Unapply
+                              </Button>
+                            ) : (
+                              <Button
+                                color="green"
+                                disabled={
+                                  selected.completed ||
+                                  selected.builder.length > 0
+                                }
+                                onClick={() => handleRequest(selected)}
+                              >
+                                Apply
+                              </Button>
+                            )}
+                          </td>
+                        </tr>
+                      )}
+                      {data
+                        ? data
+                            ?.filter((landmark: any) => {
+                              if (!landmark.enabled || landmark.completed) {
+                                return false;
+                              }
+                              switch (statusFilter) {
+                                case 0:
+                                  return (
+                                    landmark.requests.length === 0 &&
+                                    landmark.builder.length === 0 &&
+                                    !landmark.completed
+                                  );
+                                case 1:
+                                  return (
+                                    landmark.requests.length > 0 &&
+                                    landmark.builder.length === 0 &&
+                                    !landmark.completed
+                                  );
+                                case 2:
+                                  return (
+                                    landmark.builder.length > 0 &&
+                                    !landmark.completed
+                                  );
+                                case 3:
+                                  return landmark.completed;
+                                case 4:
+                                  return (
+                                    landmark.builder.some(
+                                      (b: any) => b.user === user?.username
+                                    ) ||
+                                    landmark.requests.some(
+                                      (r: any) => r.user === user?.username
+                                    )
+                                  );
+                                case 5:
+                                  return !landmark.enabled;
+                                default:
+                                  return true;
+                              }
+                            })
+                            .sort((a: any, b: any) =>
+                              a.name.localeCompare(b.name)
+                            )
+                            .map((landmark: any) => (
+                              <tr key={landmark.id}>
+                                <td width="20%">{landmark.name}</td>
+                                <td>
+                                  {landmark.completed ? (
+                                    <Badge color="green">Done</Badge>
+                                  ) : landmark.builder.length > 0 ? (
+                                    <Badge color="orange">Claimed</Badge>
+                                  ) : landmark.requests.length > 0 ? (
+                                    <Badge color="cyan">Requested</Badge>
+                                  ) : (
+                                    <Badge color="red">Not Claimed</Badge>
+                                  )}
+                                </td>
+                                <td>
+                                  {landmark.builder.length > 0 ? (
+                                    <Group>
+                                      {landmark.builder.map((u: any) => (
+                                        <Badge
+                                          key={u.user}
+                                          variant="outline"
+                                          onClick={() =>
+                                            handleRemoveBuilder(
+                                              landmark,
+                                              users.find(
+                                                (e: any) =>
+                                                  e.username === u.user
+                                              ).uid
+                                            )
+                                          }
+                                        >
+                                          {u.user}
+                                        </Badge>
+                                      ))}
+                                    </Group>
+                                  ) : (
+                                    "---"
+                                  )}
+                                </td>
+                                <td>
+                                  {landmark.requests.length > 0 ? (
+                                    <Group>
+                                      {landmark.requests.map((u: any) => (
+                                        <Badge
+                                          key={u.user}
+                                          variant="outline"
+                                          leftSection={
+                                            <div style={{ paddingTop: 5 }}>
+                                              {u.priority === 1 ? (
+                                                <Number1
+                                                  size={18}
+                                                  color={theme.colors.red[7]}
+                                                />
+                                              ) : u.priority === 2 ? (
+                                                <Number2
+                                                  size={18}
+                                                  color={theme.colors.yellow[5]}
+                                                />
+                                              ) : (
+                                                <Number3
+                                                  size={18}
+                                                  color={theme.colors.green[7]}
+                                                />
+                                              )}
+                                            </div>
+                                          }
+                                          sx={{ paddingLeft: 3 }}
+                                          onClick={() =>
+                                            handleAddBuilder(
+                                              landmark,
+                                              users.find(
+                                                (e: any) =>
+                                                  e.username === u.user
+                                              ).uid
+                                            )
+                                          }
+                                        >
+                                          {u.user}
+                                        </Badge>
+                                      ))}
+                                    </Group>
+                                  ) : (
+                                    "---"
+                                  )}
+                                </td>
+                                <td width="25%">
+                                  {landmark.requests.some(
+                                    (r: any) => r.user === user?.username
+                                  ) ? (
+                                    <Group>
+                                      <Button
+                                        color="red"
+                                        disabled={
+                                          landmark.completed ||
+                                          landmark.builder.length > 0
+                                        }
+                                        onClick={() =>
+                                          handleUnrequest(landmark)
+                                        }
+                                      >
+                                        Unapply
+                                      </Button>
+                                      <Select
+                                        style={{ width: "40%" }}
+                                        disabled={landmark.builder.some(
+                                          (b: any) => b.user === user?.username
+                                        )}
+                                        value={`${
+                                          landmark.requests.find(
+                                            (r: any) =>
+                                              r.user === user?.username
+                                          ).priority
+                                        }`}
+                                        data={[
+                                          { value: "1", label: "High" },
+                                          { value: "2", label: "Normal" },
+                                          { value: "3", label: "Low" },
+                                        ]}
+                                        onChange={(e: any) =>
+                                          handleEditPriority(landmark, e)
+                                        }
+                                      />
+                                    </Group>
+                                  ) : (
+                                    <Button
+                                      color="green"
+                                      disabled={
+                                        landmark.completed ||
+                                        landmark.builder.length > 0
+                                      }
+                                      onClick={() => handleRequest(landmark)}
+                                    >
+                                      Apply
+                                    </Button>
+                                  )}
+                                </td>
+                              </tr>
+                            ))
+                        : null}
+                    </tbody>
+                  </Table>
+                </ScrollArea>
+              </Tabs.Tab>
+              <Tabs.Tab label="Future Landmarks" icon={<Clock size={16} />}>
+                <ScrollArea style={{ height: "79vh" }}>
+                  <Table highlightOnHover>
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Builder</th>
+                        <th>Requesters</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {selected && (
+                        <tr
+                          key={selected.id}
+                          style={{
+                            backgroundColor:
+                              theme.colorScheme == "dark"
+                                ? theme.colors.dark[4]
+                                : theme.colors.gray[2],
+                          }}
+                        >
+                          <td width="20%">{selected.name}</td>
+                          <td>
+                            <Badge color="violet">Not available</Badge>
+                          </td>
+                          <td>
+                            {selected.builder.length > 0 ? (
+                              <Group>
+                                {selected.builder.map((u: any) => (
+                                  <Badge
+                                    key={u.user}
+                                    variant="outline"
+                                    onClick={() =>
+                                      handleRemoveBuilder(
+                                        selected,
+                                        users.find(
+                                          (e: any) => e.username === u.user
+                                        ).uid
+                                      )
+                                    }
+                                  >
+                                    {u.user}
+                                  </Badge>
+                                ))}
+                              </Group>
+                            ) : (
+                              "---"
+                            )}
+                          </td>
+                          <td>
+                            {selected.requests.length > 0 ? (
+                              <Group>
+                                {selected.requests.map((u: any) => (
+                                  <Badge
+                                    key={u.user}
+                                    variant="outline"
+                                    onClick={() =>
+                                      handleAddBuilder(
+                                        selected,
+                                        users.find(
+                                          (e: any) => e.username === u.user
+                                        ).uid
+                                      )
+                                    }
+                                  >
+                                    {u.user}
+                                  </Badge>
+                                ))}
+                              </Group>
+                            ) : (
+                              "---"
+                            )}
+                          </td>
+                        </tr>
+                      )}
+                      {data
+                        ? data
+                            ?.filter((landmark: any) => {
+                              if (landmark.enabled) {
+                                return false;
+                              }
+                              switch (statusFilter) {
+                                case 0:
+                                  return (
+                                    landmark.requests.length === 0 &&
+                                    landmark.builder.length === 0 &&
+                                    !landmark.completed
+                                  );
+                                case 1:
+                                  return (
+                                    landmark.requests.length > 0 &&
+                                    landmark.builder.length === 0 &&
+                                    !landmark.completed
+                                  );
+                                case 2:
+                                  return (
+                                    landmark.builder.length > 0 &&
+                                    !landmark.completed
+                                  );
+                                case 3:
+                                  return landmark.completed;
+                                case 4:
+                                  return (
+                                    landmark.builder.some(
+                                      (b: any) => b.user === user?.username
+                                    ) ||
+                                    landmark.requests.some(
+                                      (r: any) => r.user === user?.username
+                                    )
+                                  );
+                                case 5:
+                                  return !landmark.enabled;
+                                default:
+                                  return true;
+                              }
+                            })
+                            .sort((a: any, b: any) =>
+                              a.name.localeCompare(b.name)
+                            )
+                            .map((landmark: any) => (
+                              <tr key={landmark.id}>
+                                <td width="20%">{landmark.name}</td>
+                                <td>
+                                  <Badge color="violet">Not available</Badge>
+                                </td>
+                                <td>
+                                  {landmark.builder.length > 0 ? (
+                                    <Group>
+                                      {landmark.builder.map((u: any) => (
+                                        <Badge
+                                          key={u.user}
+                                          variant="outline"
+                                          onClick={() =>
+                                            handleRemoveBuilder(
+                                              landmark,
+                                              users.find(
+                                                (e: any) =>
+                                                  e.username === u.user
+                                              ).uid
+                                            )
+                                          }
+                                        >
+                                          {u.user}
+                                        </Badge>
+                                      ))}
+                                    </Group>
+                                  ) : (
+                                    "---"
+                                  )}
+                                </td>
+                                <td>
+                                  {landmark.requests.length > 0 ? (
+                                    <Group>
+                                      {landmark.requests.map((u: any) => (
+                                        <Badge
+                                          key={u.user}
+                                          variant="outline"
+                                          leftSection={
+                                            <div style={{ paddingTop: 5 }}>
+                                              {u.priority === 1 ? (
+                                                <Number1
+                                                  size={18}
+                                                  color={theme.colors.red[7]}
+                                                />
+                                              ) : u.priority === 2 ? (
+                                                <Number2
+                                                  size={18}
+                                                  color={theme.colors.yellow[5]}
+                                                />
+                                              ) : (
+                                                <Number3
+                                                  size={18}
+                                                  color={theme.colors.green[7]}
+                                                />
+                                              )}
+                                            </div>
+                                          }
+                                          sx={{ paddingLeft: 3 }}
+                                          onClick={() =>
+                                            handleAddBuilder(
+                                              landmark,
+                                              users.find(
+                                                (e: any) =>
+                                                  e.username === u.user
+                                              ).uid
+                                            )
+                                          }
+                                        >
+                                          {u.user}
+                                        </Badge>
+                                      ))}
+                                    </Group>
+                                  ) : (
+                                    "---"
+                                  )}
+                                </td>
+                              </tr>
+                            ))
+                        : null}
+                    </tbody>
+                  </Table>
+                </ScrollArea>
+              </Tabs.Tab>
+              <Tabs.Tab
+                label="Completed Landmarks"
+                icon={<CircleCheck size={16} />}
+              >
+                <ScrollArea style={{ height: "79vh" }}>
+                  <Table highlightOnHover>
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Builder</th>
+                        <th>Requesters</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {selected && (
+                        <tr
+                          key={selected.id}
+                          style={{
+                            backgroundColor:
+                              theme.colorScheme == "dark"
+                                ? theme.colors.dark[4]
+                                : theme.colors.gray[2],
+                          }}
+                        >
+                          <td width="20%">{selected.name}</td>
+                          <td>
+                            <Badge color="green">Done</Badge>
+                          </td>
+                          <td>
+                            {selected.builder.length > 0 ? (
+                              <Group>
+                                {selected.builder.map((u: any) => (
+                                  <Badge
+                                    key={u.user}
+                                    variant="outline"
+                                    onClick={() =>
+                                      handleRemoveBuilder(
+                                        selected,
+                                        users.find(
+                                          (e: any) => e.username === u.user
+                                        ).uid
+                                      )
+                                    }
+                                  >
+                                    {u.user}
+                                  </Badge>
+                                ))}
+                              </Group>
+                            ) : (
+                              "---"
+                            )}
+                          </td>
+                          <td>
+                            {selected.requests.length > 0 ? (
+                              <Group>
+                                {selected.requests.map((u: any) => (
+                                  <Badge
+                                    key={u.user}
+                                    variant="outline"
+                                    onClick={() =>
+                                      handleAddBuilder(
+                                        selected,
+                                        users.find(
+                                          (e: any) => e.username === u.user
+                                        ).uid
+                                      )
+                                    }
+                                  >
+                                    {u.user}
+                                  </Badge>
+                                ))}
+                              </Group>
+                            ) : (
+                              "---"
+                            )}
+                          </td>
+                        </tr>
+                      )}
+                      {data
+                        ? data
+                            ?.filter((landmark: any) => {
+                              if (!landmark.completed) {
+                                return false;
+                              }
+                              switch (statusFilter) {
+                                case 0:
+                                  return (
+                                    landmark.requests.length === 0 &&
+                                    landmark.builder.length === 0 &&
+                                    !landmark.completed
+                                  );
+                                case 1:
+                                  return (
+                                    landmark.requests.length > 0 &&
+                                    landmark.builder.length === 0 &&
+                                    !landmark.completed
+                                  );
+                                case 2:
+                                  return (
+                                    landmark.builder.length > 0 &&
+                                    !landmark.completed
+                                  );
+                                case 3:
+                                  return landmark.completed;
+                                case 4:
+                                  return (
+                                    landmark.builder.some(
+                                      (b: any) => b.user === user?.username
+                                    ) ||
+                                    landmark.requests.some(
+                                      (r: any) => r.user === user?.username
+                                    )
+                                  );
+                                case 5:
+                                  return !landmark.enabled;
+                                default:
+                                  return true;
+                              }
+                            })
+                            .sort((a: any, b: any) =>
+                              a.name.localeCompare(b.name)
+                            )
+                            .map((landmark: any) => (
+                              <tr key={landmark.id}>
+                                <td width="20%">{landmark.name}</td>
+                                <td>
+                                  <Badge color="green">Done</Badge>
+                                </td>
+                                <td>
+                                  {landmark.builder.length > 0 ? (
+                                    <Group>
+                                      {landmark.builder.map((u: any) => (
+                                        <Badge
+                                          key={u.user}
+                                          variant="outline"
+                                          onClick={() =>
+                                            handleRemoveBuilder(
+                                              landmark,
+                                              users.find(
+                                                (e: any) =>
+                                                  e.username === u.user
+                                              ).uid
+                                            )
+                                          }
+                                        >
+                                          {u.user}
+                                        </Badge>
+                                      ))}
+                                    </Group>
+                                  ) : (
+                                    "---"
+                                  )}
+                                </td>
+                                <td>
+                                  {landmark.requests.length > 0 ? (
+                                    <Group>
+                                      {landmark.requests.map((u: any) => (
+                                        <Badge
+                                          key={u.user}
+                                          variant="outline"
+                                          leftSection={
+                                            <div style={{ paddingTop: 5 }}>
+                                              {u.priority === 1 ? (
+                                                <Number1
+                                                  size={18}
+                                                  color={theme.colors.red[7]}
+                                                />
+                                              ) : u.priority === 2 ? (
+                                                <Number2
+                                                  size={18}
+                                                  color={theme.colors.yellow[5]}
+                                                />
+                                              ) : (
+                                                <Number3
+                                                  size={18}
+                                                  color={theme.colors.green[7]}
+                                                />
+                                              )}
+                                            </div>
+                                          }
+                                          sx={{ paddingLeft: 3 }}
+                                          onClick={() =>
+                                            handleAddBuilder(
+                                              landmark,
+                                              users.find(
+                                                (e: any) =>
+                                                  e.username === u.user
+                                              ).uid
+                                            )
+                                          }
+                                        >
+                                          {u.user}
+                                        </Badge>
+                                      ))}
+                                    </Group>
+                                  ) : (
+                                    "---"
+                                  )}
+                                </td>
+                              </tr>
+                            ))
+                        : null}
+                    </tbody>
+                  </Table>
+                </ScrollArea>
+              </Tabs.Tab>
+            </Tabs>
           </Paper>
         </Grid.Col>
         <Grid.Col sm={4}>
@@ -736,6 +1189,8 @@ const LandmarksPage = () => {
                           (r: any) => r.user === user?.username
                         )
                       );
+                    case 5:
+                      return !landmark.enabled;
                     default:
                       return true;
                   }
@@ -744,7 +1199,9 @@ const LandmarksPage = () => {
                   type: "circle",
                   center: landmark.location,
                   options: {
-                    color: landmark.completed
+                    color: !landmark.enabled
+                      ? theme.colors.grape[9]
+                      : landmark.completed
                       ? theme.colors.green[7]
                       : landmark.requests.length > 0
                       ? landmark.builder.length > 0
