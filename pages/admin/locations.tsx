@@ -130,7 +130,6 @@ const LocationsPage = () => {
             icon: <Pin />,
           });
           mutate("/api/blocks/get");
-          mutate("/api/blocks/get");
         }
       });
   };
@@ -335,7 +334,6 @@ const LocationsPage = () => {
                   min={0}
                   onChange={(e: any) => {
                     setBlock(parseInt(e));
-                    mutate("/api/blocks/get");
                     if (tool.id == 2 || tool.id == 4) {
                       const found = data?.find(
                         (b: any) => b.id === block && b.district === district
