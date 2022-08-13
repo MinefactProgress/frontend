@@ -91,7 +91,6 @@ const LocationsPage = () => {
     id: null,
     district: null,
   });
-  const [createBlocks, setCreateBlocks] = useState(0);
 
   const handleSubmit = (loc?: string) => {
     if (editType == "b") {
@@ -103,12 +102,11 @@ const LocationsPage = () => {
   const handleBlock = (loc?: string) => {
     fetch(
       process.env.NEXT_PUBLIC_API_URL +
-        "/api/blocks/addLocation?key=e9299168-9a87-4a44-801b-4214449e46be",
+        `/api/blocks/addLocation?key=${user.apikey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          key: "e9299168-9a87-4a44-801b-4214449e46be",
           district,
           blockID: block,
           location: loc || location,
@@ -172,12 +170,11 @@ const LocationsPage = () => {
   const handleDelete = (i: number) => {
     fetch(
       process.env.NEXT_PUBLIC_API_URL +
-        "/api/blocks/removeLocation?key=e9299168-9a87-4a44-801b-4214449e46be",
+        `/api/blocks/removeLocation?key=${user.apikey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          key: "e9299168-9a87-4a44-801b-4214449e46be",
           uid: selectedBlock.uid,
           index: i,
         }),
@@ -206,44 +203,6 @@ const LocationsPage = () => {
             icon: <Pin />,
           });
           mutate("/api/blocks/get");
-        }
-      });
-  };
-  const handleCreateBlocks = () => {
-    if (!district) {
-      showNotification({
-        title: "No district selected",
-        message: "Select a district before adding new blocks",
-        color: "red",
-        icon: <Trash />,
-      });
-      return;
-    }
-    fetch(process.env.NEXT_PUBLIC_API_URL + "/api/blocks/createmultiple", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        key: user.apikey,
-        district: district,
-        number: createBlocks,
-      }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.error) {
-          showNotification({
-            title: "Error Creating new Blocks",
-            message: res.message,
-            color: "red",
-            icon: <Trash />,
-          });
-        } else {
-          showNotification({
-            title: "Blocks created",
-            message: `${createBlocks} blocks created successfully`,
-            color: "green",
-            icon: <Pin />,
-          });
         }
       });
   };
@@ -483,26 +442,6 @@ const LocationsPage = () => {
               onChange={(event) => setEdgeMarkers(event.currentTarget.checked)}
               label="Selected Markers"
             />
-            <NumberInput
-              label="Create Blocks"
-              placeholder="Number of Blocks"
-              name="numberOfBlocks"
-              value={createBlocks}
-              min={0}
-              onChange={(e: any) => {
-                setCreateBlocks(parseInt(e));
-              }}
-            />
-            <Button
-              variant="outline"
-              style={{ marginTop: theme.spacing.md, width: "100%" }}
-              onClick={() => {
-                handleCreateBlocks();
-                setCreateBlocks(0);
-              }}
-            >
-              Create Blocks
-            </Button>
           </ScrollArea>
         </MediaQuery>
       }
