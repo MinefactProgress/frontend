@@ -42,24 +42,26 @@ ChartJS.register(
 const NetworkPage = () => {
   const router = useRouter();
   const [selectedServer, setSelectedServer] = useState("");
-  const { data } = useSWR("/api/network/ping");
-  const { data: playersRw } = useSWR(
-    "/api/playerstats/get"
-  );
-  const { data: servers } = useSWR(
-    "/api/admin/settings/get/ips"
+  const { data } = useSWR("/api/network/ping", {
+    refreshInterval: 60000,
+  });
+  const { data: playersRw } = useSWR("/api/playerstats/get");
+  const { data: servers } = useSWR("/api/admin/settings/get/ips");
+
+  const categories = Object.keys(data?.java.players.groups || []).map(
+    (key: any) => key.charAt(0).toUpperCase() + key.substring(1)
   );
   var players: any = {
     labels: [],
-    datasets: { total: [], lobby: [], buildteams: [], building: [], other: [] },
+    datasets: { total: [], hub: [], buildteams: [], plot: [], other: [] },
   };
 
   playersRw?.slice(-7).forEach((element: any) => {
     players.labels.push(new Date(element.date).toLocaleDateString());
     players.datasets.total.push(element.peaks.total);
-    players.datasets.lobby.push(element.peaks.lobby);
+    players.datasets.hub.push(element.peaks.hub);
     players.datasets.buildteams.push(element.peaks.buildteams);
-    players.datasets.building.push(element.peaks.building);
+    players.datasets.plot.push(element.peaks.plot);
     players.datasets.other.push(element.peaks.other);
   });
 
@@ -153,16 +155,11 @@ const NetworkPage = () => {
                 },
               }}
               data={{
-                labels: ["Lobby", "Building", "Build Teams", "Other"],
+                labels: categories,
                 datasets: [
                   {
                     label: "Players",
-                    data: [
-                      data?.java.players.groups.lobby,
-                      data?.java.players.groups.building,
-                      data?.java.players.groups.buildteams,
-                      data?.java.players.groups.other,
-                    ],
+                    data: Object.values(data?.java.players.groups || []),
                     backgroundColor: [
                       theme.colors.indigo[7] + "0f",
                       theme.colors.grape[7] + "0f",
@@ -244,8 +241,8 @@ const NetworkPage = () => {
                     borderWidth: 2,
                   },
                   {
-                    label: players ? "Lobby" : "",
-                    data: players.datasets.lobby,
+                    label: players ? "Hub" : "",
+                    data: players.datasets.hub,
                     borderColor: theme.colors.indigo[7] + "66",
                     tension: 0.1,
                     fill: true,
@@ -253,8 +250,8 @@ const NetworkPage = () => {
                     borderWidth: 2,
                   },
                   {
-                    label: players ? "Building" : "",
-                    data: players.datasets.building,
+                    label: players ? "Plot" : "",
+                    data: players.datasets.plot,
                     borderColor: theme.colors.grape[7] + "66",
                     tension: 0.1,
                     fill: true,
