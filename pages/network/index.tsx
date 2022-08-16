@@ -11,12 +11,12 @@ import {
   Tooltip,
 } from "chart.js";
 import {
-  Button,
+  Badge,
   Center,
   Grid,
-  Group,
   Paper,
-  Select,
+  ScrollArea,
+  Table,
   Text,
   useMantineTheme,
 } from "@mantine/core";
@@ -103,7 +103,7 @@ const NetworkPage = () => {
         </Center>
       </Paper>
       <Grid>
-        <Grid.Col sm={5}>
+        <Grid.Col sm={3}>
           <Paper
             withBorder
             radius="md"
@@ -154,6 +154,7 @@ const NetworkPage = () => {
                   },
                 },
               }}
+              height={"94%"}
               data={{
                 labels: categories,
                 datasets: [
@@ -179,7 +180,7 @@ const NetworkPage = () => {
             />
           </Paper>
         </Grid.Col>
-        <Grid.Col sm={7}>
+        <Grid.Col sm={9}>
           <Paper
             withBorder
             radius="md"
@@ -227,7 +228,7 @@ const NetworkPage = () => {
                   },
                 },
               }}
-              height={"210px"}
+              height={"94%"}
               data={{
                 labels: players.labels,
                 datasets: [
@@ -295,26 +296,49 @@ const NetworkPage = () => {
           weight={700}
           style={{ marginBottom: theme.spacing.md }}
         >
-          Ping a Network Server
+          Server Status
         </Text>
-        <Group grow>
-          <Select
-            placeholder="Select a Server to ping"
-            searchable
-            nothingFound="No Server found"
-            data={Object.keys(servers?.value || {})}
-            selectedServer={selectedServer}
-            // @ts-ignore
-            onChange={setSelectedServer}
-          />
-          <Button
-            onClick={(e: any) => {
-              router.push("/network/" + selectedServer);
-            }}
-          >
-            Ping!
-          </Button>
-        </Group>
+        <ScrollArea style={{ height: "29vh" }} type="hover">
+          <Table highlightOnHover>
+            <thead>
+              <tr>
+                <th>Server</th>
+                <th>Status</th>
+                <th>Version</th>
+                <th>Players</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data
+                ? Object.entries(data?.spigot || [])
+                    .sort((a: any, b: any) => b[1].online - a[1].online)
+                    .map((server: any) =>
+                      server[1].online ? (
+                        <tr key={server[0]}>
+                          <td>{server[0]}</td>
+                          <td>
+                            <Badge color="green">Online</Badge>
+                          </td>
+                          <td>
+                            {server[1].version.name.replace("Paper ", "")}
+                          </td>
+                          <td>{`${server[1].players.online} / ${server[1].players.max}`}</td>
+                        </tr>
+                      ) : (
+                        <tr key={server[0]}>
+                          <td>{server[0]}</td>
+                          <td>
+                            <Badge color="red">Offline</Badge>
+                          </td>
+                          <td>---</td>
+                          <td>---</td>
+                        </tr>
+                      )
+                    )
+                : null}
+            </tbody>
+          </Table>
+        </ScrollArea>
       </Paper>
     </Page>
   );
