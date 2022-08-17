@@ -1,16 +1,19 @@
 import {
+  Box,
   Button,
+  Center,
   createStyles,
+  Group,
   Paper,
   PasswordInput,
+  Progress,
   Text,
   TextInput,
   Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
-import { useRouter } from "next/router";
-import { Check, Cross } from "tabler-icons-react";
+import { Check, Cross, X } from "tabler-icons-react";
 import useUser, { useAuth } from "../utils/hooks/useUser";
 import { sign } from "../utils/jwt";
 
@@ -48,11 +51,46 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+function PasswordRequirement({
+  meets,
+  label,
+}: {
+  meets: boolean;
+  label: string;
+}) {
+  return (
+    <Text color={meets ? "teal" : "red"} mt={5} size="sm">
+      <Center inline>
+        {meets ? <Check size={14} /> : <X size={14} />}
+        <Box ml={7}>{label}</Box>
+      </Center>
+    </Text>
+  );
+}
+const requirements = [
+  { re: /.{8,}/, label: "Has at least 8 characters" },
+  { re: /[0-9]/, label: "Includes number" },
+  { re: /[a-z]/, label: "Includes lowercase letters" },
+  { re: /[A-Z]/, label: "Includes uppercase letters" },
+  { re: /[$&+,:;=?@#|'<>.^*()%!-"]/, label: "Includes special symbol" },
+];
+
+function getStrength(password: string) {
+  let multiplier = password.length > 5 ? 0 : 1;
+
+  requirements.forEach((requirement) => {
+    if (!requirement.re.test(password)) {
+      multiplier += 1;
+    }
+  });
+
+  return Math.max(100 - (100 / (requirements.length + 1)) * multiplier, 0);
+}
+
 const RegisterPage = () => {
   const [user, setUser] = useUser();
   const auth = useAuth();
   const { classes } = useStyles();
-  const router = useRouter();
   const form = useForm({
     initialValues: {
       username: "",
@@ -70,6 +108,32 @@ const RegisterPage = () => {
         value !== values.password ? "Passwords did not match" : null,
     },
   });
+
+  const strength = getStrength(form.values.password);
+  const checks = requirements.map((requirement, index) => (
+    <PasswordRequirement
+      key={index}
+      label={requirement.label}
+      meets={requirement.re.test(form.values.password)}
+    />
+  ));
+  const bars = Array(4)
+    .fill(0)
+    .map((_, index) => (
+      <Progress
+        styles={{ bar: { transitionDuration: "0ms" } }}
+        value={
+          form.values.password.length > 0 && index === 0
+            ? 100
+            : strength >= ((index + 1) / 4) * 100
+            ? 100
+            : 0
+        }
+        color={strength > 80 ? "teal" : strength > 50 ? "yellow" : "red"}
+        key={index}
+        size={4}
+      />
+    ));
 
   const handleSubmit = async (values: typeof form.values) => {
     const result = await fetch(process.env.NEXT_PUBLIC_API_URL + "/register", {
@@ -135,6 +199,10 @@ const RegisterPage = () => {
               placeholder="••••••••"
               {...form.getInputProps("confirmPassword")}
             />
+            <Group spacing={5} grow mt="xs" mb="md">
+              {bars}
+            </Group>
+            {checks}
             <Button
               fullWidth
               mt="xl"
