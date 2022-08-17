@@ -33,8 +33,8 @@ import {
   Search,
   Settings,
   Sun,
-  Trash,
   User,
+  UserPlus,
 } from "tabler-icons-react";
 import React, { useEffect, useState } from "react";
 
@@ -354,12 +354,20 @@ export default function Page(props: {
                       </Menu.Item>
                     </>
                   ) : (
-                    <Menu.Item
-                      icon={<Login size={14} />}
-                      onClick={() => router.push("/login")}
-                    >
-                      Log in
-                    </Menu.Item>
+                    <>
+                      <Menu.Item
+                        icon={<Login size={14} />}
+                        onClick={() => router.push("/login")}
+                      >
+                        Log in
+                      </Menu.Item>
+                      <Menu.Item
+                        icon={<UserPlus size={14} />}
+                        onClick={() => router.push("/register")}
+                      >
+                        Request Account
+                      </Menu.Item>
+                    </>
                   )}
                 </Menu>
               </Box>
