@@ -10,10 +10,11 @@ import {
   Text,
   TextInput,
   Title,
+  useMantineTheme,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
-import { Check, Cross, X } from "tabler-icons-react";
+import { AlertTriangle, Check, Cross, X } from "tabler-icons-react";
 import useUser, { useAuth } from "../utils/hooks/useUser";
 import { sign } from "../utils/jwt";
 
@@ -88,18 +89,21 @@ function getStrength(password: string) {
 }
 
 const RegisterPage = () => {
+  const theme = useMantineTheme();
   const [user, setUser] = useUser();
   const auth = useAuth();
   const { classes } = useStyles();
   const form = useForm({
     initialValues: {
       username: "",
+      discord: "",
       password: "",
       confirmPassword: "",
     },
 
     validate: {
       username: (value) => (value ? null : "Please enter a username"),
+      discord: (value) => (value ? null : "Please enter a discord name"),
       password: (value) =>
         value.length >= 8
           ? null
@@ -144,6 +148,7 @@ const RegisterPage = () => {
       },
       body: JSON.stringify({
         username: values.username !== "" ? values.username : undefined,
+        discord: values.discord !== "" ? values.discord : undefined,
         password: values.password !== "" ? sign(values.password) : undefined,
       }),
     });
@@ -180,39 +185,54 @@ const RegisterPage = () => {
           Minefact Progress
         </Title>
         {!auth ? (
-          <form onSubmit={form.onSubmit(handleSubmit)}>
-            <TextInput
-              required
-              label="Minecraft-Username"
-              placeholder="Username"
-              {...form.getInputProps("username")}
-            />
-            <PasswordInput
-              required
-              label="Password"
-              placeholder="••••••••"
-              {...form.getInputProps("password")}
-            />
-            <PasswordInput
-              required
-              label="Confirm Password"
-              placeholder="••••••••"
-              {...form.getInputProps("confirmPassword")}
-            />
-            <Group spacing={5} grow mt="xs" mb="md">
-              {bars}
+          <>
+            <Group>
+              <AlertTriangle size={20} color="red" />
+              <Text color="red" style={{ marginBottom: theme.spacing.md }}>
+                Please only request an account if you are a staff member of New
+                York City and don't already have one!
+              </Text>
             </Group>
-            {checks}
-            <Button
-              fullWidth
-              mt="xl"
-              size="md"
-              type="submit"
-              color={auth ? "gray" : "primary"}
-            >
-              Submit
-            </Button>
-          </form>
+            <form onSubmit={form.onSubmit(handleSubmit)}>
+              <TextInput
+                required
+                label="Minecraft-Username"
+                placeholder="Username"
+                {...form.getInputProps("username")}
+              />
+              <TextInput
+                required
+                label="Discord-Tag"
+                placeholder="Name#1234"
+                {...form.getInputProps("discord")}
+              />
+              <PasswordInput
+                required
+                label="Password"
+                placeholder="••••••••"
+                {...form.getInputProps("password")}
+              />
+              <PasswordInput
+                required
+                label="Confirm Password"
+                placeholder="••••••••"
+                {...form.getInputProps("confirmPassword")}
+              />
+              <Group spacing={5} grow mt="xs" mb="md">
+                {bars}
+              </Group>
+              {checks}
+              <Button
+                fullWidth
+                mt="xl"
+                size="md"
+                type="submit"
+                color={auth ? "gray" : "primary"}
+              >
+                Submit
+              </Button>
+            </form>
+          </>
         ) : (
           <Text>You are already logged in!</Text>
         )}
