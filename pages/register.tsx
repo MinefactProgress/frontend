@@ -189,8 +189,7 @@ const RegisterPage = () => {
             <Group>
               <AlertTriangle size={20} color="red" />
               <Text color="red" style={{ marginBottom: theme.spacing.md }}>
-                Please only request an account if you are a staff member of New
-                York City and don't already have one!
+                Please only request an account if you are a staff member of New York City and don't already have one!
               </Text>
             </Group>
             <form onSubmit={form.onSubmit(handleSubmit)}>
