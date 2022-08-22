@@ -17,8 +17,7 @@ const useStyles = createStyles((theme) => ({
   wrapper: {
     height: "100vh",
     backgroundSize: "cover",
-    backgroundImage:
-      `url("https://cdn.discordapp.com/attachments/714797791913705472/927491066653970442/Bridge_1.png")`,
+    backgroundImage: `url("https://cdn.discordapp.com/attachments/714797791913705472/927491066653970442/Bridge_1.png")`,
   },
 
   form: {
@@ -65,7 +64,7 @@ const Login = () => {
     },
   });
   const handleSubmit = async (values: typeof form.values) => {
-    const result = await fetch(process.env.NEXT_PUBLIC_API_URL+"/login", {
+    const result = await fetch(process.env.NEXT_PUBLIC_API_URL + "/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -105,7 +104,7 @@ const Login = () => {
           mt="md"
           mb={50}
         >
-          Minefact Progress
+          BTE NYC Progress
         </Title>
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput

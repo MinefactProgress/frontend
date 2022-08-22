@@ -384,7 +384,7 @@ export default function Page(props: {
           >
             <Group style={{ height: "100%" }}>
               <img
-                src="/logo.png"
+                src="/logo.gif"
                 alt="logo"
                 style={{ height: "5vh", width: "5vh" }}
               />

@@ -280,8 +280,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
         >
           <MapLayer
             name="District Borders"
-            
-          checked={router.query.d!=null}
+            checked={router.query.d != null}
             components={districts?.map((district: any) =>
               district.location != [] && district.id > 1
                 ? {
@@ -289,15 +288,20 @@ const Home: NextPage = ({ user, setUser }: any) => {
                     positions: district.area,
                     options: {
                       color: `${colorFromStatus(district.status, true)}FF`,
-                      opacity: selectedBlock.uid !=0?district.id == selectedBlock.district ? 1 : 0.1:1,
+                      opacity:
+                        selectedBlock.uid != 0
+                          ? district.id == selectedBlock.district
+                            ? 1
+                            : 0.1
+                          : 1,
                     },
                     radius: 15,
                     tooltip: `${district.name}`,
                     eventHandlers: {
                       click: () => {
-                        router.push("/districts/"+district.name)
+                        router.push("/districts/" + district.name);
                       },
-                    }
+                    },
                   }
                 : null
             )}
@@ -315,10 +319,10 @@ const Home: NextPage = ({ user, setUser }: any) => {
             marginBottom: theme.spacing.md,
           }}
         >
-          <Title>Minefact Progress Tracking</Title>
+          <Title>BTE NYC Progress Tracking</Title>
           <Text>
-            We are tracking the Progress made on the Minefact New York City
-            building Project.
+            We are tracking the Progress made on the BTE New York City building
+            Project.
           </Text>
         </Paper>
         <Grid columns={25} sx={{ marginTop: theme.spacing.md }}>

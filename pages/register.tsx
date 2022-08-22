@@ -182,7 +182,7 @@ const RegisterPage = () => {
           mt="md"
           mb={50}
         >
-          Minefact Progress
+          BTE NYC Progress
         </Title>
         {!auth ? (
           <>

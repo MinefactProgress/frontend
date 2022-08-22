@@ -1,5 +1,10 @@
 import { ActionIcon, Anchor, Group, createStyles } from "@mantine/core";
-import { BrandDiscord, BrandInstagram, BrandTwitter, BrandYoutube } from "tabler-icons-react";
+import {
+  BrandDiscord,
+  BrandInstagram,
+  BrandTwitter,
+  BrandYoutube,
+} from "tabler-icons-react";
 
 import React from "react";
 
@@ -61,15 +66,25 @@ export default function Footer({ links }: FooterCenteredProps) {
           onClick={(event) => event.preventDefault()}
           size="sm"
         >
-          Copyright © {new Date().getFullYear()} Minefact Progress
+          Copyright © {new Date().getFullYear()} BTE NYC Progress
         </Anchor>
         <Group className={classes.links}>{items}</Group>
 
         <Group spacing={0} position="right" noWrap>
-          <ActionIcon size="lg" onClick={()=> {window.open("https://discord.gg/nMJMMBR","_blank")}}>
+          <ActionIcon
+            size="lg"
+            onClick={() => {
+              window.open("https://discord.gg/nMJMMBR", "_blank");
+            }}
+          >
             <BrandDiscord size={18} />
           </ActionIcon>
-          <ActionIcon size="lg" onClick={()=> {window.open("https://www.youtube.com/c/MineFactYT","_blank")}}>
+          <ActionIcon
+            size="lg"
+            onClick={() => {
+              window.open("https://www.youtube.com/c/MineFactYT", "_blank");
+            }}
+          >
             <BrandYoutube size={18} />
           </ActionIcon>
         </Group>
