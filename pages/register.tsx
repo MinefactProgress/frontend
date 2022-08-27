@@ -157,7 +157,7 @@ const RegisterPage = () => {
       showNotification({
         title: "Account Requested",
         message:
-          "Account requested successfully. Please wait until we enabled your account.",
+          "Account requested successfully. Please wait until we have enabled your account.",
         color: "green",
         icon: <Check />,
       });
