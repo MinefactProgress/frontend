@@ -1,3 +1,13 @@
+export const Ranks = [
+  "Owner",
+  "Administrator",
+  "Moderator",
+  "Developer",
+  "Supporter",
+  "Architect",
+  "Player",
+];
+
 export function rankToColor(rank: string) {
   switch (rank) {
     case "Owner":
@@ -12,6 +22,8 @@ export function rankToColor(rank: string) {
       return "#5555FF";
     case "Architect":
       return "#0000AA";
+    case "Player":
+      return "#55FF55";
     default:
       return "#555555";
   }

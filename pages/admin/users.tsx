@@ -17,8 +17,17 @@ import {
   ThemeIcon,
   Tooltip,
   useMantineTheme,
+  Badge,
 } from "@mantine/core";
-import { Check, Cross, Pencil, Trash, UserPlus } from "tabler-icons-react";
+import {
+  Calendar,
+  Check,
+  Cross,
+  Pencil,
+  Trash,
+  UserPlus,
+  X,
+} from "tabler-icons-react";
 
 import Page from "../../components/Page";
 import { getRoleFromPermission } from "../../utils/hooks/usePermission";
@@ -27,12 +36,18 @@ import { useForm } from "@mantine/form";
 import { useModals } from "@mantine/modals";
 import useSWR, { mutate } from "swr";
 import useUser from "../../utils/hooks/useUser";
+import { useState } from "react";
+import { Ranks, rankToColor } from "../../utils/userUtils";
+import { DatePicker } from "@mantine/dates";
 
 const UsersPage = () => {
   const PRIMARY_COL_HEIGHT = 840;
   const theme = useMantineTheme();
   const modals = useModals();
   const [user] = useUser();
+  const [historyUser, setHistoryUser] = useState<string | null>(null);
+  const [addHistoryRank, setAddHistoryRank] = useState<string | null>(null);
+
   const form = useForm({
     initialValues: {
       username: "",
@@ -62,6 +77,7 @@ const UsersPage = () => {
   });
   const SECONDARY_COL_HEIGHT = PRIMARY_COL_HEIGHT / 2 - theme.spacing.md / 2;
   const { data } = useSWR("/api/users/get");
+  const { data: registrations } = useSWR("/api/users/registrations/get");
   const handleDeleteUser = (id: string) => {
     const userD = data?.find((user: any) => user.uid === id);
     modals.openConfirmModal({
@@ -207,6 +223,133 @@ const UsersPage = () => {
       mutate("/api/users/get");
     }
   };
+  const handleSaveRankHistory = (index: number, type: string, value: any) => {
+    const stats = data?.find(
+      (user: any) => user.uid === parseInt(historyUser || "")
+    ).stats;
+
+    stats.rank_history[index][type] = value
+      ? new Date(value).toISOString()
+      : null;
+
+    fetch(
+      process.env.NEXT_PUBLIC_API_URL + "/api/users/update?key=" + user.apikey,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          uid: historyUser,
+          values: {
+            stats: JSON.stringify(stats),
+          },
+        }),
+      }
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.error) {
+          showNotification({
+            title: "Error updating Rank History",
+            message: res.message,
+            color: "red",
+            icon: <Cross />,
+          });
+        } else {
+          showNotification({
+            title: "Rank History updated",
+            message: "Rank History updated successfully",
+            color: "green",
+            icon: <Check />,
+          });
+          mutate("/api/users/get");
+        }
+      });
+  };
+  const addRankHistory = () => {
+    const stats = data?.find(
+      (user: any) => user.uid === parseInt(historyUser || "")
+    ).stats;
+
+    stats.rank_history.push({
+      rank: addHistoryRank,
+      from: null,
+      till: null,
+    });
+
+    fetch(
+      process.env.NEXT_PUBLIC_API_URL + "/api/users/update?key=" + user.apikey,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          uid: historyUser,
+          values: {
+            stats: JSON.stringify(stats),
+          },
+        }),
+      }
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.error) {
+          showNotification({
+            title: "Error updating Rank History",
+            message: res.message,
+            color: "red",
+            icon: <Cross />,
+          });
+        } else {
+          showNotification({
+            title: "Rank added",
+            message: `Rank ${addHistoryRank} added successfully`,
+            color: "green",
+            icon: <Check />,
+          });
+          setAddHistoryRank(null);
+          mutate("/api/users/get");
+        }
+      });
+  };
+  const removeRankHistory = (index: number) => {
+    const stats = data?.find(
+      (user: any) => user.uid === parseInt(historyUser || "")
+    ).stats;
+
+    stats.rank_history.splice(index, 1);
+
+    fetch(
+      process.env.NEXT_PUBLIC_API_URL + "/api/users/update?key=" + user.apikey,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          uid: historyUser,
+          values: {
+            stats: JSON.stringify(stats),
+          },
+        }),
+      }
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.error) {
+          showNotification({
+            title: "Error updating Rank History",
+            message: res.message,
+            color: "red",
+            icon: <Cross />,
+          });
+        } else {
+          showNotification({
+            title: "Rank removed",
+            message: "Rank removed successfully",
+            color: "green",
+            icon: <Check />,
+          });
+          mutate("/api/users/get");
+        }
+      });
+  };
 
   return (
     <Page>
@@ -288,7 +431,7 @@ const UsersPage = () => {
                     User Control
                   </Text>
                   <Tabs
-                    variant="pills"
+                    variant="outline"
                     tabPadding="md"
                     style={{ marginTop: theme.spacing.md }}
                   >
@@ -467,6 +610,145 @@ const UsersPage = () => {
                           Update User
                         </Button>
                       </form>
+                    </Tabs.Tab>
+                    <Tabs.Tab
+                      label="Edit Rank History"
+                      icon={<Pencil size={14} />}
+                    >
+                      <Select
+                        label="User"
+                        placeholder="Select user"
+                        value={historyUser}
+                        onChange={setHistoryUser}
+                        searchable
+                        clearable
+                        data={
+                          data
+                            ? data
+                                ?.sort((a: any, b: any) => {
+                                  return a.username
+                                    .toLowerCase()
+                                    .localeCompare(b.username);
+                                })
+                                .map((user: any) => ({
+                                  value: `${user.uid}`,
+                                  label: user.username,
+                                }))
+                            : []
+                        }
+                      />
+                      <Divider
+                        my="sm"
+                        style={{
+                          marginTop: theme.spacing.md,
+                          marginBottom: theme.spacing.md,
+                        }}
+                      />
+                      <ScrollArea style={{ height: "44vh" }}>
+                        {data
+                          ? data
+                              ?.find(
+                                (user: any) =>
+                                  user.uid === parseInt(historyUser || "")
+                              )
+                              ?.stats.rank_history.map(
+                                (rank: any, i: number) => (
+                                  <Group
+                                    key={i}
+                                    style={{ marginBottom: theme.spacing.md }}
+                                  >
+                                    <Badge
+                                      style={{
+                                        backgroundColor: rankToColor(rank.rank),
+                                        color: "#FFFFFF",
+                                        opacity: 1,
+                                        marginTop: theme.spacing.xl,
+                                        width: "19%",
+                                      }}
+                                    >
+                                      {rank.rank}
+                                    </Badge>
+                                    <DatePicker
+                                      width={"20px"}
+                                      maxDate={new Date()}
+                                      label="From"
+                                      placeholder="Select Date"
+                                      icon={<Calendar size={16} />}
+                                      defaultValue={
+                                        rank.from ? new Date(rank.from) : null
+                                      }
+                                      onChange={(date: any) => {
+                                        handleSaveRankHistory(i, "from", date);
+                                      }}
+                                      style={{ width: "32%" }}
+                                    />
+                                    <DatePicker
+                                      maxDate={new Date()}
+                                      label="Till"
+                                      placeholder="Select Date"
+                                      icon={<Calendar size={16} />}
+                                      defaultValue={
+                                        rank.till ? new Date(rank.till) : null
+                                      }
+                                      onChange={(date: any) => {
+                                        handleSaveRankHistory(i, "till", date);
+                                      }}
+                                      style={{ width: "32%" }}
+                                    />
+                                    <Tooltip
+                                      label="Delete Rank"
+                                      withArrow
+                                      position="bottom"
+                                    >
+                                      <ActionIcon
+                                        size="sm"
+                                        radius="xl"
+                                        variant="outline"
+                                        style={{
+                                          marginTop: theme.spacing.xl,
+                                          color: "red",
+                                          borderColor: "red",
+                                        }}
+                                        onClick={() => removeRankHistory(i)}
+                                      >
+                                        <X size={16} />
+                                      </ActionIcon>
+                                    </Tooltip>
+                                  </Group>
+                                )
+                              )
+                          : null}
+                        {historyUser ? (
+                          <>
+                            <Divider
+                              my="sm"
+                              style={{
+                                marginTop: theme.spacing.md,
+                                marginBottom: theme.spacing.md,
+                              }}
+                            />
+                            <Group grow>
+                              <Select
+                                label="Add Rank"
+                                placeholder="Select Rank"
+                                value={addHistoryRank}
+                                onChange={setAddHistoryRank}
+                                searchable
+                                clearable
+                                data={Ranks}
+                                style={{}}
+                              />
+                              <Button
+                                color="green"
+                                style={{ marginTop: theme.spacing.xl }}
+                                onClick={() => addRankHistory()}
+                              >
+                                Add
+                              </Button>
+                            </Group>
+                          </>
+                        ) : null}
+                      </ScrollArea>
                     </Tabs.Tab>
                   </Tabs>
                 </Paper>
