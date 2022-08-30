@@ -425,33 +425,67 @@ export default function Page(props: {
     >
       <Head>
         <title>
-          Progress |{" "}
+          BTE New York City Progress |{" "}
           {props.title ||
             pages.find((el: any) => el.href == router.pathname)?.label}
         </title>
-        <meta name="title" content="Minefact Progress Tracking" />
+        <meta
+          name="title"
+          content={
+            "BTE New York City Progress | " +
+            (props.title ||
+              pages.find((el: any) => el.href == router.pathname)?.label)
+          }
+        />
+        <meta
+          name="description"
+          content="We are tracking the Progress made on the BTE New York City server as part of the Build the Earth Project."
+        />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://progress.minefact.de/" />
+        <meta
+          property="og:title"
+          content="BuildTheEarth New York City Progress"
+        />
+        <meta
+          property="og:description"
+          content="We are tracking the Progress made on the BTE New York City server as part of the Build the Earth Project."
+        />
+        <meta property="og:image" content="https://cdn.discordapp.com/attachments/714797791913705472/927491066653970442/Bridge_1.png" />
+
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://progress.minefact.de/" />
+        <meta
+          property="twitter:title"
+          content="BuildTheEarth New York City Progress"
+        />
+        <meta
+          property="twitter:description"
+          content="We are tracking the Progress made on the BTE New York City server as part of the Build the Earth Project."
+        />
+        <meta property="twitter:image" content="https://cdn.discordapp.com/attachments/714797791913705472/927491066653970442/Bridge_1.png" />
+
         <meta
           name="keyworkds"
           content="progress, tracking, minefact, nyc, new york city, new york, minecraft, buildtheearth, mf,network, server, multiplayer"
         />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta name="theme-color" content={theme.colors.blue[7]} />
+
         <meta
           name="apple-mobile-web-app-status-bar-style"
           content={theme.colors.blue[7]}
         />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="BTE NYC Progress" />
+
         <meta
           name="msapplication-navbutton-color"
           content={theme.colors.blue[7]}
         />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="application-name" content="BTE NYC Progress" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-title" content="minefact Progress" />
-        <meta name="application-name" content="Minefact Progress" />
-        <meta
-          name="description"
-          content="We are tracking the Progress made on the Minefact New York City server as part of the Build the Earth Project."
-        />
       </Head>
       <Box
         sx={{
