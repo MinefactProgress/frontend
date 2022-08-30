@@ -15,7 +15,7 @@ import {
 import Page from "../../components/Page";
 import { Plus } from "tabler-icons-react";
 import ThemeSwitch from "../../components/ThemeSwitch";
-import { rankToColor } from "../../utils/userUtils";
+import { getStaffJoin, rankToColor } from "../../utils/userUtils";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import useUser from "../../utils/hooks/useUser";
@@ -57,13 +57,20 @@ const StaffPage = () => {
           <Grid.Col key={i} md={2}>
             <Paper withBorder radius="md" p="lg">
               <Avatar
-                src={user.picture||"https://mc-heads.net/avatar/" + user.username}
+                src={
+                  user.picture || "https://mc-heads.net/avatar/" + user.username
+                }
                 size={120}
                 radius={120}
                 mx="auto"
               />
               <Text align="center" size="lg" weight={500} mt="md">
                 {user.username}
+              </Text>
+              <Text align="center" color="dimmed" size="md" weight={400}>
+                Staff •{" "}
+                {getStaffJoin(user.stats.rank_history)?.toLocaleDateString() ||
+                  "Unknown"}
               </Text>
               <Center>
                 <Badge

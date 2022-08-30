@@ -28,3 +28,10 @@ export function rankToColor(rank: string) {
       return "#555555";
   }
 }
+
+export function getStaffJoin(rankHistory: any): Date | null {
+  if (rankHistory.length > 0) {
+    return new Date(rankHistory[0].from);
+  }
+  return null;
+}
