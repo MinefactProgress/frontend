@@ -116,7 +116,7 @@ const pages = [
     color: "grape",
     label: "Manage Districts",
     href: "/admin/districts",
-    permission: 4,
+    permission: 3,
   },
   {
     icon: <ChartInfographic size={16} />,
