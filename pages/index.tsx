@@ -88,6 +88,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
     players.labels.push(new Date(element.date).toLocaleDateString());
     players.datasets.push(element.averages.total);
   });
+  console.log(districts);
 
   return (
     <Page noMargin style={{ position: "relative" }}>
@@ -264,7 +265,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
                   },
                   radius: 15,
                   tooltip:
-                    (districts ? districts[block.district - 1].name : "") +
+                    (districts ? districts[block.district.id - 1].name : "") +
                     " #" +
                     block.id +
                     " | " +
