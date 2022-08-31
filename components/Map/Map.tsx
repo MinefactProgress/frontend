@@ -37,6 +37,7 @@ const Map = (props: any) => {
           height: "100%",
           width: "100%",
           border: "none",
+          cursor:"default",
           ...props.mapStyle,
         }}
         mapPlaceholder={
