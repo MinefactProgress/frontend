@@ -24,15 +24,15 @@ import {
   PointElement,
 } from "chart.js";
 import {
-  Backhoe,
+  Building,
   BuildingCommunity,
   Calendar,
   ChartBubble,
-  Users,
+  Checkbox,
   X,
 } from "tabler-icons-react";
 import { Bar, Line } from "react-chartjs-2";
-import { useHotkeys, useMediaQuery, useScrollLock } from "@mantine/hooks";
+import { useMediaQuery } from "@mantine/hooks";
 
 import Map from "../components/Map";
 import MapLayer from "../components/MapLayer";
@@ -74,11 +74,13 @@ const Home: NextPage = ({ user, setUser }: any) => {
   const smallScreen = useMediaQuery("(max-width: 768px)");
   const { data } = useSWR("/api/blocks/get");
   const { data: districts } = useSWR("/api/districts/get");
-  const { data: progress } = useSWR("/api/progress");
   const { data: playersRw } = useSWR("/api/playerstats/get");
   const { data: projectsRw } = useSWR("/api/projects/get");
   var projects: any = { labels: [], datasets: [] };
   var players: any = { labels: [], datasets: [] };
+  const nyc = districts?.find(
+    (district: any) => district.name === "New York City"
+  );
   projectsRw?.slice(-30).forEach((element: any) => {
     projects.labels.push(new Date(element.date).toLocaleDateString());
     projects.datasets.push(element.projects);
@@ -344,25 +346,25 @@ const Home: NextPage = ({ user, setUser }: any) => {
               style={{ height: "100%" }}
               icon={<ChartBubble />}
             >
-              {Math.round(progress?.progress)}%
+              {Math.round(nyc?.progress * 100) / 100}%
             </StatsText>
           </Grid.Col>
           <Grid.Col sm={5}>
             <StatsText
-              title="Helping hands"
+              title="Completed Projects"
               style={{ height: "100%" }}
-              icon={<Users />}
+              icon={<Building />}
             >
-              {progress?.builders.length} Builders
+              {projectsRw?.[projectsRw?.length - 1].projects} Projects
             </StatsText>
           </Grid.Col>
           <Grid.Col sm={5}>
             <StatsText
-              title="In-Progress Blocks"
+              title="Completed Blocks"
               style={{ height: "100%" }}
-              icon={<Backhoe />}
+              icon={<Checkbox />}
             >
-              {progress?.blocksCount.building} Blocks
+              {nyc?.blocks.done} Blocks
             </StatsText>
           </Grid.Col>
           <Grid.Col sm={5}>
@@ -371,7 +373,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
               style={{ height: "100%" }}
               icon={<BuildingCommunity />}
             >
-              {progress?.blocksCount.total} Blocks
+              {nyc?.blocks.total} Blocks
             </StatsText>
           </Grid.Col>
         </Grid>
@@ -432,20 +434,20 @@ const Home: NextPage = ({ user, setUser }: any) => {
             }}
             height={smallScreen ? "120px" : "38px"}
             data={{
-              labels: [
-                progress?.name,
-                progress?.children[0].name,
-                progress?.children[1].name,
-              ],
+              labels: [nyc?.name].concat(
+                districts
+                  ?.filter((d: any) => d.parent === nyc?.id)
+                  .map((d: any) => d.name)
+              ),
               datasets: [
                 {
                   label: "Progress",
-                  data: progress
-                    ? [
-                        progress?.progress,
-                        progress?.children[0].progress,
-                        progress?.children[1].progress,
-                      ]
+                  data: nyc
+                    ? [nyc?.progress].concat(
+                        districts
+                          ?.filter((d: any) => d.parent === nyc?.id)
+                          .map((d: any) => d.progress)
+                      )
                     : [],
                   borderColor: function (context) {
                     const index = context.dataIndex;
