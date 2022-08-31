@@ -5,7 +5,6 @@ import {
   Grid,
   Group,
   Paper,
-  SimpleGrid,
   Text,
   Title,
   Tooltip,
@@ -88,7 +87,6 @@ const Home: NextPage = ({ user, setUser }: any) => {
     players.labels.push(new Date(element.date).toLocaleDateString());
     players.datasets.push(element.averages.total);
   });
-  console.log(districts);
 
   return (
     <Page noMargin style={{ position: "relative" }}>
