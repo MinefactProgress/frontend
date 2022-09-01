@@ -267,7 +267,7 @@ export default function Page(props: {
                       }}
                     >
                       <Group>
-                        <Avatar src={user.picture} radius="xl" />
+                        <Avatar src={user.picture} radius="xl" alt="User Picture"/>
                         <Box sx={{ flex: 1 }}>
                           <Text size="sm" weight={500}>
                             {user.username}
