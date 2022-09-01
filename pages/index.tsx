@@ -62,7 +62,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
   const [selectedBlock, setSelectedBlock] = useState({
     uid: 0,
     id: 0,
-    district: { id: 0, name: null },
+    district: -1,
     status: -1,
     progress: 0,
     details: false,
@@ -181,7 +181,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
                   setSelectedBlock({
                     uid: 0,
                     id: 0,
-                    district: { id: 0, name: null },
+                    district: -1,
                     status: -1,
                     progress: 0,
                     details: false,
@@ -228,7 +228,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
               onClick={() => {
                 router.push(
                   "/districts/" +
-                    districts[selectedBlock.district.id - 1].name +
+                    districts[selectedBlock.district - 1].name +
                     "/" +
                     selectedBlock.id
                 );
