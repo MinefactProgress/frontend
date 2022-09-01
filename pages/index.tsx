@@ -23,6 +23,7 @@ import {
   LinearScale,
   PointElement,
 } from "chart.js";
+import { Bar, Line } from "react-chartjs-2";
 import {
   Building,
   BuildingCommunity,
@@ -31,8 +32,6 @@ import {
   Checkbox,
   X,
 } from "tabler-icons-react";
-import { Bar, Line } from "react-chartjs-2";
-import { useMediaQuery } from "@mantine/hooks";
 
 import Map from "../components/Map";
 import MapLayer from "../components/MapLayer";
@@ -40,6 +39,7 @@ import type { NextPage } from "next";
 import Page from "../components/Page";
 import StatsText from "../components/StatsText";
 import { colorFromStatus } from "../utils/blockUtils";
+import { useMediaQuery } from "@mantine/hooks";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { useState } from "react";
@@ -90,6 +90,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
     players.datasets.push(element.averages.total);
   });
 
+  const d = data ? router.query.d : "show";
   return (
     <Page noMargin style={{ position: "relative" }}>
       {/* Head Map */}
@@ -246,7 +247,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
           height="100%"
           zoom={13}
           defaultLayerName="Block Borders"
-          defaultLayerChecked={router.query.d}
+          defaultLayerChecked={d}
           polygon={{ data: data?.area || [] }}
           mapStyle={{ zIndex: 0 }}
           components={data?.map((block: any) =>
@@ -281,7 +282,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
         >
           <MapLayer
             name="District Borders"
-            checked={router.query.d != null}
+            checked={d != null}
             components={districts?.map((district: any) =>
               district.location != [] && district.id > 1
                 ? {
