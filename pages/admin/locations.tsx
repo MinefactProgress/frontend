@@ -522,8 +522,7 @@ const LocationsPage = () => {
                     },
                     radius: 15,
                     tooltip: `${
-                      districts?.find((d: any) => d.id === block.district.id)
-                        .name
+                      districts?.find((d: any) => d.id === block.district).name
                     } #${block.id} (#${block.uid})`,
                     eventHandlers: {
                       click: () => {
