@@ -1,14 +1,14 @@
 import React, { createRef, useEffect } from "react";
 
-import { renderSchematic } from "@enginehub/schematicwebviewer";
+import { renderSchematic } from "@minefactprogress/schematicwebviewer";
 
 const SchematicViewer = ({
   schematic,
   options,
-  style
+  style,
 }: {
   schematic: string;
-  style?:any;
+  style?: any;
   options?: {
     size?: number; // Force the size of the canvas viewport, if not present use canvas size
     corsBypassUrl?: string; // A url of a cors-anywhere instance to allow access to MC server jars
@@ -29,12 +29,7 @@ const SchematicViewer = ({
     });
   });
 
-  return (
-      <canvas
-      style={style}
-        ref={canvasRef}
-      ></canvas>
-  );
+  return <canvas style={style} ref={canvasRef}></canvas>;
 };
 
 export default SchematicViewer;
