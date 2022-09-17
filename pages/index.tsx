@@ -282,7 +282,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
             name="District Borders"
             checked={d != null}
             components={districts?.map((district: any) =>
-              district.location?.size==0 && district.id > 1
+              district.location?.size>0 && district.id > 1
                 ? {
                     type: "polygon",
                     positions: district.area,

@@ -472,7 +472,7 @@ const LocationsPage = () => {
             components={
               edgeMarkers
                 ? selectedBlock?.area.map((point: any, i: number) =>
-                    point != []
+                    point?.size>0
                       ? {
                           type: "marker",
                           position: point,
@@ -539,7 +539,7 @@ const LocationsPage = () => {
           <MapLayer
             name="Districts"
             components={districts?.map((district: any) =>
-              district.location != [] && district.id > 1
+              district.location?.size>0 && district.id > 1
                 ? {
                     type: "polygon",
                     positions: district.area,
