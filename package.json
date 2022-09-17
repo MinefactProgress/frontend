@@ -19,6 +19,7 @@
     "@mantine/next": "^4.2.4",
     "@mantine/notifications": "^4.2.4",
     "@mantine/spotlight": "^4.2.4",
+    "@minefactprogress/schematicwebviewer": "github:MinefactProgress/schematicwebviewer",
     "chartjs-plugin-zoom": "^1.2.1",
     "dayjs": "^1.11.2",
     "fs": "^0.0.1-security",
