@@ -242,12 +242,8 @@ export default function Page(props: {
                 }}
               >
                 <Menu
-                  placement="center"
-                  sx={{
-                    width: "100%",
-                  }}
-                  control={
-                    <UnstyledButton
+                >
+                  <Menu.Target><UnstyledButton
                       sx={{
                         display: "block",
                         width: "100%",
@@ -283,10 +279,8 @@ export default function Page(props: {
                           <ChevronLeft size={18} />
                         )}
                       </Group>
-                    </UnstyledButton>
-                  }
-                >
-                  {user.uid != 0 ? (
+                    </UnstyledButton></Menu.Target>
+                  <Menu.Dropdown>{user.uid != 0 ? (
                     <>
                       <Menu.Label>Application</Menu.Label>
                       <Menu.Item
@@ -368,7 +362,7 @@ export default function Page(props: {
                         Request Account
                       </Menu.Item>
                     </>
-                  )}
+                  )}</Menu.Dropdown>
                 </Menu>
               </Box>
             )}

@@ -3,20 +3,14 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import "leaflet/dist/leaflet.css";
 
 import {
-  Circle,
-  LayerGroup,
   LayersControl,
   MapContainer,
-  Marker,
-  Polygon,
-  Popup,
   TileLayer,
-  Tooltip,
-  useMapEvents,
+  useMapEvents
 } from "react-leaflet";
-import React, { useState } from "react";
 
 import MapLayer from "../MapLayer/MapLayer";
+import React from "react";
 import { useMantineTheme } from "@mantine/core";
 
 function MapEvent(props: any) {

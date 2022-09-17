@@ -1,15 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
+
 import { BuildingCommunity, History, Pin, User } from "tabler-icons-react";
 import {
+  Button,
+  Divider,
   Grid,
   Group,
+  Modal,
   Text,
   ThemeIcon,
   UnstyledButton,
   useMantineTheme,
-  Button,
-  Divider,
-  Modal,Tabs
 } from "@mantine/core";
 
 import Page from "../components/Page";

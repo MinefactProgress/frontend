@@ -6,17 +6,15 @@ import {
   MediaQuery,
   Paper,
   Progress,
-  ScrollArea,
   Table,
-  Text,
+  Text
 } from "@mantine/core";
 import {
   progressToColorName,
   statusToColorName,
-  statusToName,
+  statusToName
 } from "../../utils/blockUtils";
 
-import { Building } from "tabler-icons-react";
 import Page from "../../components/Page";
 import { useRouter } from "next/router";
 import useSWR from "swr";
@@ -106,8 +104,9 @@ const DistrictsPage = () => {
     data.sort(dynamicSort("progress"));
     return data?.map((child: any, i: number) => {
       return (
-        <Accordion.Item label={child.name} key={i}>
-          {genDistricts(child, child.children)}
+        <Accordion.Item key={i} value={child.name}>
+          <Accordion.Control>{child.name}</Accordion.Control>
+          <Accordion.Panel>{genDistricts(child, child.children)}</Accordion.Panel>
         </Accordion.Item>
       );
     });

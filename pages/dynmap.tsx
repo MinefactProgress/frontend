@@ -1,15 +1,8 @@
+import Page from "../components/Page";
+import React from "react";
 import {
-  Button,
-  Group,
-  Paper,
-  SimpleGrid,
-  Text,
-  TextInput,
-  Title,
   useMantineTheme,
 } from "@mantine/core";
-
-import Page from "../components/Page";
 
 const DynmapPage = () => {
   const theme = useMantineTheme();

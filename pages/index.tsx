@@ -166,9 +166,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
           {selectedBlock.uid != 0 && (
             <Tooltip
               label="Clear selection"
-              withArrow
-              placement="start"
-              position="bottom"
+              withArrow position="bottom-start"
             >
               <ActionIcon
                 size="sm"
@@ -284,7 +282,7 @@ const Home: NextPage = ({ user, setUser }: any) => {
             name="District Borders"
             checked={d != null}
             components={districts?.map((district: any) =>
-              district.location != [] && district.id > 1
+              district.location?.size==0 && district.id > 1
                 ? {
                     type: "polygon",
                     positions: district.area,

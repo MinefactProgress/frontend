@@ -29,7 +29,7 @@ import { DatePicker } from "@mantine/dates";
 import { Line } from "react-chartjs-2";
 import Page from "../components/Page";
 import { showNotification } from "@mantine/notifications";
-import { useForm } from "@mantine/hooks";
+import { useForm } from "@mantine/form";
 import useSWR from "swr";
 import { useState } from "react";
 import useUser from "../utils/hooks/useUser";

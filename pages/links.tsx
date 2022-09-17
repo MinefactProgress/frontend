@@ -3,7 +3,6 @@ import {
   Grid,
   Group,
   Paper,
-  SimpleGrid,
   Text,
   TextInput,
   Title,

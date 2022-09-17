@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Badge,
   Button,
   Divider,
   Grid,
@@ -17,7 +18,6 @@ import {
   ThemeIcon,
   Tooltip,
   useMantineTheme,
-  Badge,
 } from "@mantine/core";
 import {
   Calendar,
@@ -28,17 +28,17 @@ import {
   UserPlus,
   X,
 } from "tabler-icons-react";
+import { Ranks, rankToColor } from "../../utils/userUtils";
+import useSWR, { mutate } from "swr";
 
+import { DatePicker } from "@mantine/dates";
 import Page from "../../components/Page";
 import { getRoleFromPermission } from "../../utils/hooks/usePermission";
 import { showNotification } from "@mantine/notifications";
 import { useForm } from "@mantine/form";
 import { useModals } from "@mantine/modals";
-import useSWR, { mutate } from "swr";
-import useUser from "../../utils/hooks/useUser";
 import { useState } from "react";
-import { Ranks, rankToColor } from "../../utils/userUtils";
-import { DatePicker } from "@mantine/dates";
+import useUser from "../../utils/hooks/useUser";
 
 const UsersPage = () => {
   const PRIMARY_COL_HEIGHT = 840;
@@ -390,7 +390,7 @@ const UsersPage = () => {
                             <td>{getRoleFromPermission(user.permission)}</td>
                             <td>
                               <Group spacing="xs">
-                                <Tooltip gutter={10} label="Delete" withArrow>
+                                <Tooltip label="Delete" withArrow>
                                   <ActionIcon
                                     onClick={() => handleDeleteUser(user.uid)}
                                     variant="transparent"
@@ -431,13 +431,18 @@ const UsersPage = () => {
                     User Control
                   </Text>
                   <Tabs
+                  defaultValue="add"
                     variant="outline"
-                    tabPadding="md"
                     style={{ marginTop: theme.spacing.md }}
-                  >
-                    <Tabs.Tab
-                      label="Add new User"
-                      icon={<UserPlus size={14} />}
+                  > <Tabs.List>
+                  <Tabs.Tab value="add"
+                      icon={<UserPlus size={14} />}>Add new User</Tabs.Tab>
+                  <Tabs.Tab value="edit" 
+                      icon={<Pencil size={14} />}>Edit exisiting User</Tabs.Tab>
+                  <Tabs.Tab value="editrank" 
+                      icon={<Pencil size={14} />}>Edit Rank History</Tabs.Tab>
+                </Tabs.List>
+                    <Tabs.Panel value="add" pt="md"
                     >
                       <form onSubmit={form.onSubmit(handleAddUser)}>
                         <TextInput
@@ -511,10 +516,9 @@ const UsersPage = () => {
                           Add User
                         </Button>
                       </form>
-                    </Tabs.Tab>
-                    <Tabs.Tab
-                      label="Edit exisiting User"
-                      icon={<Pencil size={14} />}
+                    </Tabs.Panel>
+                    <Tabs.Panel
+                       value="edit" pt="Md"
                     >
                       <form onSubmit={formEdit.onSubmit(handleEditUser)}>
                         <Group position="center" grow>
@@ -610,10 +614,9 @@ const UsersPage = () => {
                           Update User
                         </Button>
                       </form>
-                    </Tabs.Tab>
-                    <Tabs.Tab
-                      label="Edit Rank History"
-                      icon={<Pencil size={14} />}
+                    </Tabs.Panel>
+                    <Tabs.Panel
+                      value="editrank" pt="md"
                     >
                       <Select
                         label="User"
@@ -749,7 +752,7 @@ const UsersPage = () => {
                           </>
                         ) : null}
                       </ScrollArea>
-                    </Tabs.Tab>
+                    </Tabs.Panel>
                   </Tabs>
                 </Paper>
               </Skeleton>

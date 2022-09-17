@@ -1,9 +1,7 @@
 import { ActionIcon, Anchor, Group, createStyles } from "@mantine/core";
 import {
   BrandDiscord,
-  BrandInstagram,
-  BrandTwitter,
-  BrandYoutube,
+  BrandYoutube
 } from "tabler-icons-react";
 
 import React from "react";

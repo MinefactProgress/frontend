@@ -182,7 +182,7 @@ const DistrictsPage = () => {
                           <td>{district.image!="" ? <img src={district.image} height="20px" /> : "---"}</td>
                           <td>
                             <Group spacing="xs">
-                              <Tooltip gutter={10} label="Delete" withArrow>
+                              <Tooltip label="Delete" withArrow>
                                 <ActionIcon
                                   onClick={() =>
                                     handleDistrictDelete(district.id)
@@ -210,13 +210,17 @@ const DistrictsPage = () => {
               District Control
             </Text>
             <Tabs
+            defaultValue="add"
               variant="pills"
-              tabPadding="md"
               style={{ marginTop: theme.spacing.md }}
-            >
-              <Tabs.Tab
-                label="Add new District"
-                icon={<CirclePlus size={14} />}
+            ><Tabs.List>
+            <Tabs.Tab value="add" 
+                icon={<CirclePlus size={14} />}>Add new District</Tabs.Tab>
+            <Tabs.Tab value="edit" 
+                icon={<Pencil size={14} />}>Edit existing District</Tabs.Tab>
+          </Tabs.List>
+    
+              <Tabs.Panel value="add" pt="md" 
               >
                 <form onSubmit={form.onSubmit(handleAddDistrict)}>
                   <Group position="center" grow>
@@ -277,11 +281,9 @@ const DistrictsPage = () => {
                     Add District
                   </Button>
                 </form>
-              </Tabs.Tab>
-              <Tabs.Tab
-                label="Edit existing District"
-                icon={<Pencil size={14} />}
-              ></Tabs.Tab>
+              </Tabs.Panel>
+              <Tabs.Panel value="edit"  pt="md"
+              ><p>Soon...</p></Tabs.Panel>
             </Tabs>
           </Paper>
           <Paper

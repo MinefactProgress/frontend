@@ -368,10 +368,8 @@ const DistrictPage = () => {
                   ))}
                   {statusFilter !== undefined ? (
                     <Tooltip
-                      label="Clear Filter"
-                      placement="end"
+                      label="Clear Filter"position="bottom-end"
                       withArrow
-                      position="bottom"
                     >
                       <ActionIcon
                         size="xs"
@@ -532,13 +530,28 @@ const DistrictPage = () => {
           >
             <Tabs
               variant="outline"
-              tabPadding="md"
+              defaultValue="map"
               style={{
                 marginTop: theme.spacing.md,
               }}
             >
-              <Tabs.Tab label="Map" icon={<MapIcon size={14} />}>
-                <div style={{ height: "36vh", width: "53vh" }}>
+              <Tabs.List>
+                <Tabs.Tab value="map" icon={<MapIcon size={14} />}>
+                  Map
+                </Tabs.Tab>
+                <Tabs.Tab value="gallery" icon={<Photo size={14} />}>
+                  Image Gallery
+                </Tabs.Tab>
+                <Tabs.Tab value="statuses" icon={<ChartBar size={14} />}>
+                  Statuses
+                </Tabs.Tab>
+                <Tabs.Tab value="builders" icon={<Users size={14} />}>
+                  Builders
+                </Tabs.Tab>
+              </Tabs.List>
+
+              <Tabs.Panel value="map">
+                <div style={{ height: "36vh", width: "51.65vh" }}>
                   <Map
                     width="100%"
                     height="94%"
@@ -586,8 +599,8 @@ const DistrictPage = () => {
                       )}
                   />
                 </div>
-              </Tabs.Tab>
-              <Tabs.Tab label="Image Gallery" icon={<Photo size={14} />}>
+              </Tabs.Panel>
+              <Tabs.Panel value="gallery" pt="md">
                 {data?.image?.length > 0 ? (
                   <div>
                     <Image
@@ -611,8 +624,8 @@ const DistrictPage = () => {
                     No Images found!
                   </Center>
                 )}
-              </Tabs.Tab>
-              <Tabs.Tab label="Statuses" icon={<ChartBar size={14} />}>
+              </Tabs.Panel>
+              <Tabs.Panel value="statuses" pt="md">
                 <Bar
                   options={{
                     responsive: true,
@@ -712,8 +725,8 @@ const DistrictPage = () => {
                     ],
                   }}
                 />
-              </Tabs.Tab>
-              <Tabs.Tab label="Builders" icon={<Users size={14} />}>
+              </Tabs.Panel>
+              <Tabs.Panel value="builders" pt="md">
                 <Table>
                   <thead>
                     <tr>
@@ -736,7 +749,7 @@ const DistrictPage = () => {
                       : null}
                   </tbody>
                 </Table>
-              </Tabs.Tab>
+              </Tabs.Panel>
             </Tabs>
           </Paper>
           <Paper
@@ -749,12 +762,20 @@ const DistrictPage = () => {
             }}
           >
             {(user.permission || 0) >= Permissions.Builder ? (
-              <Tabs
-                variant="outline"
-                tabPadding="md"
-                style={{ marginTop: theme.spacing.md }}
-              >
-                <Tabs.Tab label="Update Block" icon={<Edit size={14} />}>
+              <Tabs variant="outline" 
+              defaultValue="update" style={{ marginTop: theme.spacing.md }}>
+                <Tabs.List>
+                  <Tabs.Tab value="update" icon={<Edit size={14} />} pt="md">
+                    Update Block
+                  </Tabs.Tab>
+                  {(user.permission || 0) >= Permissions.Moderator && (
+                    <Tabs.Tab value="image" icon={<CameraPlus size={14} />}  pt="md">
+                      Add Image
+                    </Tabs.Tab>
+                  )}
+                </Tabs.List>
+
+                <Tabs.Panel value="update">
                   {selBlock && selBlock?.landmarks.length > 0 ? (
                     <Center>
                       <ExclamationMark size={18} color="red" />
@@ -865,9 +886,9 @@ const DistrictPage = () => {
                       Update Block
                     </Button>
                   </form>
-                </Tabs.Tab>
+                </Tabs.Panel>
                 {(user.permission || 0) >= Permissions.Moderator ? (
-                  <Tabs.Tab label="Add Image" icon={<CameraPlus size={14} />}>
+                  <Tabs.Panel value="image">
                     <form onSubmit={imageForm.onSubmit(handleAddImage)}>
                       <TextInput
                         label="Image Link"
@@ -881,7 +902,7 @@ const DistrictPage = () => {
                         Add Image
                       </Button>
                     </form>
-                  </Tabs.Tab>
+                  </Tabs.Panel>
                 ) : null}
               </Tabs>
             ) : null}

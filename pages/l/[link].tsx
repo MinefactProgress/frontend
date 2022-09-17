@@ -1,21 +1,6 @@
-import {
-    ActionIcon,
-    Button,
-    Container,
-    Group,
-    Text,
-    Title,
-    createStyles,
-} from "@mantine/core";
-import { useEffect, useState } from "react";
+import React,{ useEffect } from "react";
 
-import { ArrowLeft } from "tabler-icons-react";
-import Confetti from "react-confetti";
-import CountUp from "react-countup";
-import Head from "next/head";
-import { useMediaQuery } from "@mantine/hooks";
 import { useRouter } from "next/router";
-import useSWR from "swr";
 
 const MilestonesPage = () => {
     const router = useRouter()

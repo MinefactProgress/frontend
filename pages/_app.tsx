@@ -3,12 +3,9 @@ import "../styles/globals.css";
 import {
   ColorScheme,
   ColorSchemeProvider,
-  MantineProvider,
-  MantineThemeOverride,
+  MantineProvider
 } from "@mantine/core";
-import { Home, JewishStar, Search } from "tabler-icons-react";
-import jwt, { sign, verify } from "../utils/jwt";
-import { useEffect, useState } from "react";
+import { default as pages, default as routes } from "../components/routes";
 import { useHotkeys, useLocalStorage } from "@mantine/hooks";
 
 import type { AppProps } from "next/app";
@@ -16,10 +13,10 @@ import { ErrorBoundary } from "react-error-boundary";
 import ErrorPage from "./_error";
 import { ModalsProvider } from "@mantine/modals";
 import { NotificationsProvider } from "@mantine/notifications";
+import React from "react";
 import { SWRConfig } from "swr";
+import { Search } from "tabler-icons-react";
 import { SpotlightProvider } from "@mantine/spotlight";
-import pages from "../components/routes";
-import routes from "../components/routes";
 import { useRouter } from "next/router";
 import useUser from "../utils/hooks/useUser";
 

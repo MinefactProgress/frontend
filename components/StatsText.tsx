@@ -1,18 +1,12 @@
 import {
   ArrowDownRight,
-  ArrowUpRight,
-  Coin,
-  Discount2,
-  Receipt2,
-  UserPlus,
+  ArrowUpRight
 } from "tabler-icons-react";
 import {
   Group,
   Paper,
-  SimpleGrid,
   Text,
-  UseStylesOptions,
-  createStyles,
+  createStyles
 } from "@mantine/core";
 
 import React from "react";

@@ -403,10 +403,8 @@ const LandmarksPage = () => {
                   </Badge>
                   {statusFilter !== undefined ? (
                     <Tooltip
-                      label="Clear Filter"
-                      placement="end"
+                      label="Clear Filter"position="bottom-end"
                       withArrow
-                      position="bottom"
                     >
                       <ActionIcon
                         size="xs"
@@ -424,11 +422,20 @@ const LandmarksPage = () => {
                 </Group>
               </MediaQuery>
             </div>
-            <Tabs>
-              <Tabs.Tab
-                label="Claimable Landmarks"
-                icon={<UserPlus size={16} />}
-              >
+            <Tabs defaultValue="claimable">
+              <Tabs.List>
+                <Tabs.Tab value="claimable" icon={<UserPlus size={16} />}>
+                  Claimable Landmarks
+                </Tabs.Tab>
+                <Tabs.Tab value="future" icon={<Clock size={16} />}>
+                  Future Landmarks
+                </Tabs.Tab>
+                <Tabs.Tab value="completed" icon={<CircleCheck size={16} />}>
+                  Completed Landmarks
+                </Tabs.Tab>
+              </Tabs.List>
+
+              <Tabs.Panel value="claimable">
                 <ScrollArea style={{ height: "79vh" }}>
                   <Table highlightOnHover>
                     <thead>
@@ -726,8 +733,8 @@ const LandmarksPage = () => {
                     </tbody>
                   </Table>
                 </ScrollArea>
-              </Tabs.Tab>
-              <Tabs.Tab label="Future Landmarks" icon={<Clock size={16} />}>
+              </Tabs.Panel>
+              <Tabs.Panel value="future">
                 <ScrollArea style={{ height: "79vh" }}>
                   <Table highlightOnHover>
                     <thead>
@@ -930,11 +937,8 @@ const LandmarksPage = () => {
                     </tbody>
                   </Table>
                 </ScrollArea>
-              </Tabs.Tab>
-              <Tabs.Tab
-                label="Completed Landmarks"
-                icon={<CircleCheck size={16} />}
-              >
+              </Tabs.Panel>
+              <Tabs.Panel value="completed">
                 <ScrollArea style={{ height: "79vh" }}>
                   <Table highlightOnHover>
                     <thead>
@@ -1137,7 +1141,7 @@ const LandmarksPage = () => {
                     </tbody>
                   </Table>
                 </ScrollArea>
-              </Tabs.Tab>
+              </Tabs.Panel>
             </Tabs>
           </Paper>
         </Grid.Col>
