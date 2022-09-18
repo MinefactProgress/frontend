@@ -539,7 +539,7 @@ const LocationsPage = () => {
           <MapLayer
             name="Districts"
             components={districts?.map((district: any) =>
-              district.location?.length>0 && district.id > 1
+              district.area?.length>0 && district.id > 1
                 ? {
                     type: "polygon",
                     positions: district.area,
