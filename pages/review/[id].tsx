@@ -1,25 +1,43 @@
 /* eslint-disable @next/next/no-img-element */
 
-import { BuildingCommunity, History, Pin, User } from "tabler-icons-react";
 import {
+  Badge,
   Button,
   Divider,
   Grid,
   Group,
   Modal,
+  Tabs,
   Text,
+  Textarea,
   ThemeIcon,
   UnstyledButton,
   useMantineTheme,
 } from "@mantine/core";
+import {
+  BuildingCommunity,
+  Check,
+  Crown,
+  History,
+  Pin,
+  Star,
+  ThumbUp,
+  User,
+} from "tabler-icons-react";
 
-import Page from "../components/Page";
-import SchematicViewer from "../components/SchematicViewer";
+import Page from "../../components/Page";
+import SchematicViewer from "../../components/SchematicViewer";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 const ReviewPage = () => {
   const theme = useMantineTheme();
+  const router = useRouter();
   const [action, setAction] = useState("");
+  const reviewId = router.query.id;
+
+  const accept = (quality: "normal" | "good" | "verygood" | "perfect") => {};
+  const decline = () => {};
 
   return (
     <Page noFooter>
@@ -98,7 +116,7 @@ const ReviewPage = () => {
               style={{ marginTop: theme.spacing.xs }}
               leftIcon={
                 <img
-                  src="google-maps-logo.svg"
+                  src="/google-maps-logo.svg"
                   width="16px"
                   alt="Google Maps Logo"
                 />
@@ -111,7 +129,7 @@ const ReviewPage = () => {
               style={{ marginTop: theme.spacing.xs }}
               leftIcon={
                 <img
-                  src="google-earth-logo.svg"
+                  src="/google-earth-logo.svg"
                   width="16px"
                   alt="Google Earth Logo"
                 />
@@ -124,7 +142,7 @@ const ReviewPage = () => {
               style={{ marginTop: theme.spacing.xs }}
               leftIcon={
                 <img
-                  src="openstreetmaps-logo.svg"
+                  src="/openstreetmaps-logo.svg"
                   width="16px"
                   alt="OpenStreetMaps Logo"
                 />
@@ -156,12 +174,106 @@ const ReviewPage = () => {
             >
               Skip Review
             </Button>
+
             <Modal
-            centered 
+              centered
               opened={action == "accept"}
-              onClose={() => setAction("")}
-              title="Accept Project #4FeS1Y6K"
+              onClose={() => {
+                setAction("");
+                router.reload();
+              }}
+              title={"Accept Project #" + reviewId}
             >
+              <Tabs defaultValue="normal" color="green">
+                <Tabs.List>
+                  <Tabs.Tab value="normal" icon={<Check size={14} />}>
+                    Normal
+                  </Tabs.Tab>
+                  <Tabs.Tab value="good" icon={<ThumbUp size={14} />}>
+                    Good
+                  </Tabs.Tab>
+                  <Tabs.Tab value="verygood" icon={<Star size={14} />}>
+                    Very Good
+                  </Tabs.Tab>
+                  <Tabs.Tab value="perfect" icon={<Crown size={14} />}>
+                    Perfect
+                  </Tabs.Tab>
+                </Tabs.List>
+
+                <Tabs.Panel value="normal" pt="xs">
+                  <h3>Meets the basic requirements to get accepted</h3>
+                  <p>
+                    - Overall good looking build
+                    <br />- Well made Diagonal Build Style following the
+                    original shell
+                    <br />- Matching color palette
+                    <br />- Blacked out Windows
+                    <br />- No normal glass
+                    <br />- Realistic window and door positions and sizes
+                  </p>
+                  <Badge color="green">+0% Points</Badge> <br />
+                  <Button mt="md" onClick={() => accept("normal")}>
+                    Select and accept
+                  </Button>
+                </Tabs.Panel>
+
+                <Tabs.Panel value="good" pt="xs">
+                  <h3>More detailed, but otherwise basic</h3>
+                  <p>
+                    Includes stuff like:
+                    <br />- Air conditioners
+                    <br />- Window Designs
+                    <br />- Chimneys
+                    <br />- Dirt on Roof or Wall
+                    <br />
+                    or any other special details...
+                  </p>
+                  <Badge color="green">+10% Points</Badge> <br />
+                  <Button mt="md" onClick={() => accept("good")}>
+                    Select and accept
+                  </Button>
+                </Tabs.Panel>
+
+                <Tabs.Panel value="verygood" pt="xs">
+                  <h3>A very good build style and lots of detail</h3>
+                  <p>
+                    - Appropriate and accurate gradients/mixes where applicable
+                    <br />- Ground and surroundings done with tpll (to ensure
+                    accuracy)
+                  </p>
+                  <Badge color="green">+20% Points</Badge> <br />
+                  <Button mt="md" onClick={() => accept("verygood")}>
+                    Select and accept
+                  </Button>
+                </Tabs.Panel>
+
+                <Tabs.Panel value="perfect" pt="xs">
+                  <h3>
+                    An outstanding building with insane detail, showcase worthy
+                  </h3>
+                  <Badge color="green">+30% Points</Badge> <br />
+                  <Button mt="md" onClick={() => accept("perfect")}>
+                    Select and accept
+                  </Button>
+                </Tabs.Panel>
+              </Tabs>
+            </Modal>
+            <Modal
+              centered
+              opened={action == "decline"}
+              onClose={() => {
+                setAction("");
+                router.reload();
+              }}
+              title={"Decline Project #" + reviewId}
+            >
+              <Textarea
+                placeholder="None"
+                label="Edit reason for declining"
+                autosize
+                minRows={2}
+                maxRows={8}
+              />
             </Modal>
           </div>
         </Grid.Col>
