@@ -96,6 +96,11 @@ const Searchbar = () => {
       }
       value={search}
       onChange={setSearch}
+      onKeyDown={(e) => {
+        if (e.key == "Enter") {
+          handleSearch();
+        }
+      }}
       onFocus={loadDistricts}
       data={
         (search.trim().length > 0 &&
