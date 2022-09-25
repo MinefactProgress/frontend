@@ -1,9 +1,10 @@
 import { ActionIcon, Autocomplete } from "@mantine/core";
+import { ArrowRight, Search, X } from "tabler-icons-react";
+
 import { showNotification } from "@mantine/notifications";
 import { useRouter } from "next/router";
-import { useState } from "react";
 import useSWR from "swr";
-import { Search, ArrowRight, X } from "tabler-icons-react";
+import { useState } from "react";
 
 const Searchbar = () => {
   const router = useRouter();
@@ -56,13 +57,18 @@ const Searchbar = () => {
           setSearch("");
         });
     } else {
-      // District name
+      // District
+      var block = -1;
+      if(search.match(/^[a-zA-Z\s]+,\s+([0-9]|[1-9][0-9]|[1-9][0-9][0-9])$/)) {
+        block = parseInt(search.split(",")[1].replaceAll(" ",""))
+        console.log(block)
+      }
       const district = districts?.find(
-        (d: any) => d.name.toLowerCase() === search.split(" (")[0].toLowerCase()
+        (d: any) => d.name.toLowerCase() === search.split(",")[0].toLowerCase()
       );
 
       if (district) {
-        router.push("/districts/" + district.name);
+        router.push("/districts/" + district.name+ (block >0?"/"+block:""));
       } else {
         showNotification({
           title: "Nothing found",
@@ -77,12 +83,10 @@ const Searchbar = () => {
   return (
     <Autocomplete
       icon={<Search size={18} />}
-      radius="xl"
       size="md"
       rightSection={
         <ActionIcon
           size={32}
-          radius="xl"
           color="blue"
           variant="filled"
           onClick={() => handleSearch()}
