@@ -44,6 +44,7 @@ import pages from "../components/routes";
 import { useRouter } from "next/router";
 import { useSpotlight } from "@mantine/spotlight";
 import useUser from "../utils/hooks/useUser";
+import Searchbar from "./Searchbar";
 
 export default function Page(props: {
   children: React.ReactNode;
@@ -241,9 +242,9 @@ export default function Page(props: {
                   }`,
                 }}
               >
-                <Menu
-                >
-                  <Menu.Target><UnstyledButton
+                <Menu>
+                  <Menu.Target>
+                    <UnstyledButton
                       sx={{
                         display: "block",
                         width: "100%",
@@ -263,7 +264,11 @@ export default function Page(props: {
                       }}
                     >
                       <Group>
-                        <Avatar src={user.picture} radius="xl" alt="User Picture"/>
+                        <Avatar
+                          src={user.picture}
+                          radius="xl"
+                          alt="User Picture"
+                        />
                         <Box sx={{ flex: 1 }}>
                           <Text size="sm" weight={500}>
                             {user.username}
@@ -279,90 +284,93 @@ export default function Page(props: {
                           <ChevronLeft size={18} />
                         )}
                       </Group>
-                    </UnstyledButton></Menu.Target>
-                  <Menu.Dropdown>{user.uid != 0 ? (
-                    <>
-                      <Menu.Label>Application</Menu.Label>
-                      <Menu.Item
-                        onClick={() => router.push("/users/" + user.username)}
-                        icon={<User size={14} />}
-                        rightSection={
-                          <Text size="xs" color="dimmed">
-                            ⌘ P
-                          </Text>
-                        }
-                      >
-                        Profile
-                      </Menu.Item>
-                      <Menu.Item
-                        icon={
-                          colorScheme === "dark" ? (
-                            <Sun size={14} />
-                          ) : (
-                            <MoonStars size={14} />
-                          )
-                        }
-                        onClick={() => toggleColorScheme()}
-                        rightSection={
-                          <Text size="xs" color="dimmed">
-                            ⌘ T
-                          </Text>
-                        }
-                      >
-                        {colorScheme === "dark" ? "Lightmode" : "Darkmode"}
-                      </Menu.Item>
-                      <Menu.Item
-                        icon={<Search size={14} />}
-                        onClick={spotlight.openSpotlight}
-                        rightSection={
-                          <Text size="xs" color="dimmed">
-                            ⌘ K
-                          </Text>
-                        }
-                      >
-                        Search
-                      </Menu.Item>
-                      <Divider />
-                      <Menu.Label>Danger Zone</Menu.Label>
-                      <Menu.Item
-                        icon={<Settings size={14} />}
-                        onClick={() =>
-                          router.push("/users/" + user.username + "/settings")
-                        }
-                        rightSection={
-                          <Text size="xs" color="dimmed">
-                            ⌘ S
-                          </Text>
-                        }
-                      >
-                        Settings
-                      </Menu.Item>
-                      <Menu.Item
-                        icon={<Logout size={14} />}
-                        onClick={() => {
-                          setUser({ uid: 0 });
-                          router.push("/");
-                        }}
-                      >
-                        Log Out
-                      </Menu.Item>
-                    </>
-                  ) : (
-                    <>
-                      <Menu.Item
-                        icon={<Login size={14} />}
-                        onClick={() => router.push("/login")}
-                      >
-                        Log in
-                      </Menu.Item>
-                      <Menu.Item
-                        icon={<UserPlus size={14} />}
-                        onClick={() => router.push("/register")}
-                      >
-                        Request Account
-                      </Menu.Item>
-                    </>
-                  )}</Menu.Dropdown>
+                    </UnstyledButton>
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    {user.uid != 0 ? (
+                      <>
+                        <Menu.Label>Application</Menu.Label>
+                        <Menu.Item
+                          onClick={() => router.push("/users/" + user.username)}
+                          icon={<User size={14} />}
+                          rightSection={
+                            <Text size="xs" color="dimmed">
+                              ⌘ P
+                            </Text>
+                          }
+                        >
+                          Profile
+                        </Menu.Item>
+                        <Menu.Item
+                          icon={
+                            colorScheme === "dark" ? (
+                              <Sun size={14} />
+                            ) : (
+                              <MoonStars size={14} />
+                            )
+                          }
+                          onClick={() => toggleColorScheme()}
+                          rightSection={
+                            <Text size="xs" color="dimmed">
+                              ⌘ T
+                            </Text>
+                          }
+                        >
+                          {colorScheme === "dark" ? "Lightmode" : "Darkmode"}
+                        </Menu.Item>
+                        <Menu.Item
+                          icon={<Search size={14} />}
+                          onClick={spotlight.openSpotlight}
+                          rightSection={
+                            <Text size="xs" color="dimmed">
+                              ⌘ K
+                            </Text>
+                          }
+                        >
+                          Search
+                        </Menu.Item>
+                        <Divider />
+                        <Menu.Label>Danger Zone</Menu.Label>
+                        <Menu.Item
+                          icon={<Settings size={14} />}
+                          onClick={() =>
+                            router.push("/users/" + user.username + "/settings")
+                          }
+                          rightSection={
+                            <Text size="xs" color="dimmed">
+                              ⌘ S
+                            </Text>
+                          }
+                        >
+                          Settings
+                        </Menu.Item>
+                        <Menu.Item
+                          icon={<Logout size={14} />}
+                          onClick={() => {
+                            setUser({ uid: 0 });
+                            router.push("/");
+                          }}
+                        >
+                          Log Out
+                        </Menu.Item>
+                      </>
+                    ) : (
+                      <>
+                        <Menu.Item
+                          icon={<Login size={14} />}
+                          onClick={() => router.push("/login")}
+                        >
+                          Log in
+                        </Menu.Item>
+                        <Menu.Item
+                          icon={<UserPlus size={14} />}
+                          onClick={() => router.push("/register")}
+                        >
+                          Request Account
+                        </Menu.Item>
+                      </>
+                    )}
+                  </Menu.Dropdown>
                 </Menu>
               </Box>
             )}
@@ -376,7 +384,10 @@ export default function Page(props: {
             px={20}
             position="apart"
           >
-            <Group style={{ height: "100%" }}>
+            <Group
+              style={{ height: "100%", cursor: "pointer" }}
+              onClick={() => router.push("/")}
+            >
               <img
                 src="/logo.gif"
                 alt="logo"
@@ -395,6 +406,7 @@ export default function Page(props: {
                 />
               </MediaQuery>
             </Group>
+            <Searchbar />
             <Group style={{ height: "100%" }}>
               <ActionIcon
                 variant="default"
@@ -446,7 +458,10 @@ export default function Page(props: {
           property="og:description"
           content="We are tracking the Progress made on the BTE New York City server as part of the Build the Earth Project."
         />
-        <meta property="og:image" content="https://cdn.discordapp.com/attachments/714797791913705472/927491066653970442/Bridge_1.png" />
+        <meta
+          property="og:image"
+          content="https://cdn.discordapp.com/attachments/714797791913705472/927491066653970442/Bridge_1.png"
+        />
 
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="https://progress.minefact.de/" />
@@ -458,7 +473,10 @@ export default function Page(props: {
           property="twitter:description"
           content="We are tracking the Progress made on the BTE New York City server as part of the Build the Earth Project."
         />
-        <meta property="twitter:image" content="https://cdn.discordapp.com/attachments/714797791913705472/927491066653970442/Bridge_1.png" />
+        <meta
+          property="twitter:image"
+          content="https://cdn.discordapp.com/attachments/714797791913705472/927491066653970442/Bridge_1.png"
+        />
 
         <meta
           name="keyworkds"
