@@ -1,7 +1,8 @@
-import { useLeafletContext } from "@react-leaflet/core";
-import { useEffect } from "react";
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
+
+import { useEffect } from "react";
+import { useLeafletContext } from "@react-leaflet/core";
 
 const DrawableMap = () => {
   const context = useLeafletContext();
@@ -11,7 +12,16 @@ const DrawableMap = () => {
 
     // Configure Map
     leafletContainter.pm.addControls({
-      position: "topright",
+      position: "topleft",
+      editMode: false,
+      rotateMode: false,
+      drawText: false,
+      dragMode: false,
+      drawMarker: false,
+      drawCircleMarker: false,
+      drawPolyline: false,
+      drawCircle: false,
+      oneBlock: true,
     });
 
     leafletContainter.pm.setGlobalOptions({ pmIgnore: false });
@@ -22,7 +32,7 @@ const DrawableMap = () => {
         const shape = e;
         console.log(e);
 
-        shape.layer.pm.enable();
+        shape.layer.pm.enable({ limitMarkersToCount: 10 });
 
         console.log(`object created: ${shape.layer.pm.getShape()}`);
 
@@ -40,6 +50,7 @@ const DrawableMap = () => {
         });
       }
     });
+
     leafletContainter.on("pm:remove", (e: any) => {
       console.log("object removed");
     });
