@@ -1,17 +1,19 @@
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet/dist/leaflet.css";
+import "leaflet-draw/dist/leaflet.draw.css";
 
 import {
   LayersControl,
   MapContainer,
   TileLayer,
-  useMapEvents
+  useMapEvents,
 } from "react-leaflet";
 
 import MapLayer from "../MapLayer/MapLayer";
 import React from "react";
 import { useMantineTheme } from "@mantine/core";
+import DrawableMap from "./DrawableMap";
 
 function MapEvent(props: any) {
   const map = useMapEvents(props.events);
@@ -31,7 +33,7 @@ const Map = (props: any) => {
           height: "100%",
           width: "100%",
           border: "none",
-          cursor:"default",
+          cursor: "default",
           ...props.mapStyle,
         }}
         mapPlaceholder={
@@ -44,6 +46,8 @@ const Map = (props: any) => {
         {...props.leafletOptions}
       >
         {props?.mapEvents && <MapEvent events={props?.mapEvents} />}
+        {props?.drawable && <DrawableMap />}
+
         <LayersControl
           // @ts-ignore
           position="topleft"
@@ -86,7 +90,11 @@ const Map = (props: any) => {
 
           {props.children}
           <MapLayer
-            checked={props.defaultLayerChecked!=null?props.defaultLayerChecked:true}
+            checked={
+              props.defaultLayerChecked != null
+                ? props.defaultLayerChecked
+                : true
+            }
             name={props.defaultLayerName || "Default Layer"}
             components={props.components}
           />
@@ -95,7 +103,5 @@ const Map = (props: any) => {
     </div>
   );
 };
-
-
 
 export default Map;
