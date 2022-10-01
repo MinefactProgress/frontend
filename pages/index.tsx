@@ -244,7 +244,6 @@ const Home: NextPage = ({ user, setUser }: any) => {
           width="100%"
           height="100%"
           zoom={13}
-          drawable
           defaultLayerName="Block Borders"
           defaultLayerChecked={d}
           polygon={{ data: data?.area || [] }}

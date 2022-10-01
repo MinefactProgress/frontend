@@ -3,24 +3,27 @@ import "../styles/globals.css";
 import {
   ColorScheme,
   ColorSchemeProvider,
-  MantineProvider
+  MantineProvider,
 } from "@mantine/core";
+import React, { useEffect } from "react";
 import { default as pages, default as routes } from "../components/routes";
 import { useHotkeys, useLocalStorage } from "@mantine/hooks";
+import useSocket, { initializeSocket } from "../hooks/socket";
 
 import type { AppProps } from "next/app";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorPage from "./_error";
 import { ModalsProvider } from "@mantine/modals";
 import { NotificationsProvider } from "@mantine/notifications";
-import React from "react";
 import { SWRConfig } from "swr";
 import { Search } from "tabler-icons-react";
 import { SpotlightProvider } from "@mantine/spotlight";
+import { io } from "socket.io-client";
 import { useRouter } from "next/router";
 import useUser from "../utils/hooks/useUser";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: "scheme",
     defaultValue: "light",
@@ -28,12 +31,17 @@ function MyApp({ Component, pageProps }: AppProps) {
   });
   // Authentication
   const [user, setUser] = useUser();
-  const router = useRouter();
+
   const allowed =
     (routes.find((route) => route.href === router.pathname)?.permission || 1) <=
     (user.permission || 0);
-  const toggleColorScheme = (value?: ColorScheme) =>
+
+  const toggleColorScheme = (value?: ColorScheme) => {
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+  };
+
+  initializeSocket(process.env.NEXT_PUBLIC_API_URL || "", user.apikey);
+  const socket = useSocket();
 
   useHotkeys([
     ["mod+J", () => toggleColorScheme()],
