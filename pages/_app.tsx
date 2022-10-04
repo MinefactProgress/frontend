@@ -26,7 +26,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: "scheme",
-    defaultValue: "light",
+    defaultValue: "dark",
     getInitialValueInEffect: true,
   });
   // Authentication
