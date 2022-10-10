@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import { useState } from "react";
 
-const Searchbar = ({ onFocusLoose }: { onFocusLoose?: () => void }) => {
+const Searchbar = ({ onFocusLoose }: { onFocusLoose: () => void }) => {
   const router = useRouter();
   const focusTrap = useFocusTrap();
   const [shouldFetch, setShouldFetch] = useState(false);
@@ -107,7 +107,7 @@ const Searchbar = ({ onFocusLoose }: { onFocusLoose?: () => void }) => {
         }
       }}
       onFocus={loadDistricts}
-      onBlur={onFocusLoose}
+      onBlur={() => (search.replaceAll(" ", "") === "" ? onFocusLoose() : null)}
       data={
         (search.trim().length > 0 &&
           districts
