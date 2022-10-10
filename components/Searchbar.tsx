@@ -2,12 +2,14 @@ import { ActionIcon, Autocomplete } from "@mantine/core";
 import { ArrowRight, Search, X } from "tabler-icons-react";
 
 import { showNotification } from "@mantine/notifications";
+import { useFocusTrap } from "@mantine/hooks";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { useState } from "react";
 
-const Searchbar = () => {
+const Searchbar = ({ onFocusLoose }: { onFocusLoose?: () => void }) => {
   const router = useRouter();
+  const focusTrap = useFocusTrap();
   const [shouldFetch, setShouldFetch] = useState(false);
   const [search, setSearch] = useState("");
   const { data: districts } = useSWR(shouldFetch ? "/api/districts/get" : null);
@@ -59,16 +61,18 @@ const Searchbar = () => {
     } else {
       // District
       var block = -1;
-      if(search.match(/^[a-zA-Z\s]+,\s+([0-9]|[1-9][0-9]|[1-9][0-9][0-9])$/)) {
-        block = parseInt(search.split(",")[1].replaceAll(" ",""))
-        console.log(block)
+      if (search.match(/^[a-zA-Z\s]+,\s+([0-9]|[1-9][0-9]|[1-9][0-9][0-9])$/)) {
+        block = parseInt(search.split(",")[1].replaceAll(" ", ""));
+        console.log(block);
       }
       const district = districts?.find(
         (d: any) => d.name.toLowerCase() === search.split(",")[0].toLowerCase()
       );
 
       if (district) {
-        router.push("/districts/" + district.name+ (block >0?"/"+block:""));
+        router.push(
+          "/districts/" + district.name + (block > 0 ? "/" + block : "")
+        );
       } else {
         showNotification({
           title: "Nothing found",
@@ -82,6 +86,7 @@ const Searchbar = () => {
 
   return (
     <Autocomplete
+      ref={focusTrap}
       icon={<Search size={18} />}
       size="md"
       rightSection={
@@ -102,6 +107,7 @@ const Searchbar = () => {
         }
       }}
       onFocus={loadDistricts}
+      onBlur={onFocusLoose}
       data={
         (search.trim().length > 0 &&
           districts
@@ -145,7 +151,7 @@ const Searchbar = () => {
       rightSectionWidth={42}
       transition="scale"
       transitionDuration={200}
-      style={{ width: "50vh" }}
+      style={{ width: "50vh", zIndex: 999 }}
     />
   );
 };

@@ -10,10 +10,10 @@ import {
   useMapEvents,
 } from "react-leaflet";
 
+import DrawableMap from "./DrawableMap";
 import MapLayer from "../MapLayer/MapLayer";
 import React from "react";
 import { useMantineTheme } from "@mantine/core";
-import DrawableMap from "./DrawableMap";
 
 function MapEvent(props: any) {
   const map = useMapEvents(props.events);
@@ -34,6 +34,7 @@ const Map = (props: any) => {
           width: "100%",
           border: "none",
           cursor: "default",
+          zIndex: 0,
           ...props.mapStyle,
         }}
         mapPlaceholder={

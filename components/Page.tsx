@@ -19,6 +19,7 @@ import {
   Text,
   ThemeIcon,
   Title,
+  Transition,
   UnstyledButton,
   useMantineColorScheme,
   useMantineTheme,
@@ -40,11 +41,11 @@ import React, { useEffect, useState } from "react";
 
 import Footer from "./Footer";
 import Head from "next/head";
-import pages from "../components/routes";
-import { useRouter } from "next/router";
-import { useSpotlight } from "@mantine/spotlight";
-import useUser from "../utils/hooks/useUser";
 import Searchbar from "./Searchbar";
+import pages from "../components/routes";
+import { useHotkeys } from "@mantine/hooks";
+import { useRouter } from "next/router";
+import useUser from "../utils/hooks/useUser";
 
 export default function Page(props: {
   children: React.ReactNode;
@@ -59,10 +60,11 @@ export default function Page(props: {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [loading, setLoading] = useState(true);
   const [opened, setOpened] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const theme = useMantineTheme();
   const router = useRouter();
-  const spotlight = useSpotlight();
   const [user, setUser] = useUser();
+  useHotkeys([["mod+K", () => setSearchOpen(true)]]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -318,17 +320,6 @@ export default function Page(props: {
                         >
                           {colorScheme === "dark" ? "Lightmode" : "Darkmode"}
                         </Menu.Item>
-                        <Menu.Item
-                          icon={<Search size={14} />}
-                          onClick={spotlight.openSpotlight}
-                          rightSection={
-                            <Text size="xs" color="dimmed">
-                              ⌘ K
-                            </Text>
-                          }
-                        >
-                          Search
-                        </Menu.Item>
                         <Divider />
                         <Menu.Label>Danger Zone</Menu.Label>
                         <Menu.Item
@@ -406,8 +397,22 @@ export default function Page(props: {
                 />
               </MediaQuery>
             </Group>
-            <Searchbar />
+
             <Group style={{ height: "100%" }}>
+              {searchOpen ? (
+                <Searchbar onFocusLoose={() => setSearchOpen(false)} />
+              ) : (
+                <ActionIcon
+                  variant="filled"
+                  onClick={() => setSearchOpen(!searchOpen)}
+                  size="lg"
+                  color="blue"
+                  mr={5}
+                  aria-label="Milestones"
+                >
+                  <Search size={16} />
+                </ActionIcon>
+              )}
               <ActionIcon
                 variant="default"
                 onClick={() => router.push("/milestones")}
