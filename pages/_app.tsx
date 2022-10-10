@@ -40,9 +40,12 @@ function MyApp({ Component, pageProps }: AppProps) {
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
   };
 
-  initializeSocket(process.env.NEXT_PUBLIC_API_URL || "", user.apikey);
+  initializeSocket(
+    process.env.NEXT_PUBLIC_API_URL || "",
+    ["motd"],
+    user.apikey
+  );
   const socket = useSocket();
-
   useHotkeys([
     ["mod+J", () => toggleColorScheme()],
     ["mod+P", () => router.push("/users/" + user.username)],

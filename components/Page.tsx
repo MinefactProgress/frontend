@@ -41,6 +41,7 @@ import React, { useEffect, useState } from "react";
 
 import Footer from "./Footer";
 import Head from "next/head";
+import Motd from "./Motd";
 import Searchbar from "./Searchbar";
 import pages from "../components/routes";
 import { useHotkeys } from "@mantine/hooks";
@@ -397,7 +398,7 @@ export default function Page(props: {
                 />
               </MediaQuery>
             </Group>
-
+            <Motd />
             <Group style={{ height: "100%" }}>
               {searchOpen ? (
                 <Searchbar onFocusLoose={() => setSearchOpen(false)} />
