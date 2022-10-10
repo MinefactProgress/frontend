@@ -89,47 +89,28 @@ function MyApp({ Component, pageProps }: AppProps) {
           withGlobalStyles
           withNormalizeCSS
         >
-          <SpotlightProvider
-            actions={pages
-              .map((page) => ({
-                icon: page.icon,
-                title: page.label,
-                onTrigger: () => router.push(page.href || "/"),
-              }))
-              .filter(
-                (page, i) =>
-                  page.icon && pages[i].permission <= (user.permission || 0)
+          <ModalsProvider>
+            <NotificationsProvider>
+              {(routes.find((route) => route.href === router.pathname)
+                ?.permission || 0) <= (user.permission || 0) ? (
+                <ErrorBoundary
+                  FallbackComponent={ErrorPage}
+                  onError={(error, info) => {
+                    console.log("An error occoured, please report this to us.");
+                    console.log(" ");
+                    console.log(error);
+                    console.log(" ");
+                    console.log(info),
+                      console.log("at " + new Date().toISOString());
+                  }}
+                >
+                  <Component {...pageProps} user={user} setUser={setUser} />
+                </ErrorBoundary>
+              ) : (
+                <ErrorPage statuscode={401} />
               )}
-            searchIcon={<Search size={18} />}
-            searchPlaceholder="Search..."
-            shortcut="ctrl + K"
-            nothingFoundMessage="Nothing found..."
-          >
-            <ModalsProvider>
-              <NotificationsProvider>
-                {(routes.find((route) => route.href === router.pathname)
-                  ?.permission || 0) <= (user.permission || 0) ? (
-                  <ErrorBoundary
-                    FallbackComponent={ErrorPage}
-                    onError={(error, info) => {
-                      console.log(
-                        "An error occoured, please report this to us."
-                      );
-                      console.log(" ");
-                      console.log(error);
-                      console.log(" ");
-                      console.log(info),
-                        console.log("at " + new Date().toISOString());
-                    }}
-                  >
-                    <Component {...pageProps} user={user} setUser={setUser} />
-                  </ErrorBoundary>
-                ) : (
-                  <ErrorPage statuscode={401} />
-                )}
-              </NotificationsProvider>
-            </ModalsProvider>
-          </SpotlightProvider>
+            </NotificationsProvider>
+          </ModalsProvider>
         </MantineProvider>
       </ColorSchemeProvider>
     </SWRConfig>
