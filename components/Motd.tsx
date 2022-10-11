@@ -9,7 +9,6 @@ function Motd(props: { defaultText?: string }) {
   const socket = useSocket();
   socket.on("motd", (e: any) => {
     setText(e);
-    console.log(e);
   });
   return (
     <Text>
