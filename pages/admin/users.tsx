@@ -18,12 +18,15 @@ import {
   ThemeIcon,
   Tooltip,
   useMantineTheme,
+  Center,
 } from "@mantine/core";
 import {
   Calendar,
   Check,
+  CircleOff,
   Cross,
   Pencil,
+  QuestionMark,
   Trash,
   UserPlus,
   X,
@@ -350,6 +353,43 @@ const UsersPage = () => {
         }
       });
   };
+  const handleAccountRequest = (request: any, accept: boolean) => {
+    fetch(
+      process.env.NEXT_PUBLIC_API_URL +
+        "/api/users/registrations/handle?key=" +
+        user.apikey,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: request.id,
+          accept: accept,
+          rank: "Architect",
+        }),
+      }
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.error) {
+          showNotification({
+            title: `Error ${accept ? "accepting" : "denying"} Account Request`,
+            message: res.message,
+            color: "red",
+            icon: <Cross />,
+          });
+        } else {
+          showNotification({
+            title: "Account Request denied",
+            message: `You ${
+              accept ? "accepted" : "denied"
+            } the creation of the account of ${request.username}`,
+            color: accept ? "green" : "red",
+            icon: <Check />,
+          });
+        }
+        mutate("/api/users/registrations/get");
+      });
+  };
 
   return (
     <Page>
@@ -431,19 +471,107 @@ const UsersPage = () => {
                     User Control
                   </Text>
                   <Tabs
-                  defaultValue="add"
+                    defaultValue="requests"
                     variant="outline"
                     style={{ marginTop: theme.spacing.md }}
-                  > <Tabs.List>
-                  <Tabs.Tab value="add"
-                      icon={<UserPlus size={14} />}>Add new User</Tabs.Tab>
-                  <Tabs.Tab value="edit" 
-                      icon={<Pencil size={14} />}>Edit exisiting User</Tabs.Tab>
-                  <Tabs.Tab value="editrank" 
-                      icon={<Pencil size={14} />}>Edit Rank History</Tabs.Tab>
-                </Tabs.List>
-                    <Tabs.Panel value="add" pt="md"
-                    >
+                  >
+                    {" "}
+                    <Tabs.List>
+                      <Tabs.Tab
+                        value="requests"
+                        icon={<QuestionMark size={14} />}
+                      >
+                        Account Requests
+                      </Tabs.Tab>
+                      <Tabs.Tab value="add" icon={<UserPlus size={14} />}>
+                        Add new User
+                      </Tabs.Tab>
+                      <Tabs.Tab value="edit" icon={<Pencil size={14} />}>
+                        Edit exisiting User
+                      </Tabs.Tab>
+                      <Tabs.Tab value="editrank" icon={<Pencil size={14} />}>
+                        Edit Rank History
+                      </Tabs.Tab>
+                    </Tabs.List>
+                    <Tabs.Panel value="requests" pt="md">
+                      {registrations?.length > 0 ? (
+                        <Table>
+                          <thead>
+                            <tr>
+                              <th>ID</th>
+                              <th>Username</th>
+                              <th>Discord</th>
+                              <th>Request Time</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {registrations
+                              ? registrations?.map((reg: any) => (
+                                  <tr key={reg.id}>
+                                    <td>{reg.id}</td>
+                                    <td>{reg.username}</td>
+                                    <td>{reg.discord}</td>
+                                    <td>
+                                      {`${new Date(
+                                        reg.createdAt
+                                      ).toLocaleDateString()} ${new Date(
+                                        reg.createdAt
+                                      ).toLocaleTimeString()}`}
+                                    </td>
+                                    <td>
+                                      <Group spacing="xs">
+                                        <Tooltip label="Accept" withArrow>
+                                          <ActionIcon
+                                            onClick={() =>
+                                              handleAccountRequest(reg, true)
+                                            }
+                                            variant="transparent"
+                                          >
+                                            <ThemeIcon
+                                              color="green"
+                                              variant="light"
+                                            >
+                                              <Check size={18} />
+                                            </ThemeIcon>
+                                          </ActionIcon>
+                                        </Tooltip>
+                                        <Tooltip label="Deny" withArrow>
+                                          <ActionIcon
+                                            onClick={() =>
+                                              handleAccountRequest(reg, false)
+                                            }
+                                            variant="transparent"
+                                          >
+                                            <ThemeIcon
+                                              color="red"
+                                              variant="light"
+                                            >
+                                              <X size={18} />
+                                            </ThemeIcon>
+                                          </ActionIcon>
+                                        </Tooltip>
+                                      </Group>
+                                    </td>
+                                  </tr>
+                                ))
+                              : null}
+                          </tbody>
+                        </Table>
+                      ) : (
+                        <Center>
+                          <CircleOff
+                            size={18}
+                            color="red"
+                            style={{ marginTop: theme.spacing.md }}
+                          />
+                          <Text style={{ marginTop: theme.spacing.md }}>
+                            &nbsp;No ongoing Account Requests
+                          </Text>
+                        </Center>
+                      )}
+                    </Tabs.Panel>
+                    <Tabs.Panel value="add" pt="md">
                       <form onSubmit={form.onSubmit(handleAddUser)}>
                         <TextInput
                           label="Username"
@@ -517,9 +645,7 @@ const UsersPage = () => {
                         </Button>
                       </form>
                     </Tabs.Panel>
-                    <Tabs.Panel
-                       value="edit" pt="Md"
-                    >
+                    <Tabs.Panel value="edit" pt="Md">
                       <form onSubmit={formEdit.onSubmit(handleEditUser)}>
                         <Group position="center" grow>
                           <NumberInput
@@ -615,9 +741,7 @@ const UsersPage = () => {
                         </Button>
                       </form>
                     </Tabs.Panel>
-                    <Tabs.Panel
-                      value="editrank" pt="md"
-                    >
+                    <Tabs.Panel value="editrank" pt="md">
                       <Select
                         label="User"
                         placeholder="Select user"
