@@ -224,7 +224,7 @@ const AdminPage: NextPage = () => {
                   },
                   {
                     label: "Max Response Time",
-                    data: response_times?.map((e: any) => e.max),
+                    data: response_times?.map((e: any) => e.max - e.min),
                     backgroundColor: `rgba(255,10,13,${
                       theme.colorScheme === "dark" ? "0.2" : "0.4"
                     })`,
