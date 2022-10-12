@@ -283,12 +283,7 @@ const NetworkPage = () => {
           </Paper>
         </Grid.Col>
       </Grid>
-      <Paper
-        withBorder
-        radius="md"
-        p="xs"
-        style={{ marginBottom: theme.spacing.md }}
-      >
+      <Paper withBorder radius="md" p="xs">
         <Text
           color="dimmed"
           size="xs"
@@ -298,47 +293,43 @@ const NetworkPage = () => {
         >
           Server Status
         </Text>
-        <ScrollArea style={{ height: "29vh" }} type="hover">
-          <Table highlightOnHover>
-            <thead>
-              <tr>
-                <th>Server</th>
-                <th>Status</th>
-                <th>Version</th>
-                <th>Players</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data
-                ? Object.entries(data?.spigot || [])
-                    .sort((a: any, b: any) => b[1].online - a[1].online)
-                    .map((server: any) =>
-                      server[1].online ? (
-                        <tr key={server[0]}>
-                          <td>{server[0]}</td>
-                          <td>
-                            <Badge color="green">Online</Badge>
-                          </td>
-                          <td>
-                            {server[1].version.name.replace("Paper ", "")}
-                          </td>
-                          <td>{`${server[1].players.online} / ${server[1].players.max}`}</td>
-                        </tr>
-                      ) : (
-                        <tr key={server[0]}>
-                          <td>{server[0]}</td>
-                          <td>
-                            <Badge color="red">Offline</Badge>
-                          </td>
-                          <td>---</td>
-                          <td>---</td>
-                        </tr>
-                      )
+        <Table highlightOnHover>
+          <thead>
+            <tr>
+              <th>Server</th>
+              <th>Status</th>
+              <th>Version</th>
+              <th>Players</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data
+              ? Object.entries(data?.spigot || [])
+                  .sort((a: any, b: any) => b[1].online - a[1].online)
+                  .map((server: any) =>
+                    server[1].online ? (
+                      <tr key={server[0]}>
+                        <td>{server[0]}</td>
+                        <td>
+                          <Badge color="green">Online</Badge>
+                        </td>
+                        <td>{server[1].version.name.replace("Paper ", "")}</td>
+                        <td>{`${server[1].players.online} / ${server[1].players.max}`}</td>
+                      </tr>
+                    ) : (
+                      <tr key={server[0]}>
+                        <td>{server[0]}</td>
+                        <td>
+                          <Badge color="red">Offline</Badge>
+                        </td>
+                        <td>---</td>
+                        <td>---</td>
+                      </tr>
                     )
-                : null}
-            </tbody>
-          </Table>
-        </ScrollArea>
+                  )
+              : null}
+          </tbody>
+        </Table>
       </Paper>
     </Page>
   );
