@@ -178,12 +178,17 @@ const AdminPage: NextPage = () => {
                       drawBorder: false,
                       color: "#499bee0a",
                     },
-                    type: "logarithmic",
+                    type: "linear",
                   },
                 },
                 plugins: {
                   legend: {
                     display: true,
+                    labels: {
+                      filter: function (item, chart) {
+                        return item.text !== "";
+                      },
+                    },
                   },
                   title: {
                     display: false,
@@ -216,18 +221,28 @@ const AdminPage: NextPage = () => {
                 labels: response_times?.map((e: any) => e.route) || [],
                 datasets: [
                   {
-                    label: "Min Response Time",
-                    data: response_times?.map((e: any) => e.min),
+                    label: "Response Time (Avg below 100ms)",
+                    data: [],
                     backgroundColor: `rgba(0,130,11,${
                       theme.colorScheme === "dark" ? "0.2" : "0.4"
                     })`,
                   },
                   {
-                    label: "Max Response Time",
-                    data: response_times?.map((e: any) => e.max - e.min),
+                    label: "Response Time (Avg over 100ms)",
+                    data: [],
                     backgroundColor: `rgba(255,10,13,${
                       theme.colorScheme === "dark" ? "0.2" : "0.4"
                     })`,
+                  },
+                  {
+                    label: "",
+                    data: response_times?.map((e: any) => [e.min, e.max]),
+                    backgroundColor: response_times?.map(
+                      (e: any) =>
+                        `rgba(${e.avg < 100 ? "0,130,11" : "255,10,13"},${
+                          theme.colorScheme === "dark" ? "0.2" : "0.4"
+                        })`
+                    ),
                   },
                   {
                     type: "line",
