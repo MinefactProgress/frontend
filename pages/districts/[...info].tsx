@@ -368,7 +368,8 @@ const DistrictPage = () => {
                   ))}
                   {statusFilter !== undefined ? (
                     <Tooltip
-                      label="Clear Filter"position="bottom-end"
+                      label="Clear Filter"
+                      position="bottom-end"
                       withArrow
                     >
                       <ActionIcon
@@ -387,137 +388,142 @@ const DistrictPage = () => {
                 </Group>
               </MediaQuery>
             </div>
-            <ScrollArea style={{ height: "75vh" }}>
-              <Table highlightOnHover>
-                <thead>
-                  <tr>
-                    <th>Block ID</th>
-                    <th>Status</th>
-                    <th>Progress</th>
-                    <th>Details</th>
-                    <th>Builder</th>
-                    <th>Completion Date</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data
-                    ? data?.blocks?.blocks
-                        .filter((block: any) =>
-                          statusFilter != null
-                            ? statusFilter === 5
-                              ? block.builders.includes(user.username)
-                              : block.status == statusFilter
-                            : true
-                        )
-                        .map((block: any, i: number) => (
-                          <tr
-                            key={i}
-                            style={{
-                              backgroundColor:
-                                selBlock?.uid == block.uid
-                                  ? theme.colorScheme == "dark"
-                                    ? theme.colors.dark[4]
-                                    : theme.colors.gray[2]
-                                  : undefined,
-                            }}
-                          >
-                            <td>
-                              <Group>
-                                {block.id}
-                                {block.landmarks.length > 0
-                                  ? block.landmarks.map((landmark: any) => (
-                                      <Tooltip
-                                        key={landmark.id}
-                                        label={`Landmark | ${landmark.name}`}
-                                        withArrow
-                                      >
-                                        <ActionIcon
-                                          onClick={(e: any) =>
-                                            handleEditLandmark(landmark)
-                                          }
-                                        >
-                                          <BuildingSkyscraper
-                                            size={20}
-                                            color={
-                                              landmark.completed
-                                                ? theme.colors.green[7]
-                                                : landmark.builder.length > 0
-                                                ? theme.colors.orange[7]
-                                                : theme.colors.red[7]
-                                            }
-                                          />
-                                        </ActionIcon>
-                                      </Tooltip>
-                                    ))
-                                  : null}
-                              </Group>
-                            </td>
-                            <td>
-                              <Badge color={statusToColorName(block.status)}>
-                                {statusToName(block.status)}
-                              </Badge>
-                            </td>
-                            <td>
-                              <Center>
-                                {Math.round(block.progress * 100) / 100 + " %"}
-                              </Center>
-                              <Progress
-                                size="sm"
-                                value={block.progress}
-                                color={progressToColorName(block.progress)}
-                              />
-                            </td>
-                            <td>
-                              <Center>
-                                <Checkbox
-                                  color="green"
-                                  readOnly
-                                  checked={block.details}
-                                />
-                              </Center>
-                            </td>
-                            <td>{block.builders.join(", ")}</td>
-                            <td>
-                              {!block.completionDate
-                                ? "---"
-                                : new Date(
-                                    block.completionDate
-                                  ).toLocaleDateString()}
-                            </td>
-                            <td>
-                              <Group>
-                                {block.center.length == 2 && (
-                                  <Tooltip label="Copy Location" withArrow>
-                                    <ActionIcon
-                                      onClick={(e: any) =>
-                                        handleCopyLocation(block.center)
-                                      }
+            <Table highlightOnHover>
+              <thead>
+                <tr>
+                  <th>Block ID</th>
+                  <th>Status</th>
+                  <th>Progress</th>
+                  <th>Details</th>
+                  <th>Builder</th>
+                  <th>Completion Date</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {data
+                  ? data?.blocks?.blocks
+                      .filter((block: any) =>
+                        statusFilter != null
+                          ? statusFilter === 5
+                            ? block.builders.includes(user.username)
+                            : block.status == statusFilter
+                          : true
+                      )
+                      .map((block: any, i: number) => (
+                        <tr
+                          key={i}
+                          style={{
+                            backgroundColor:
+                              selBlock?.uid == block.uid
+                                ? theme.colorScheme == "dark"
+                                  ? theme.colors.dark[4]
+                                  : theme.colors.gray[2]
+                                : undefined,
+                          }}
+                        >
+                          <td>
+                            <Group>
+                              {block.id}
+                              {block.landmarks.length > 0
+                                ? block.landmarks.map((landmark: any) => (
+                                    <Tooltip
+                                      key={landmark.id}
+                                      label={`Landmark | ${landmark.name}`}
+                                      withArrow
                                     >
-                                      <MapPin size={20}></MapPin>
-                                    </ActionIcon>
-                                  </Tooltip>
-                                )}
-
-                                {(user.permission || 0) >=
-                                  Permissions.Builder && (
+                                      <ActionIcon
+                                        onClick={(e: any) =>
+                                          handleEditLandmark(landmark)
+                                        }
+                                      >
+                                        <BuildingSkyscraper
+                                          size={20}
+                                          color={
+                                            landmark.completed
+                                              ? theme.colors.green[7]
+                                              : landmark.builder.length > 0
+                                              ? theme.colors.orange[7]
+                                              : theme.colors.red[7]
+                                          }
+                                        />
+                                      </ActionIcon>
+                                    </Tooltip>
+                                  ))
+                                : null}
+                            </Group>
+                          </td>
+                          <td>
+                            <Badge color={statusToColorName(block.status)}>
+                              {statusToName(block.status)}
+                            </Badge>
+                          </td>
+                          <td>
+                            <Center>
+                              {Math.round(block.progress * 100) / 100 + " %"}
+                            </Center>
+                            <Progress
+                              size="sm"
+                              value={block.progress}
+                              color={progressToColorName(block.progress)}
+                            />
+                          </td>
+                          <td>
+                            <Center>
+                              <Checkbox
+                                color="green"
+                                readOnly
+                                checked={block.details}
+                              />
+                            </Center>
+                          </td>
+                          <td>{block.builders.join(", ")}</td>
+                          <td>
+                            {!block.completionDate
+                              ? "---"
+                              : new Date(
+                                  block.completionDate
+                                ).toLocaleDateString()}
+                          </td>
+                          <td>
+                            <Group>
+                              {block.center.length == 2 && (
+                                <Tooltip label="Copy Location" withArrow>
                                   <ActionIcon
-                                    onClick={(e: any) => handleClick(block.id)}
+                                    onClick={(e: any) =>
+                                      handleCopyLocation(block.center)
+                                    }
                                   >
-                                    <Edit size={20} />
+                                    <MapPin size={20}></MapPin>
                                   </ActionIcon>
-                                )}
-                              </Group>
-                            </td>
-                          </tr>
-                        ))
-                    : null}
-                </tbody>
-              </Table>
-            </ScrollArea>
+                                </Tooltip>
+                              )}
+
+                              {(user.permission || 0) >=
+                                Permissions.Builder && (
+                                <ActionIcon
+                                  onClick={(e: any) => handleClick(block.id)}
+                                >
+                                  <Edit size={20} />
+                                </ActionIcon>
+                              )}
+                            </Group>
+                          </td>
+                        </tr>
+                      ))
+                  : null}
+              </tbody>
+            </Table>
           </Paper>
         </Grid.Col>
-        <Grid.Col sm={4}>
+        <Grid.Col
+          sm={4}
+          style={{
+            position: "absolute",
+            right: theme.spacing.md / 2,
+            width: "100%",
+          }}
+        >
           <Paper
             withBorder
             radius="md"
@@ -762,14 +768,21 @@ const DistrictPage = () => {
             }}
           >
             {(user.permission || 0) >= Permissions.Builder ? (
-              <Tabs variant="outline" 
-              defaultValue="update" style={{ marginTop: theme.spacing.md }}>
+              <Tabs
+                variant="outline"
+                defaultValue="update"
+                style={{ marginTop: theme.spacing.md }}
+              >
                 <Tabs.List>
                   <Tabs.Tab value="update" icon={<Edit size={14} />} pt="md">
                     Update Block
                   </Tabs.Tab>
                   {(user.permission || 0) >= Permissions.Moderator && (
-                    <Tabs.Tab value="image" icon={<CameraPlus size={14} />}  pt="md">
+                    <Tabs.Tab
+                      value="image"
+                      icon={<CameraPlus size={14} />}
+                      pt="md"
+                    >
                       Add Image
                     </Tabs.Tab>
                   )}
