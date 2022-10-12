@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Badge,
   Button,
+  Center,
   Divider,
   Grid,
   Group,
@@ -18,7 +19,6 @@ import {
   ThemeIcon,
   Tooltip,
   useMantineTheme,
-  Center,
 } from "@mantine/core";
 import {
   Calendar,
@@ -395,523 +395,455 @@ const UsersPage = () => {
     <Page>
       <Grid>
         <Grid.Col sm={7}>
-          <Skeleton
-            height={PRIMARY_COL_HEIGHT}
-            radius="md"
-            animate={false}
-            visible={false}
-          >
+          <Skeleton radius="md" animate={false} visible={false}>
             <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
               <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
                 Users
               </Text>
-              <ScrollArea style={{ height: "86vh" }} type="hover">
-                <Table>
-                  <thead>
-                    <tr>
-                      <th>UID</th>
-                      <th>Name</th>
-                      <th>Discord</th>
-                      <th>Minecraft Role</th>
-                      <th>Email</th>
-                      <th>Role</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data
-                      ? data?.map((user: any) => (
-                          <tr key={user.uid}>
-                            <td>{user.uid}</td>
-                            <td>{user.username}</td>
-                            <td>{user.discord}</td>
-                            <td>{user.rank}</td>
-                            <td>{user.email}</td>
-                            <td>{getRoleFromPermission(user.permission)}</td>
-                            <td>
-                              <Group spacing="xs">
-                                <Tooltip label="Delete" withArrow>
-                                  <ActionIcon
-                                    onClick={() => handleDeleteUser(user.uid)}
-                                    variant="transparent"
-                                    disabled={user.username === "root"}
-                                  >
-                                    <ThemeIcon color={"red"} variant="light">
-                                      <Trash size={18} />
-                                    </ThemeIcon>
-                                  </ActionIcon>
-                                </Tooltip>
-                              </Group>
-                            </td>
-                          </tr>
-                        ))
-                      : null}
-                  </tbody>
-                </Table>
-              </ScrollArea>
+              <Table>
+                <thead>
+                  <tr>
+                    <th>UID</th>
+                    <th>Name</th>
+                    <th>Discord</th>
+                    <th>Minecraft Role</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data
+                    ? data?.map((user: any) => (
+                        <tr key={user.uid}>
+                          <td>{user.uid}</td>
+                          <td>{user.username}</td>
+                          <td>{user.discord}</td>
+                          <td>{user.rank}</td>
+                          <td>{user.email}</td>
+                          <td>{getRoleFromPermission(user.permission)}</td>
+                          <td>
+                            <Group spacing="xs">
+                              <Tooltip label="Delete" withArrow>
+                                <ActionIcon
+                                  onClick={() => handleDeleteUser(user.uid)}
+                                  variant="transparent"
+                                  disabled={user.username === "root"}
+                                >
+                                  <ThemeIcon color={"red"} variant="light">
+                                    <Trash size={18} />
+                                  </ThemeIcon>
+                                </ActionIcon>
+                              </Tooltip>
+                            </Group>
+                          </td>
+                        </tr>
+                      ))
+                    : null}
+                </tbody>
+              </Table>
             </Paper>
           </Skeleton>
         </Grid.Col>
-        <Grid.Col sm={5}>
-          <Grid gutter="md">
-            <Grid.Col>
-              <Skeleton
-                height={SECONDARY_COL_HEIGHT * 1.5}
-                radius="md"
-                animate={false}
-                visible={false}
+        <Grid.Col
+          sm={5}
+          style={{ position: "absolute", right: theme.spacing.md }}
+        >
+          <Skeleton radius="md" animate={false} visible={false}>
+            <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
+              <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
+                User Control
+              </Text>
+              <Tabs
+                defaultValue="requests"
+                variant="outline"
+                style={{ marginTop: theme.spacing.md }}
               >
-                <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
-                  <Text
-                    color="dimmed"
-                    size="xs"
-                    transform="uppercase"
-                    weight={700}
-                  >
-                    User Control
-                  </Text>
-                  <Tabs
-                    defaultValue="requests"
-                    variant="outline"
-                    style={{ marginTop: theme.spacing.md }}
-                  >
-                    {" "}
-                    <Tabs.List>
-                      <Tabs.Tab
-                        value="requests"
-                        icon={<QuestionMark size={14} />}
-                      >
-                        Account Requests
-                      </Tabs.Tab>
-                      <Tabs.Tab value="add" icon={<UserPlus size={14} />}>
-                        Add new User
-                      </Tabs.Tab>
-                      <Tabs.Tab value="edit" icon={<Pencil size={14} />}>
-                        Edit exisiting User
-                      </Tabs.Tab>
-                      <Tabs.Tab value="editrank" icon={<Pencil size={14} />}>
-                        Edit Rank History
-                      </Tabs.Tab>
-                    </Tabs.List>
-                    <Tabs.Panel value="requests" pt="md">
-                      {registrations?.length > 0 ? (
-                        <Table>
-                          <thead>
-                            <tr>
-                              <th>ID</th>
-                              <th>Username</th>
-                              <th>Discord</th>
-                              <th>Request Time</th>
-                              <th>Actions</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {registrations
-                              ? registrations?.map((reg: any) => (
-                                  <tr key={reg.id}>
-                                    <td>{reg.id}</td>
-                                    <td>{reg.username}</td>
-                                    <td>{reg.discord}</td>
-                                    <td>
-                                      {`${new Date(
-                                        reg.createdAt
-                                      ).toLocaleDateString()} ${new Date(
-                                        reg.createdAt
-                                      ).toLocaleTimeString()}`}
-                                    </td>
-                                    <td>
-                                      <Group spacing="xs">
-                                        <Tooltip label="Accept" withArrow>
-                                          <ActionIcon
-                                            onClick={() =>
-                                              handleAccountRequest(reg, true)
-                                            }
-                                            variant="transparent"
-                                          >
-                                            <ThemeIcon
-                                              color="green"
-                                              variant="light"
-                                            >
-                                              <Check size={18} />
-                                            </ThemeIcon>
-                                          </ActionIcon>
-                                        </Tooltip>
-                                        <Tooltip label="Deny" withArrow>
-                                          <ActionIcon
-                                            onClick={() =>
-                                              handleAccountRequest(reg, false)
-                                            }
-                                            variant="transparent"
-                                          >
-                                            <ThemeIcon
-                                              color="red"
-                                              variant="light"
-                                            >
-                                              <X size={18} />
-                                            </ThemeIcon>
-                                          </ActionIcon>
-                                        </Tooltip>
-                                      </Group>
-                                    </td>
-                                  </tr>
-                                ))
-                              : null}
-                          </tbody>
-                        </Table>
-                      ) : (
-                        <Center>
-                          <CircleOff
-                            size={18}
-                            color="red"
-                            style={{ marginTop: theme.spacing.md }}
-                          />
-                          <Text style={{ marginTop: theme.spacing.md }}>
-                            &nbsp;No ongoing Account Requests
-                          </Text>
-                        </Center>
-                      )}
-                    </Tabs.Panel>
-                    <Tabs.Panel value="add" pt="md">
-                      <form onSubmit={form.onSubmit(handleAddUser)}>
-                        <TextInput
-                          label="Username"
-                          name="username"
-                          placeholder="Username"
-                          required
-                          style={{ marginBottom: theme.spacing.md }}
-                          {...form.getInputProps("username")}
-                        />
-                        <Group>
-                          <TextInput
-                            label="Email"
-                            name="email"
-                            placeholder="Email"
-                            required
-                            style={{
-                              marginBottom: theme.spacing.md,
-                              width: "100%",
-                            }}
-                            {...form.getInputProps("email")}
-                          />
-                        </Group>
-
-                        <Divider my="sm" />
-                        <Select
-                          label="Role"
-                          name="role"
-                          placeholder="Select a role"
-                          required
-                          style={{ marginBottom: theme.spacing.md }}
-                          data={[
-                            { value: "0", label: "User" },
-                            { value: "1", label: "Builder" },
-                            { value: "2", label: "Moderator" },
-                            { value: "4", label: "Admin" },
-                          ]}
-                          {...form.getInputProps("role")}
-                        />
-                        <Textarea
-                          label="About"
-                          name="about"
-                          placeholder="Something about the user..."
-                          style={{ marginBottom: theme.spacing.md }}
-                          {...form.getInputProps("about")}
-                        />
-                        <Group position="center" grow>
-                          <TextInput
-                            label="Discord"
-                            name="discord"
-                            placeholder="Discord"
-                            style={{ marginBottom: theme.spacing.md }}
-                            {...form.getInputProps("discord")}
-                          />
-                          <TextInput
-                            label="Minecraft Rank"
-                            name="minecraft"
-                            placeholder="Minecraft Rank"
-                            style={{ marginBottom: theme.spacing.md }}
-                            {...form.getInputProps("rank")}
-                          />
-                        </Group>
-
-                        <Button
-                          type="submit"
-                          size="sm"
-                          mt="xs"
-                          mb="xs"
-                          fullWidth
-                        >
-                          Add User
-                        </Button>
-                      </form>
-                    </Tabs.Panel>
-                    <Tabs.Panel value="edit" pt="Md">
-                      <form onSubmit={formEdit.onSubmit(handleEditUser)}>
-                        <Group position="center" grow>
-                          <NumberInput
-                            label="UID"
-                            name="uid"
-                            placeholder="UID"
-                            required
-                            hideControls
-                            style={{ marginBottom: theme.spacing.md }}
-                            {...formEdit.getInputProps("uid")}
-                          />
-                          <TextInput
-                            label="Username"
-                            name="username"
-                            placeholder="Username"
-                            style={{ marginBottom: theme.spacing.md }}
-                            {...formEdit.getInputProps("username")}
-                          />
-                        </Group>
-                        <Group position="center" grow>
-                          <TextInput
-                            label="Password"
-                            name="password"
-                            placeholder="Password"
-                            style={{ marginBottom: theme.spacing.md }}
-                            {...formEdit.getInputProps("password")}
-                          />
-                          <Select
-                            label="Role"
-                            name="role"
-                            placeholder="Select a role"
-                            style={{ marginBottom: theme.spacing.md }}
-                            data={[
-                              { value: "0", label: "User" },
-                              { value: "1", label: "Builder" },
-                              { value: "2", label: "Moderator" },
-                              { value: "4", label: "Admin" },
-                            ]}
-                            {...formEdit.getInputProps("role")}
-                          />
-                        </Group>
-
-                        <Divider my="sm" />
-                        <Group position="center" grow>
-                          <TextInput
-                            label="Discord"
-                            name="discord"
-                            placeholder="Discord"
-                            style={{ marginBottom: theme.spacing.md }}
-                            {...form.getInputProps("discord")}
-                          />
-                          <TextInput
-                            label="Minecraft Rank"
-                            name="minecraft"
-                            placeholder="Minecraft Rank"
-                            style={{ marginBottom: theme.spacing.md }}
-                            {...formEdit.getInputProps("rank")}
-                          />
-                        </Group>
-
-                        <Textarea
-                          label="About"
-                          name="about"
-                          placeholder="Something about the user..."
-                          style={{ marginBottom: theme.spacing.md }}
-                          {...formEdit.getInputProps("about")}
-                        />
-
-                        <Group position="center" grow>
-                          <TextInput
-                            label="Profile Picture"
-                            name="picture"
-                            placeholder="https://..."
-                            style={{ marginBottom: theme.spacing.md }}
-                            {...formEdit.getInputProps("picture")}
-                          />
-                          <TextInput
-                            label="Background Image"
-                            name="image"
-                            placeholder="https://..."
-                            style={{ marginBottom: theme.spacing.md }}
-                            {...formEdit.getInputProps("image")}
-                          />
-                        </Group>
-                        <Button
-                          type="submit"
-                          size="sm"
-                          mt="xs"
-                          mb="xs"
-                          fullWidth
-                        >
-                          Update User
-                        </Button>
-                      </form>
-                    </Tabs.Panel>
-                    <Tabs.Panel value="editrank" pt="md">
-                      <Select
-                        label="User"
-                        placeholder="Select user"
-                        value={historyUser}
-                        onChange={setHistoryUser}
-                        searchable
-                        clearable
-                        data={
-                          data
-                            ? data
-                                ?.sort((a: any, b: any) => {
-                                  return a.username
-                                    .toLowerCase()
-                                    .localeCompare(b.username);
-                                })
-                                .map((user: any) => ({
-                                  value: `${user.uid}`,
-                                  label: user.username,
-                                }))
-                            : []
-                        }
-                      />
-                      <Divider
-                        my="sm"
-                        style={{
-                          marginTop: theme.spacing.md,
-                          marginBottom: theme.spacing.md,
-                        }}
-                      />
-                      <ScrollArea style={{ height: "44vh" }}>
-                        {data
-                          ? data
-                              ?.find(
-                                (user: any) =>
-                                  user.uid === parseInt(historyUser || "")
-                              )
-                              ?.stats.rank_history.map(
-                                (rank: any, i: number) => (
-                                  <Group
-                                    key={i}
-                                    style={{ marginBottom: theme.spacing.md }}
-                                  >
-                                    <Badge
-                                      style={{
-                                        backgroundColor: rankToColor(rank.rank),
-                                        color: "#FFFFFF",
-                                        opacity: 1,
-                                        marginTop: theme.spacing.xl,
-                                        width: "19%",
-                                      }}
-                                    >
-                                      {rank.rank}
-                                    </Badge>
-                                    <DatePicker
-                                      width={"20px"}
-                                      maxDate={new Date()}
-                                      label="From"
-                                      placeholder="Select Date"
-                                      icon={<Calendar size={16} />}
-                                      defaultValue={
-                                        rank.from ? new Date(rank.from) : null
-                                      }
-                                      onChange={(date: any) => {
-                                        handleSaveRankHistory(i, "from", date);
-                                      }}
-                                      style={{ width: "32%" }}
-                                    />
-                                    <DatePicker
-                                      maxDate={new Date()}
-                                      label="Till"
-                                      placeholder="Select Date"
-                                      icon={<Calendar size={16} />}
-                                      defaultValue={
-                                        rank.till ? new Date(rank.till) : null
-                                      }
-                                      onChange={(date: any) => {
-                                        handleSaveRankHistory(i, "till", date);
-                                      }}
-                                      style={{ width: "32%" }}
-                                    />
-                                    <Tooltip
-                                      label="Delete Rank"
-                                      withArrow
-                                      position="bottom"
-                                    >
+                {" "}
+                <Tabs.List>
+                  <Tabs.Tab value="requests" icon={<QuestionMark size={14} />}>
+                    Account Requests
+                  </Tabs.Tab>
+                  <Tabs.Tab value="add" icon={<UserPlus size={14} />}>
+                    Add new User
+                  </Tabs.Tab>
+                  <Tabs.Tab value="edit" icon={<Pencil size={14} />}>
+                    Edit exisiting User
+                  </Tabs.Tab>
+                  <Tabs.Tab value="editrank" icon={<Pencil size={14} />}>
+                    Edit Rank History
+                  </Tabs.Tab>
+                </Tabs.List>
+                <Tabs.Panel value="requests" pt="md">
+                  {registrations?.length > 0 ? (
+                    <Table>
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Username</th>
+                          <th>Discord</th>
+                          <th>Request Time</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {registrations
+                          ? registrations?.map((reg: any) => (
+                              <tr key={reg.id}>
+                                <td>{reg.id}</td>
+                                <td>{reg.username}</td>
+                                <td>{reg.discord}</td>
+                                <td>
+                                  {`${new Date(
+                                    reg.createdAt
+                                  ).toLocaleDateString()} ${new Date(
+                                    reg.createdAt
+                                  ).toLocaleTimeString()}`}
+                                </td>
+                                <td>
+                                  <Group spacing="xs">
+                                    <Tooltip label="Accept" withArrow>
                                       <ActionIcon
-                                        size="sm"
-                                        radius="xl"
-                                        variant="outline"
-                                        style={{
-                                          marginTop: theme.spacing.xl,
-                                          color: "red",
-                                          borderColor: "red",
-                                        }}
-                                        onClick={() => removeRankHistory(i)}
+                                        onClick={() =>
+                                          handleAccountRequest(reg, true)
+                                        }
+                                        variant="transparent"
                                       >
-                                        <X size={16} />
+                                        <ThemeIcon
+                                          color="green"
+                                          variant="light"
+                                        >
+                                          <Check size={18} />
+                                        </ThemeIcon>
+                                      </ActionIcon>
+                                    </Tooltip>
+                                    <Tooltip label="Deny" withArrow>
+                                      <ActionIcon
+                                        onClick={() =>
+                                          handleAccountRequest(reg, false)
+                                        }
+                                        variant="transparent"
+                                      >
+                                        <ThemeIcon color="red" variant="light">
+                                          <X size={18} />
+                                        </ThemeIcon>
                                       </ActionIcon>
                                     </Tooltip>
                                   </Group>
-                                )
-                              )
+                                </td>
+                              </tr>
+                            ))
                           : null}
-                        {historyUser ? (
-                          <>
-                            <Divider
-                              my="sm"
-                              style={{
-                                marginTop: theme.spacing.md,
-                                marginBottom: theme.spacing.md,
-                              }}
-                            />
-                            <Group grow>
-                              <Select
-                                label="Add Rank"
-                                placeholder="Select Rank"
-                                value={addHistoryRank}
-                                onChange={setAddHistoryRank}
-                                searchable
-                                clearable
-                                data={Ranks}
-                                style={{}}
-                              />
-                              <Button
-                                color="green"
-                                style={{ marginTop: theme.spacing.xl }}
-                                onClick={() => addRankHistory()}
+                      </tbody>
+                    </Table>
+                  ) : (
+                    <Center>
+                      <CircleOff
+                        size={18}
+                        color="red"
+                        style={{ marginTop: theme.spacing.md }}
+                      />
+                      <Text style={{ marginTop: theme.spacing.md }}>
+                        &nbsp;No ongoing Account Requests
+                      </Text>
+                    </Center>
+                  )}
+                </Tabs.Panel>
+                <Tabs.Panel value="add" pt="md">
+                  <form onSubmit={form.onSubmit(handleAddUser)}>
+                    <TextInput
+                      label="Username"
+                      name="username"
+                      placeholder="Username"
+                      required
+                      style={{ marginBottom: theme.spacing.md }}
+                      {...form.getInputProps("username")}
+                    />
+                    <Group>
+                      <TextInput
+                        label="Email"
+                        name="email"
+                        placeholder="Email"
+                        required
+                        style={{
+                          marginBottom: theme.spacing.md,
+                          width: "100%",
+                        }}
+                        {...form.getInputProps("email")}
+                      />
+                    </Group>
+
+                    <Divider my="sm" />
+                    <Select
+                      label="Role"
+                      name="role"
+                      placeholder="Select a role"
+                      required
+                      style={{ marginBottom: theme.spacing.md }}
+                      data={[
+                        { value: "0", label: "User" },
+                        { value: "1", label: "Builder" },
+                        { value: "2", label: "Moderator" },
+                        { value: "4", label: "Admin" },
+                      ]}
+                      {...form.getInputProps("role")}
+                    />
+                    <Textarea
+                      label="About"
+                      name="about"
+                      placeholder="Something about the user..."
+                      style={{ marginBottom: theme.spacing.md }}
+                      {...form.getInputProps("about")}
+                    />
+                    <Group position="center" grow>
+                      <TextInput
+                        label="Discord"
+                        name="discord"
+                        placeholder="Discord"
+                        style={{ marginBottom: theme.spacing.md }}
+                        {...form.getInputProps("discord")}
+                      />
+                      <TextInput
+                        label="Minecraft Rank"
+                        name="minecraft"
+                        placeholder="Minecraft Rank"
+                        style={{ marginBottom: theme.spacing.md }}
+                        {...form.getInputProps("rank")}
+                      />
+                    </Group>
+
+                    <Button type="submit" size="sm" mt="xs" mb="xs" fullWidth>
+                      Add User
+                    </Button>
+                  </form>
+                </Tabs.Panel>
+                <Tabs.Panel value="edit" pt="Md">
+                  <form onSubmit={formEdit.onSubmit(handleEditUser)}>
+                    <Group position="center" grow>
+                      <NumberInput
+                        label="UID"
+                        name="uid"
+                        placeholder="UID"
+                        required
+                        hideControls
+                        style={{ marginBottom: theme.spacing.md }}
+                        {...formEdit.getInputProps("uid")}
+                      />
+                      <TextInput
+                        label="Username"
+                        name="username"
+                        placeholder="Username"
+                        style={{ marginBottom: theme.spacing.md }}
+                        {...formEdit.getInputProps("username")}
+                      />
+                    </Group>
+                    <Group position="center" grow>
+                      <TextInput
+                        label="Password"
+                        name="password"
+                        placeholder="Password"
+                        style={{ marginBottom: theme.spacing.md }}
+                        {...formEdit.getInputProps("password")}
+                      />
+                      <Select
+                        label="Role"
+                        name="role"
+                        placeholder="Select a role"
+                        style={{ marginBottom: theme.spacing.md }}
+                        data={[
+                          { value: "0", label: "User" },
+                          { value: "1", label: "Builder" },
+                          { value: "2", label: "Moderator" },
+                          { value: "4", label: "Admin" },
+                        ]}
+                        {...formEdit.getInputProps("role")}
+                      />
+                    </Group>
+
+                    <Divider my="sm" />
+                    <Group position="center" grow>
+                      <TextInput
+                        label="Discord"
+                        name="discord"
+                        placeholder="Discord"
+                        style={{ marginBottom: theme.spacing.md }}
+                        {...form.getInputProps("discord")}
+                      />
+                      <TextInput
+                        label="Minecraft Rank"
+                        name="minecraft"
+                        placeholder="Minecraft Rank"
+                        style={{ marginBottom: theme.spacing.md }}
+                        {...formEdit.getInputProps("rank")}
+                      />
+                    </Group>
+
+                    <Textarea
+                      label="About"
+                      name="about"
+                      placeholder="Something about the user..."
+                      style={{ marginBottom: theme.spacing.md }}
+                      {...formEdit.getInputProps("about")}
+                    />
+
+                    <Group position="center" grow>
+                      <TextInput
+                        label="Profile Picture"
+                        name="picture"
+                        placeholder="https://..."
+                        style={{ marginBottom: theme.spacing.md }}
+                        {...formEdit.getInputProps("picture")}
+                      />
+                      <TextInput
+                        label="Background Image"
+                        name="image"
+                        placeholder="https://..."
+                        style={{ marginBottom: theme.spacing.md }}
+                        {...formEdit.getInputProps("image")}
+                      />
+                    </Group>
+                    <Button type="submit" size="sm" mt="xs" mb="xs" fullWidth>
+                      Update User
+                    </Button>
+                  </form>
+                </Tabs.Panel>
+                <Tabs.Panel value="editrank" pt="md">
+                  <Select
+                    label="User"
+                    placeholder="Select user"
+                    value={historyUser}
+                    onChange={setHistoryUser}
+                    searchable
+                    clearable
+                    data={
+                      data
+                        ? data
+                            ?.sort((a: any, b: any) => {
+                              return a.username
+                                .toLowerCase()
+                                .localeCompare(b.username);
+                            })
+                            .map((user: any) => ({
+                              value: `${user.uid}`,
+                              label: user.username,
+                            }))
+                        : []
+                    }
+                  />
+                  <Divider
+                    my="sm"
+                    style={{
+                      marginTop: theme.spacing.md,
+                      marginBottom: theme.spacing.md,
+                    }}
+                  />
+                  <ScrollArea style={{ height: "44vh" }}>
+                    {data
+                      ? data
+                          ?.find(
+                            (user: any) =>
+                              user.uid === parseInt(historyUser || "")
+                          )
+                          ?.stats.rank_history.map((rank: any, i: number) => (
+                            <Group
+                              key={i}
+                              style={{ marginBottom: theme.spacing.md }}
+                            >
+                              <Badge
+                                style={{
+                                  backgroundColor: rankToColor(rank.rank),
+                                  color: "#FFFFFF",
+                                  opacity: 1,
+                                  marginTop: theme.spacing.xl,
+                                  width: "19%",
+                                }}
                               >
-                                Add
-                              </Button>
+                                {rank.rank}
+                              </Badge>
+                              <DatePicker
+                                width={"20px"}
+                                maxDate={new Date()}
+                                label="From"
+                                placeholder="Select Date"
+                                icon={<Calendar size={16} />}
+                                defaultValue={
+                                  rank.from ? new Date(rank.from) : null
+                                }
+                                onChange={(date: any) => {
+                                  handleSaveRankHistory(i, "from", date);
+                                }}
+                                style={{ width: "32%" }}
+                              />
+                              <DatePicker
+                                maxDate={new Date()}
+                                label="Till"
+                                placeholder="Select Date"
+                                icon={<Calendar size={16} />}
+                                defaultValue={
+                                  rank.till ? new Date(rank.till) : null
+                                }
+                                onChange={(date: any) => {
+                                  handleSaveRankHistory(i, "till", date);
+                                }}
+                                style={{ width: "32%" }}
+                              />
+                              <Tooltip
+                                label="Delete Rank"
+                                withArrow
+                                position="bottom"
+                              >
+                                <ActionIcon
+                                  size="sm"
+                                  radius="xl"
+                                  variant="outline"
+                                  style={{
+                                    marginTop: theme.spacing.xl,
+                                    color: "red",
+                                    borderColor: "red",
+                                  }}
+                                  onClick={() => removeRankHistory(i)}
+                                >
+                                  <X size={16} />
+                                </ActionIcon>
+                              </Tooltip>
                             </Group>
-                          </>
-                        ) : null}
-                      </ScrollArea>
-                    </Tabs.Panel>
-                  </Tabs>
-                </Paper>
-              </Skeleton>
-            </Grid.Col>
-            <Grid.Col span={6}>
-              <Skeleton
-                height={SECONDARY_COL_HEIGHT / 2}
-                radius="md"
-                animate={false}
-                visible={false}
-              >
-                <Paper
-                  withBorder
-                  radius="md"
-                  p="xs"
-                  style={{ height: "100%" }}
-                ></Paper>
-              </Skeleton>
-            </Grid.Col>
-            <Grid.Col span={6}>
-              <Skeleton
-                height={SECONDARY_COL_HEIGHT / 2}
-                radius="md"
-                animate={false}
-                visible={false}
-              >
-                <Paper
-                  withBorder
-                  radius="md"
-                  p="xs"
-                  style={{ height: "100%" }}
-                ></Paper>
-              </Skeleton>
-            </Grid.Col>
-          </Grid>
+                          ))
+                      : null}
+                    {historyUser ? (
+                      <>
+                        <Divider
+                          my="sm"
+                          style={{
+                            marginTop: theme.spacing.md,
+                            marginBottom: theme.spacing.md,
+                          }}
+                        />
+                        <Group grow>
+                          <Select
+                            label="Add Rank"
+                            placeholder="Select Rank"
+                            value={addHistoryRank}
+                            onChange={setAddHistoryRank}
+                            searchable
+                            clearable
+                            data={Ranks}
+                            style={{}}
+                          />
+                          <Button
+                            color="green"
+                            style={{ marginTop: theme.spacing.xl }}
+                            onClick={() => addRankHistory()}
+                          >
+                            Add
+                          </Button>
+                        </Group>
+                      </>
+                    ) : null}
+                  </ScrollArea>
+                </Tabs.Panel>
+              </Tabs>
+            </Paper>
+          </Skeleton>
         </Grid.Col>
       </Grid>
     </Page>
