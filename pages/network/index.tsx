@@ -13,16 +13,20 @@ import {
 import {
   Badge,
   Center,
+  Chip,
   Grid,
+  Group,
   Paper,
   ScrollArea,
   Table,
   Text,
+  TextInput,
   useMantineTheme,
 } from "@mantine/core";
 import { Line, Pie } from "react-chartjs-2";
 
 import Page from "../../components/Page";
+import { Rss } from "tabler-icons-react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { useState } from "react";
@@ -41,12 +45,14 @@ ChartJS.register(
 
 const NetworkPage = () => {
   const router = useRouter();
+  const [serverSearch, setServerSearch] = useState("");
+  const [serverFilter, setServerFilter] = useState(["online", "offline"]);
   const [selectedServer, setSelectedServer] = useState("");
   const { data } = useSWR("/api/network/ping", {
     refreshInterval: 60000,
   });
+  const { data: servers } = useSWR("/api/network/status", {});
   const { data: playersRw } = useSWR("/api/playerstats/get");
-  const { data: servers } = useSWR("/api/admin/settings/get/ips");
 
   const categories = Object.keys(data?.java.players.groups || []).map(
     (key: any) => key.charAt(0).toUpperCase() + key.substring(1)
@@ -291,7 +297,30 @@ const NetworkPage = () => {
           weight={700}
           style={{ marginBottom: theme.spacing.md }}
         >
-          Server Status
+          <Group position="apart">
+            <Text size="xs" color="dimmed">
+              Server Status
+            </Text>
+            <Group>
+              <Chip.Group
+                value={serverFilter}
+                onChange={setServerFilter}
+                multiple
+              >
+                <Chip value="online" variant="filled" size="sm" color="green">
+                  Online
+                </Chip>
+                <Chip value="offline" variant="filled" size="sm" color="red">
+                  Offline
+                </Chip>
+              </Chip.Group>
+              <TextInput
+                placeholder="Search Server ID..."
+                onChange={(e) => setServerSearch(e.currentTarget.value)}
+                value={serverSearch}
+              ></TextInput>
+            </Group>
+          </Group>
         </Text>
         <Table highlightOnHover>
           <thead>
@@ -303,31 +332,37 @@ const NetworkPage = () => {
             </tr>
           </thead>
           <tbody>
-            {data
-              ? Object.entries(data?.spigot || [])
-                  .sort((a: any, b: any) => b[1].online - a[1].online)
-                  .map((server: any) =>
-                    server[1].online ? (
-                      <tr key={server[0]}>
-                        <td>{server[0]}</td>
-                        <td>
-                          <Badge color="green">Online</Badge>
-                        </td>
-                        <td>{server[1].version.name.replace("Paper ", "")}</td>
-                        <td>{`${server[1].players.online} / ${server[1].players.max}`}</td>
-                      </tr>
-                    ) : (
-                      <tr key={server[0]}>
-                        <td>{server[0]}</td>
-                        <td>
-                          <Badge color="red">Offline</Badge>
-                        </td>
-                        <td>---</td>
-                        <td>---</td>
-                      </tr>
-                    )
-                  )
-              : null}
+            {servers
+              ?.filter((e: any) => e.id.includes(serverSearch))
+              .filter((e: any) =>
+                serverFilter.includes(e.online ? "online" : "offline")
+              )
+              .sort((a: any, b: any) => b.online - a.online)
+              .map((server: any) =>
+                server.online ? (
+                  <tr key={server.id}>
+                    <td>{server.id}</td>
+                    <td>
+                      <Badge color="green">Online</Badge>
+                    </td>
+                    <td>
+                      {server.version.name.includes(" ")
+                        ? server.version.name.split(" ")[1]
+                        : server.version.name}
+                    </td>
+                    <td>{`${server.players.online} / ${server.players.max}`}</td>
+                  </tr>
+                ) : (
+                  <tr key={server.id}>
+                    <td>{server.id}</td>
+                    <td>
+                      <Badge color="red">Offline</Badge>
+                    </td>
+                    <td>---</td>
+                    <td>-- / --</td>
+                  </tr>
+                )
+              )}
           </tbody>
         </Table>
       </Paper>
