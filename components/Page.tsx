@@ -1,431 +1,72 @@
-/* eslint-disable @next/next/no-img-element */
-
 import {
-  ActionIcon,
-  AppShell,
-  Avatar,
-  Box,
-  Burger,
-  Center,
-  Divider,
-  Group,
-  Header,
-  Indicator,
-  Loader,
-  MediaQuery,
-  Menu,
-  Navbar,
-  ScrollArea,
-  Text,
-  ThemeIcon,
-  Title,
-  Transition,
-  UnstyledButton,
-  useMantineColorScheme,
-  useMantineTheme,
-} from "@mantine/core";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Confetti,
-  Login,
-  Logout,
-  MoonStars,
-  Search,
-  Settings,
-  Sun,
-  User,
-  UserPlus,
-} from "tabler-icons-react";
-import React, { useEffect, useState } from "react";
+  IconBuildingCommunity,
+  IconBuildingMonument,
+  IconChartBar,
+  IconHierarchy,
+  IconHome,
+  IconMap,
+  IconTool,
+  IconUsers,
+} from "@tabler/icons";
 
-import Footer from "./Footer";
+import { AppShell } from "@mantine/core";
 import Head from "next/head";
-import Motd from "./Motd";
-import Searchbar from "./Searchbar";
-import pages from "../components/routes";
-import { useHotkeys } from "@mantine/hooks";
-import { useRouter } from "next/router";
-import useUser from "../utils/hooks/useUser";
+import { Navbar } from "./Navbar";
 
-export default function Page(props: {
-  children: React.ReactNode;
-  scroll?: boolean;
-  noMargin?: boolean;
-  noFooter?: boolean;
-  style?: any;
-  title?: string;
-  delay?: number;
-  navbar?: any;
-}) {
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const [loading, setLoading] = useState(true);
-  const [opened, setOpened] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const theme = useMantineTheme();
-  const router = useRouter();
-  const [user, setUser] = useUser();
-  useHotkeys([["mod+K", () => setSearchOpen(true)]]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, props?.delay || 500);
-  });
-  if (loading) {
+export const Page = (props: { children: any }) => {
     return (
-      <Center style={{ width: "100vw", height: "100vh" }}>
-        <Loader color="dark" size="lg" />
-      </Center>
-    );
-  }
-  return (
+        <>
+        <Head>
+        <title>Minefact Progress</title>
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width"
+        />
+      </Head>
     <AppShell
-      padding={0}
-      navbarOffsetBreakpoint="sm"
-      asideOffsetBreakpoint="sm"
-      fixed
       navbar={
         <Navbar
-          hiddenBreakpoint="sm"
-          hidden={!opened}
-          width={{ sm: 200, lg: 300 }}
-        >
-          <Navbar.Section grow p="sm">
-            {props.navbar ? (
-              props.navbar
-            ) : (
-              <>
-                <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
-                  <ScrollArea style={{ height: "82vh" }}>
-                    {/* Page Navigation */}
-                    {pages.map((page) =>
-                      page.permission <= (user.permission || 0) ? (
-                        page.divider ? (
-                          <Divider
-                            key={page.label}
-                            my="sm"
-                            size="sm"
-                            label={page.label}
-                          />
-                        ) : (
-                          <UnstyledButton
-                            onClick={() =>
-                              (window.location.href = page.href || "/")
-                            }
-                            sx={(theme) => ({
-                              display: "block",
-                              width: "100%",
-                              padding: theme.spacing.xs,
-                              borderRadius: theme.radius.sm,
-                              marginTop: theme.spacing.xs / 2,
-                              color:
-                                theme.colorScheme === "dark"
-                                  ? theme.colors.dark[0]
-                                  : theme.black,
-                              backgroundColor:
-                                router.pathname === page.href
-                                  ? theme.colorScheme === "dark"
-                                    ? theme.colors.dark[5]
-                                    : theme.colors.gray[1]
-                                  : undefined,
-                              "&:hover": {
-                                backgroundColor:
-                                  theme.colorScheme === "dark"
-                                    ? theme.colors.dark[6]
-                                    : theme.colors.gray[0],
-                              },
-                            })}
-                            key={page.label}
-                          >
-                            <Group>
-                              {page.badge ? (
-                                <Indicator
-                                  color={page.badge}
-                                  size={12}
-                                  withBorder
-                                >
-                                  <ThemeIcon color={page.color} variant="light">
-                                    {page.icon}
-                                  </ThemeIcon>
-                                </Indicator>
-                              ) : (
-                                <ThemeIcon color={page.color} variant="light">
-                                  {page.icon}
-                                </ThemeIcon>
-                              )}
-
-                              <Text size="sm">{page.label}</Text>
-                            </Group>
-                          </UnstyledButton>
-                        )
-                      ) : null
-                    )}
-                  </ScrollArea>
-                </MediaQuery>
-                <MediaQuery largerThan={"sm"} styles={{ display: "none" }}>
-                  <ScrollArea style={{ height: "77vh" }}>
-                    {/* Page Navigation */}
-                    {pages.map((page) =>
-                      page.permission <= (user.permission || 0) ? (
-                        page.divider ? (
-                          <Divider
-                            key={page.label}
-                            my="sm"
-                            size="sm"
-                            label={page.label}
-                          />
-                        ) : (
-                          <UnstyledButton
-                            onClick={() =>
-                              (window.location.href = page.href || "/")
-                            }
-                            sx={(theme) => ({
-                              display: "block",
-                              width: "100%",
-                              padding: theme.spacing.xs,
-                              borderRadius: theme.radius.sm,
-                              marginTop: theme.spacing.xs / 2,
-                              color:
-                                theme.colorScheme === "dark"
-                                  ? theme.colors.dark[0]
-                                  : theme.black,
-                              backgroundColor:
-                                router.pathname === page.href
-                                  ? theme.colorScheme === "dark"
-                                    ? theme.colors.dark[5]
-                                    : theme.colors.gray[1]
-                                  : undefined,
-                              "&:hover": {
-                                backgroundColor:
-                                  theme.colorScheme === "dark"
-                                    ? theme.colors.dark[6]
-                                    : theme.colors.gray[0],
-                              },
-                            })}
-                            key={page.label}
-                          >
-                            <Group>
-                              {page.badge ? (
-                                <Indicator
-                                  color={page.badge}
-                                  size={12}
-                                  withBorder
-                                >
-                                  <ThemeIcon color={page.color} variant="light">
-                                    {page.icon}
-                                  </ThemeIcon>
-                                </Indicator>
-                              ) : (
-                                <ThemeIcon color={page.color} variant="light">
-                                  {page.icon}
-                                </ThemeIcon>
-                              )}
-
-                              <Text size="sm">{page.label}</Text>
-                            </Group>
-                          </UnstyledButton>
-                        )
-                      ) : null
-                    )}
-                  </ScrollArea>
-                </MediaQuery>
-              </>
-            )}
-          </Navbar.Section>
-          <Navbar.Section>
-            {/* User Avatar */}
-            {!!user && (
-              <Box
-                sx={{
-                  borderTop: `1px solid ${
-                    theme.colorScheme === "dark"
-                      ? theme.colors.dark[4]
-                      : theme.colors.gray[2]
-                  }`,
-                }}
-              >
-                <Menu>
-                  <Menu.Target>
-                    <UnstyledButton
-                      sx={{
-                        display: "block",
-                        width: "100%",
-                        padding: theme.spacing.xs,
-                        borderRadius: theme.radius.sm,
-                        color:
-                          theme.colorScheme === "dark"
-                            ? theme.colors.dark[0]
-                            : theme.black,
-
-                        "&:hover": {
-                          backgroundColor:
-                            theme.colorScheme === "dark"
-                              ? theme.colors.dark[6]
-                              : theme.colors.gray[0],
-                        },
-                      }}
-                    >
-                      <Group>
-                        <Avatar
-                          src={user.picture}
-                          radius="xl"
-                          alt="User Picture"
-                        />
-                        <Box sx={{ flex: 1 }}>
-                          <Text size="sm" weight={500}>
-                            {user.username}
-                          </Text>
-                          <Text color="dimmed" size="xs">
-                            {user.discord}
-                          </Text>
-                        </Box>
-
-                        {theme.dir === "ltr" ? (
-                          <ChevronRight size={18} />
-                        ) : (
-                          <ChevronLeft size={18} />
-                        )}
-                      </Group>
-                    </UnstyledButton>
-                  </Menu.Target>
-                  <Menu.Dropdown>
-                    {user.uid != 0 ? (
-                      <>
-                        <Menu.Label>Application</Menu.Label>
-                        <Menu.Item
-                          onClick={() => router.push("/users/" + user.username)}
-                          icon={<User size={14} />}
-                          rightSection={
-                            <Text size="xs" color="dimmed">
-                              ⌘ P
-                            </Text>
-                          }
-                        >
-                          Profile
-                        </Menu.Item>
-                        <Menu.Item
-                          icon={
-                            colorScheme === "dark" ? (
-                              <Sun size={14} />
-                            ) : (
-                              <MoonStars size={14} />
-                            )
-                          }
-                          onClick={() => toggleColorScheme()}
-                          rightSection={
-                            <Text size="xs" color="dimmed">
-                              ⌘ T
-                            </Text>
-                          }
-                        >
-                          {colorScheme === "dark" ? "Lightmode" : "Darkmode"}
-                        </Menu.Item>
-                        <Divider />
-                        <Menu.Label>Danger Zone</Menu.Label>
-                        <Menu.Item
-                          icon={<Settings size={14} />}
-                          onClick={() =>
-                            router.push("/users/" + user.username + "/settings")
-                          }
-                          rightSection={
-                            <Text size="xs" color="dimmed">
-                              ⌘ S
-                            </Text>
-                          }
-                        >
-                          Settings
-                        </Menu.Item>
-                        <Menu.Item
-                          icon={<Logout size={14} />}
-                          onClick={() => {
-                            setUser({ uid: 0 });
-                            router.push("/");
-                          }}
-                        >
-                          Log Out
-                        </Menu.Item>
-                      </>
-                    ) : (
-                      <>
-                        <Menu.Item
-                          icon={<Login size={14} />}
-                          onClick={() => router.push("/login")}
-                        >
-                          Log in
-                        </Menu.Item>
-                        <Menu.Item
-                          icon={<UserPlus size={14} />}
-                          onClick={() => router.push("/register")}
-                        >
-                          Request Account
-                        </Menu.Item>
-                      </>
-                    )}
-                  </Menu.Dropdown>
-                </Menu>
-              </Box>
-            )}
-          </Navbar.Section>
-        </Navbar>
+          data={[
+            { icon: IconHome, label: "Home", href: "/" },
+            {
+              icon: IconChartBar,
+              label: "Progress Overview",
+              href: "/progress",
+            },
+            {
+              icon: IconBuildingCommunity,
+              label: "Districts",
+              href: "/districts",
+            },
+            {
+              icon: IconUsers,
+              label: "Staff Team",
+              href: "/staff",
+            },
+            {
+              icon: IconHierarchy,
+              label: "Network",
+              href: "/network",
+            },
+            {
+              icon: IconBuildingMonument,
+              label: "Landmarks",
+              href: "/landmarks",
+            },
+            {
+              icon: IconMap,
+              label: "Map",
+              href: "/map",
+            },
+            {
+              icon: IconTool,
+              label: "Admin Tools",
+              href: "/admin",
+            },
+          ]}
+        />
       }
-      header={
-        <Header height={70}>
-          <Group
-            sx={{ height: "100%", width: "100%", overflow: "hidden" }}
-            px={20}
-            position="apart"
-          >
-            <Group
-              style={{ height: "100%", cursor: "pointer" }}
-              onClick={() => router.push("/")}
-            >
-              <img
-                src="/logo.gif"
-                alt="logo"
-                style={{ height: "5vh", width: "5vh" }}
-              />
-              <Title sx={{ color: colorScheme === "dark" ? "white" : "black" }}>
-                Progress
-              </Title>
-              <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-                <Burger
-                  opened={opened}
-                  onClick={() => setOpened((o) => !o)}
-                  size="sm"
-                  color={theme.colors.gray[6]}
-                  mr="xl"
-                />
-              </MediaQuery>
-            </Group>
-            <Motd />
-            <Group style={{ height: "100%" }}>
-              {searchOpen ? (
-                <Searchbar onFocusLoose={() => setSearchOpen(false)} />
-              ) : (
-                <ActionIcon
-                  variant="filled"
-                  onClick={() => setSearchOpen(!searchOpen)}
-                  size="lg"
-                  color="blue"
-                  mr={5}
-                  aria-label="Milestones"
-                >
-                  <Search size={16} />
-                </ActionIcon>
-              )}
-              <ActionIcon
-                variant="default"
-                onClick={() => router.push("/milestones")}
-                size={30}
-                aria-label="Milestones"
-              >
-                <Confetti size={16} />
-              </ActionIcon>
-            </Group>
-          </Group>
-        </Header>
-      }
+      padding="md"
       styles={(theme) => ({
         main: {
           backgroundColor:
@@ -435,102 +76,7 @@ export default function Page(props: {
         },
       })}
     >
-      <Head>
-        <title>
-          BTE New York City Progress |{" "}
-          {props.title ||
-            pages.find((el: any) => el.href == router.pathname)?.label}
-        </title>
-        <meta
-          name="title"
-          content={
-            "BTE New York City Progress | " +
-            (props.title ||
-              pages.find((el: any) => el.href == router.pathname)?.label)
-          }
-        />
-        <meta
-          name="description"
-          content="We are tracking the Progress made on the BTE New York City server as part of the Build the Earth Project."
-        />
-
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://progress.minefact.de/" />
-        <meta
-          property="og:title"
-          content="BuildTheEarth New York City Progress"
-        />
-        <meta
-          property="og:description"
-          content="We are tracking the Progress made on the BTE New York City server as part of the Build the Earth Project."
-        />
-        <meta
-          property="og:image"
-          content="https://cdn.discordapp.com/attachments/714797791913705472/927491066653970442/Bridge_1.png"
-        />
-
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://progress.minefact.de/" />
-        <meta
-          property="twitter:title"
-          content="BuildTheEarth New York City Progress"
-        />
-        <meta
-          property="twitter:description"
-          content="We are tracking the Progress made on the BTE New York City server as part of the Build the Earth Project."
-        />
-        <meta
-          property="twitter:image"
-          content="https://cdn.discordapp.com/attachments/714797791913705472/927491066653970442/Bridge_1.png"
-        />
-
-        <meta
-          name="keyworkds"
-          content="progress, tracking, minefact, nyc, new york city, new york, minecraft, buildtheearth, mf,network, server, multiplayer"
-        />
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <meta name="theme-color" content={theme.colors.blue[7]} />
-
-        <meta
-          name="apple-mobile-web-app-status-bar-style"
-          content={theme.colors.blue[7]}
-        />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-title" content="BTE NYC Progress" />
-
-        <meta
-          name="msapplication-navbutton-color"
-          content={theme.colors.blue[7]}
-        />
-        <meta name="application-name" content="BTE NYC Progress" />
-        <meta name="mobile-web-app-capable" content="yes" />
-      </Head>
-      <Box
-        sx={{
-          height: "calc(100vh - 60px)",
-          width: "100%",
-          overflow: "auto",
-          overflowX: "hidden",
-          ...props.style,
-        }}
-      >
-        <ScrollArea sx={{ height: "100%", width: "100%" }} scrollHideDelay={0}>
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              padding: props.noMargin ? "0px" : theme.spacing.md,
-            }}
-          >
-            {props.scroll ? (
-              <ScrollArea type="scroll">{props.children}</ScrollArea>
-            ) : (
-              props.children
-            )}
-          </div>
-          {!props.noFooter && <Footer links={[]} />}
-        </ScrollArea>
-      </Box>
-    </AppShell>
+      {props.children}
+    </AppShell></>
   );
-}
+};

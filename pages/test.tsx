@@ -18,7 +18,17 @@ const Home: NextPage = ({}: any) => {
   const theme = useMantineTheme();
   return (
     <>
-    
+      <ActionIcon
+        variant="outline"
+        color={dark ? "yellow" : "blue"}
+        onClick={() => toggleColorScheme()}
+        title="Toggle color scheme"
+      >
+        {dark ? <IconSun size={18} /> : <IconMoonStars size={18} />}
+      </ActionIcon>
+      <Text>Text</Text>
+      <Button>Primary</Button>
+      <pre>{JSON.stringify(theme, null, 2)}</pre>
     </>
   );
 };

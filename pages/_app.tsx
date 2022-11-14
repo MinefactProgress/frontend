@@ -1,123 +1,44 @@
-import "../styles/globals.css";
-
 import {
   ColorScheme,
   ColorSchemeProvider,
   MantineProvider,
 } from "@mantine/core";
-import React, { useEffect } from "react";
-import { default as pages, default as routes } from "../components/routes";
+import { darkTheme, lightTheme } from "../util/theme";
 import { useHotkeys, useLocalStorage } from "@mantine/hooks";
-import useSocket, { initializeSocket } from "../hooks/socket";
 
-import type { AppProps } from "next/app";
-import { ErrorBoundary } from "react-error-boundary";
-import ErrorPage from "./_error";
-import { ModalsProvider } from "@mantine/modals";
-import { NotificationsProvider } from "@mantine/notifications";
-import { SWRConfig } from "swr";
-import { Search } from "tabler-icons-react";
-import { SpotlightProvider } from "@mantine/spotlight";
-import { io } from "socket.io-client";
-import { useRouter } from "next/router";
-import useUser from "../utils/hooks/useUser";
+import { AppProps } from "next/app";
+import Head from "next/head";
+import { Page } from "../components/Page";
+import { useState } from "react";
 
-function MyApp({ Component, pageProps }: AppProps) {
-  const router = useRouter();
+export default function App(props: AppProps) {
+  const { Component, pageProps } = props;
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: "scheme",
     defaultValue: "dark",
     getInitialValueInEffect: true,
   });
-  // Authentication
-  const [user, setUser] = useUser();
-
-  const allowed =
-    (routes.find((route) => route.href === router.pathname)?.permission || 1) <=
-    (user.permission || 0);
-
-  const toggleColorScheme = (value?: ColorScheme) => {
+  const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
-  };
+  useHotkeys([["mod+J", () => toggleColorScheme()]]);
 
-  initializeSocket(
-    process.env.NEXT_PUBLIC_API_URL || "",
-    ["motd"],
-    user.apikey
-  );
-  const socket = useSocket();
-  useHotkeys([
-    ["mod+J", () => toggleColorScheme()],
-    ["mod+P", () => router.push("/users/" + user.username)],
-    ["mod+S", () => router.push("/users/" + user.username + "/settings")],
-    ["mod+1", () => router.push("/")],
-    ["mod+2", () => router.push("/projects")],
-    ["mod+3", () => router.push("/districts")],
-    ["mod+4", () => router.push("/network")],
-  ]);
   return (
-    <SWRConfig
-      value={{
-        refreshInterval: 0,
-        fetcher: (resource: any, init: any) =>
-          fetch(
-            process.env.NEXT_PUBLIC_API_URL +
-              resource +
-              (resource.includes("?")
-                ? "&key=" +
-                  JSON.parse(window.localStorage.getItem("auth") || "{}").apikey
-                : "?key=" +
-                  JSON.parse(window.localStorage.getItem("auth") || "{}")
-                    .apikey),
-            {
-              headers: {
-                "Access-Control-Allow-Origin": "*",
-                ...init?.headers,
-              },
-              ...init,
-            }
-          ).then((res) => res.json()),
-        shouldRetryOnError: false,
-        revalidateIfStale: false,
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
-      }}
-    >
+    <>
+    
       <ColorSchemeProvider
         colorScheme={colorScheme}
         toggleColorScheme={toggleColorScheme}
       >
         <MantineProvider
-          theme={{ colorScheme }}
+          theme={colorScheme == "dark" ? darkTheme : lightTheme}
           withGlobalStyles
           withNormalizeCSS
         >
-          <ModalsProvider>
-            <NotificationsProvider>
-              {(routes.find((route) => route.href === router.pathname)
-                ?.permission || 0) <= (user.permission || 0) ? (
-                <ErrorBoundary
-                  FallbackComponent={ErrorPage}
-                  onError={(error, info) => {
-                    console.log("An error occoured, please report this to us.");
-                    console.log(" ");
-                    console.log(error);
-                    console.log(" ");
-                    console.log(info),
-                      console.log("at " + new Date().toISOString());
-                  }}
-                >
-                  <Component {...pageProps} user={user} setUser={setUser} />
-                </ErrorBoundary>
-              ) : (
-                <ErrorPage statuscode={401} />
-              )}
-            </NotificationsProvider>
-          </ModalsProvider>
-        </MantineProvider>
+          <Page>
+            <Component {...pageProps} />
+          </Page>
+        </MantineProvider>{" "}
       </ColorSchemeProvider>
-    </SWRConfig>
+    </>
   );
 }
-
-export default MyApp;
