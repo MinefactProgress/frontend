@@ -6,7 +6,7 @@ import {
   useMantineColorScheme,
   useMantineTheme,
 } from "@mantine/core";
-import { IconHome, IconMoonStars, IconSun } from "@tabler/icons";
+import { IconBug, IconMoonStars, IconSun } from "@tabler/icons";
 
 import Head from "next/head";
 import Image from "next/image";
@@ -18,8 +18,8 @@ const Home: NextPage = ({}: any) => {
   const dark = colorScheme === "dark";
   const theme = useMantineTheme();
   return (
-    <Page name="Home" icon={<IconHome />}>
-      dd
+    <Page name="404" icon={<IconBug />}>
+      <Text>Test</Text>
     </Page>
   );
 };

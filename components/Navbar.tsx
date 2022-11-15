@@ -65,13 +65,13 @@ const useStyles = createStyles((theme) => ({
 }));
 
 interface NavbarLinkProps {
-  icon: TablerIcon;
+  icon: React.ReactNode;
   label: string;
   active?: boolean;
   onClick?(): void;
 }
 
-function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
+export function NavbarLink({ icon, label, active, onClick }: NavbarLinkProps) {
   const { classes, cx } = useStyles();
   if (label) {
     return (
@@ -80,7 +80,7 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
           onClick={onClick}
           className={cx(classes.link, { [classes.active]: active })}
         >
-          <Icon stroke={1.5} />
+          {icon}
         </UnstyledButton>
       </Tooltip>
     );
@@ -90,7 +90,7 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
       onClick={onClick}
       className={cx(classes.link, { [classes.active]: active })}
     >
-      <Icon stroke={1.5} />
+      {icon}
     </UnstyledButton>
   );
 }
@@ -106,8 +106,9 @@ export function Navbar({
   const theme = useMantineTheme();
   const links = data.map((link, index) => (
     <NavbarLink
-      {...link}
-      key={link.label}
+      icon={link.icon}
+      label={link.label}
+      key={"l" + index}
       active={router.pathname.toLowerCase() == link.href.toLowerCase()}
       onClick={() =>
         router.pathname.toLowerCase() != link.href.toLowerCase() &&
@@ -129,12 +130,12 @@ export function Navbar({
       <MNavbar.Section>
         <Stack justify="center" spacing={0}>
           <NavbarLink
-            icon={dark ? IconSun : IconMoonStars}
+            icon={dark ? <IconSun /> : <IconMoonStars />}
             label="Toggle Theme"
             onClick={() => toggleColorScheme()}
           />
-          <NavbarLink icon={IconSettings} label="Settings" />
-          <NavbarLink icon={IconLogout} label="Logout" />
+          <NavbarLink icon={<IconSettings />} label="Settings" />
+          <NavbarLink icon={<IconLogout />} label="Logout" />
         </Stack>
       </MNavbar.Section>
     </MNavbar>
