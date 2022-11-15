@@ -9,6 +9,7 @@ import { useHotkeys, useLocalStorage } from "@mantine/hooks";
 import { AppProps } from "next/app";
 import Head from "next/head";
 import { Page } from "../components/Page";
+import { SWRConfig } from "swr";
 import { useState } from "react";
 
 export default function App(props: AppProps) {
@@ -23,7 +24,33 @@ export default function App(props: AppProps) {
   useHotkeys([["mod+J", () => toggleColorScheme()]]);
 
   return (
-    <>
+    <SWRConfig
+      value={{
+        refreshInterval: 0,
+        fetcher: (resource: any, init: any) =>
+          fetch(
+            process.env.NEXT_PUBLIC_API_URL +
+              resource +
+              (resource.includes("?")
+                ? "&key=" +
+                  JSON.parse(window.localStorage.getItem("auth") || "{}").apikey
+                : "?key=" +
+                  JSON.parse(window.localStorage.getItem("auth") || "{}")
+                    .apikey),
+            {
+              headers: {
+                "Access-Control-Allow-Origin": "*",
+                ...init?.headers,
+              },
+              ...init,
+            }
+          ).then((res) => res.json()),
+        shouldRetryOnError: false,
+        revalidateIfStale: false,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+      }}
+    >
       <ColorSchemeProvider
         colorScheme={colorScheme}
         toggleColorScheme={toggleColorScheme}
@@ -36,6 +63,6 @@ export default function App(props: AppProps) {
           <Component {...pageProps} />
         </MantineProvider>{" "}
       </ColorSchemeProvider>
-    </>
+    </SWRConfig>
   );
 }
