@@ -8,12 +8,17 @@ import { useHotkeys, useLocalStorage } from "@mantine/hooks";
 
 import { AppProps } from "next/app";
 import Head from "next/head";
+import NavProgress from "../components/NavProgress";
 import { Page } from "../components/Page";
+import React from "react";
 import { SWRConfig } from "swr";
+import { initializeSocket } from "../hooks/useSocket";
 import { useState } from "react";
+import useUser from "../hooks/useUser";
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
+  const [user] = useUser();
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: "scheme",
     defaultValue: "dark",
@@ -22,6 +27,12 @@ export default function App(props: AppProps) {
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
   useHotkeys([["mod+J", () => toggleColorScheme()]]);
+
+  initializeSocket(
+    process.env.NEXT_PUBLIC_API_URL || "",
+    ["motd"],
+    user.apikey
+  );
 
   return (
     <SWRConfig
@@ -60,6 +71,7 @@ export default function App(props: AppProps) {
           withGlobalStyles
           withNormalizeCSS
         >
+          <NavProgress />
           <Component {...pageProps} />
         </MantineProvider>{" "}
       </ColorSchemeProvider>
