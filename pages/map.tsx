@@ -6,11 +6,13 @@ import {
   useMantineColorScheme,
   useMantineTheme,
 } from "@mantine/core";
-import { IconMoonStars, IconSun } from "@tabler/icons";
+import { IconMap, IconMoonStars, IconSun } from "@tabler/icons";
 
 import Head from "next/head";
 import Image from "next/image";
+import Map from "../components/map/Map";
 import type { NextPage } from "next";
+import { Page } from "../components/Page";
 
 const Home: NextPage = ({}: any) => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -18,17 +20,9 @@ const Home: NextPage = ({}: any) => {
   const theme = useMantineTheme();
   return (
     <>
-      <ActionIcon
-        variant="outline"
-        color={dark ? "yellow" : "blue"}
-        onClick={() => toggleColorScheme()}
-        title="Toggle color scheme"
-      >
-        {dark ? <IconSun size={18} /> : <IconMoonStars size={18} />}
-      </ActionIcon>
-      <Text>Text</Text>
-      <Button>Primary</Button>
-      <pre>{JSON.stringify(theme, null, 2)}</pre>
+      <Page name="Map" icon={<IconMap />} noMargin>
+        <Map />
+      </Page>
     </>
   );
 };

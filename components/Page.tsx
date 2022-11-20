@@ -54,7 +54,12 @@ const homeLinks = [
   },
 ];
 
-export const Page = (props: { children: any; name: string; icon: any }) => {
+export const Page = (props: {
+  children: any;
+  name: string;
+  icon: any;
+  noMargin?: boolean;
+}) => {
   const router = useRouter();
   var links = [...homeLinks];
   if (links.filter((l) => l.href == router.pathname).length < 1) {
@@ -71,6 +76,7 @@ export const Page = (props: { children: any; name: string; icon: any }) => {
       </Head>
       <AppShell
         navbar={<Navbar data={links} />}
+        padding={props.noMargin ? 0 : undefined}
         styles={(theme) => ({
           main: {
             backgroundColor:
