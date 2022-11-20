@@ -10,6 +10,7 @@ import {
 } from "mapbox-gl-style-switcher";
 
 import MapLoader from "./MapLoader";
+import axios from "axios";
 import mapboxgl from "mapbox-gl";
 
 interface IMap {
@@ -57,6 +58,7 @@ function Map({
       style: theme.colorScheme == "dark" ? styles[0].uri : styles[1].uri,
       center: [-73.88218471055006, 40.742418839242944],
       zoom: 10.5,
+      antialias: true,
       maxBounds: [
         [-74.45544404703202, 40.45899214198122],
         [-71.89371398960738, 41.335551550503325],
@@ -68,14 +70,31 @@ function Map({
     mapboxMap.once("load", (ev: any) => {
       onMapLoaded && map && onMapLoaded(map);
       setLoading(false);
+
+      setupLayers();
+
+      if (allowFullscreen)
+        mapboxMap.addControl(new mapboxgl.FullscreenControl());
+      if (themeControls)
+        mapboxMap.addControl(
+          new MapboxStyleSwitcherControl(styles, {
+            defaultStyle: theme.colorScheme == "dark" ? "Dark" : "Light",
+          })
+        );
     });
-    if (allowFullscreen) mapboxMap.addControl(new mapboxgl.FullscreenControl());
-    if (themeControls)
-      mapboxMap.addControl(
-        new MapboxStyleSwitcherControl(styles, {
-          defaultStyle: theme.colorScheme == "dark" ? "Dark" : "Light",
-        })
-      );
+    const setupLayers = async () => {
+      const blocks = await axios.get("");
+      mapboxMap.addSource("blocks", {
+        type: "geojson",
+        data: blocks.data,
+      });
+
+      mapboxMap.addLayer({
+        id: "blocks-layer",
+        type: "fill",
+        source: "blocks",
+      });
+    };
 
     return () => {
       mapboxMap.remove();
