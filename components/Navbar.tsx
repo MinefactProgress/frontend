@@ -1,37 +1,19 @@
 import {
-  ActionIcon,
+  Avatar,
   Center,
   Navbar as MNavbar,
-  Menu,
   Stack,
-  Text,
   Tooltip,
   UnstyledButton,
   createStyles,
   useMantineColorScheme,
   useMantineTheme,
 } from "@mantine/core";
-import {
-  IconCalendarStats,
-  IconDeviceDesktopAnalytics,
-  IconFingerprint,
-  IconGauge,
-  IconHome2,
-  IconLogin,
-  IconLogout,
-  IconMessage,
-  IconMoonStars,
-  IconSettings,
-  IconSun,
-  IconSwitchHorizontal,
-  IconUser,
-  TablerIcon,
-} from "@tabler/icons";
+import { IconLogin, IconLogout, IconMoonStars, IconSun } from "@tabler/icons";
+import useUser, { useAuth } from "../hooks/useUser";
 
 import Image from "next/image";
-import { useAuth } from "../hooks/useUser";
 import { useRouter } from "next/router";
-import { useState } from "react";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -100,25 +82,34 @@ export function NavbarLink({ icon, label, active, onClick }: NavbarLinkProps) {
 export function Navbar({
   data,
 }: {
-  data: { icon: any; label: string; href: string }[];
+  data: {
+    icon: any;
+    label: string;
+    href: string;
+    permission?: number;
+  }[];
 }) {
   const router = useRouter();
   const auth = useAuth();
+  const [user] = useUser();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
   const theme = useMantineTheme();
-  const links = data.map((link, index) => (
-    <NavbarLink
-      icon={link.icon}
-      label={link.label}
-      key={"l" + index}
-      active={router.pathname.toLowerCase() == link.href.toLowerCase()}
-      onClick={() =>
-        router.pathname.toLowerCase() != link.href.toLowerCase() &&
-        router.push(link.href)
-      }
-    />
-  ));
+  const links = data.map(
+    (link, index) =>
+      hasPermission(link.permission || 0, user?.permission) && (
+        <NavbarLink
+          icon={link.icon}
+          label={link.label}
+          key={"l" + index}
+          active={router.pathname.toLowerCase() == link.href.toLowerCase()}
+          onClick={() =>
+            router.pathname.toLowerCase() != link.href.toLowerCase() &&
+            router.push(link.href)
+          }
+        />
+      )
+  );
 
   return (
     <MNavbar width={{ base: 80 }} p="md">
@@ -137,7 +128,20 @@ export function Navbar({
             label="Toggle Theme"
             onClick={() => toggleColorScheme()}
           />
-          <NavbarLink icon={<IconSettings />} label="Settings" />
+          {auth && (
+            <NavbarLink
+              icon={
+                <Avatar
+                  variant="filled"
+                  radius="xl"
+                  color="orange"
+                  src={user?.picture}
+                  size="sm"
+                />
+              }
+              label="Account"
+            />
+          )}
           <NavbarLink
             icon={auth ? <IconLogout /> : <IconLogin />}
             label={auth ? "Logout" : "Login"}
@@ -147,4 +151,12 @@ export function Navbar({
       </MNavbar.Section>
     </MNavbar>
   );
+}
+function hasPermission(needed: number, permission?: number) {
+  if (!permission) {
+    if (needed != 0) return false;
+    return true;
+  }
+
+  return permission >= needed;
 }
