@@ -31,7 +31,7 @@ export default function App(props: AppProps) {
   initializeSocket(
     process.env.NEXT_PUBLIC_API_URL || "",
     ["motd"],
-    user.apikey
+    user?.token
   );
 
   return (
@@ -39,23 +39,17 @@ export default function App(props: AppProps) {
       value={{
         refreshInterval: 0,
         fetcher: (resource: any, init: any) =>
-          fetch(
-            process.env.NEXT_PUBLIC_API_URL +
-              resource +
-              (resource.includes("?")
-                ? "&key=" +
-                  JSON.parse(window.localStorage.getItem("auth") || "{}").apikey
-                : "?key=" +
-                  JSON.parse(window.localStorage.getItem("auth") || "{}")
-                    .apikey),
-            {
-              headers: {
-                "Access-Control-Allow-Origin": "*",
-                ...init?.headers,
-              },
-              ...init,
-            }
-          ).then((res) => res.json()),
+          fetch(process.env.NEXT_PUBLIC_API_URL + resource, {
+            headers: {
+              "Access-Control-Allow-Origin": "*",
+              Authentication: window.localStorage.getItem("auth")
+                ? "Bearer " +
+                  JSON.parse(window.localStorage.getItem("auth") || "{}").token
+                : undefined,
+              ...init?.headers,
+            },
+            ...init,
+          }).then((res) => res.json()),
         shouldRetryOnError: false,
         revalidateIfStale: false,
         revalidateOnFocus: false,

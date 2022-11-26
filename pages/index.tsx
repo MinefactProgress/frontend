@@ -61,7 +61,6 @@ const Home: NextPage = ({}: any) => {
   const theme = useMantineTheme();
   // TODO: One route
 
-  const { data } = useSWR("/api/blocks/get");
   const { data: districts } = useSWR("/api/districts/get");
   const { data: playersRw } = useSWR("/api/playerstats/get");
   const { data: projectsRw } = useSWR("/api/projects/get");

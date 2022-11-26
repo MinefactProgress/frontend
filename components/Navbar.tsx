@@ -17,6 +17,7 @@ import {
   IconFingerprint,
   IconGauge,
   IconHome2,
+  IconLogin,
   IconLogout,
   IconMessage,
   IconMoonStars,
@@ -28,6 +29,7 @@ import {
 } from "@tabler/icons";
 
 import Image from "next/image";
+import { useAuth } from "../hooks/useUser";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -101,6 +103,7 @@ export function Navbar({
   data: { icon: any; label: string; href: string }[];
 }) {
   const router = useRouter();
+  const auth = useAuth();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
   const theme = useMantineTheme();
@@ -135,7 +138,11 @@ export function Navbar({
             onClick={() => toggleColorScheme()}
           />
           <NavbarLink icon={<IconSettings />} label="Settings" />
-          <NavbarLink icon={<IconLogout />} label="Logout" />
+          <NavbarLink
+            icon={auth ? <IconLogout /> : <IconLogin />}
+            label={auth ? "Logout" : "Login"}
+            onClick={() => router.push("/login")}
+          />
         </Stack>
       </MNavbar.Section>
     </MNavbar>

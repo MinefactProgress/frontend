@@ -3,7 +3,7 @@ import { useLocalStorage } from "@mantine/hooks";
 import { useRouter } from "next/router";
 
 export interface UserData {
-  uid: number;
+  uid?: number;
   email?: string;
   username?: string;
   permission?: number;
@@ -14,18 +14,18 @@ export interface UserData {
   picture?: string;
   settings?: string;
   password?: string;
-  apikey?: string;
+  token?: string;
 }
 
 export default function useUser() {
-  return useLocalStorage<UserData>({
+  return useLocalStorage<UserData | undefined | null>({
     key: "auth",
-    defaultValue: { uid: 0 },
+    defaultValue: undefined,
     getInitialValueInEffect: true,
   });
 }
 
 export function useAuth() {
   const [user] = useUser();
-  return user.uid != 0;
+  return user?.token ? true : false;
 }
