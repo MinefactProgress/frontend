@@ -19,8 +19,7 @@ const useStyles = createStyles((theme) => ({
   wrapper: {
     minHeight: "100vh",
     backgroundSize: "cover",
-    backgroundImage:
-      "url(https://cdn.discordapp.com/attachments/714797791913705472/927491066653970442/Bridge_1.png)",
+    backgroundImage: "url(tribeca.webp)",
   },
 
   form: {
@@ -143,7 +142,7 @@ export default function Login() {
             weight={700}
             onClick={(event) => event.preventDefault()}
           >
-            Register
+            Request
           </Anchor>
         </Text>
       </Paper>

@@ -42,10 +42,9 @@ export default function App(props: AppProps) {
           fetch(process.env.NEXT_PUBLIC_API_URL + resource, {
             headers: {
               "Access-Control-Allow-Origin": "*",
-              Authentication: window.localStorage.getItem("auth")
-                ? "Bearer " +
-                  JSON.parse(window.localStorage.getItem("auth") || "{}").token
-                : undefined,
+              Authentication:
+                "Bearer " +
+                JSON.parse(window.localStorage.getItem("auth") || "{}").token,
               ...init?.headers,
             },
             ...init,
