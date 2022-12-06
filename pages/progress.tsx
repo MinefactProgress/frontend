@@ -59,24 +59,7 @@ const Home: NextPage = ({}: any) => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
   const theme = useMantineTheme();
-  // TODO: One route
-
-  const { data: districts } = useSWR("/api/districts/get");
-  const { data: playersRw } = useSWR("/api/playerstats/get");
-  const { data: projectsRw } = useSWR("/api/projects/get");
-  const nyc = districts?.find(
-    (district: any) => district.name === "New York City"
-  );
-  var projects: any = { labels: [], datasets: [] };
-  var players: any = { labels: [], datasets: [] };
-  projectsRw?.slice(-30).forEach((element: any, i: number) => {
-    projects.labels.push(new Date(element.date).toLocaleDateString());
-    projects.datasets.push(element.projects);
-  });
-  playersRw?.slice(-30).forEach((element: any) => {
-    players.labels.push(new Date(element.date).toLocaleDateString());
-    players.datasets.push(element.averages.total);
-  });
+  const { data } = useSWR("/v1/progress");
 
   return (
     <Page name="Home" icon={<IconHome />}>
@@ -103,31 +86,28 @@ const Home: NextPage = ({}: any) => {
             data={[
               {
                 title: "Projects",
-                stats: projectsRw?.[projectsRw?.length - 1].projects,
+                stats: data?.projects?.[data?.projects?.length - 1].projects,
                 description:
-                  projectsRw?.[projectsRw?.length - 1].projects -
-                  projectsRw?.[projectsRw?.length - 2].projects +
+                  data?.projects?.[data?.projects?.length - 1].projects -
+                  data?.projects?.[data?.projects?.length - 2].projects +
                   " new Projects since yesterday.",
               },
               {
                 title: "Blocks",
-                stats: nyc?.blocks.total,
+                stats: data?.blocks.total,
                 description:
-                  "out of which " + nyc?.blocks.done + " Blocks are done.",
+                  "out of which " + data?.blocks.done + " Blocks are done.",
               },
               {
                 title: "Districts",
-                stats: districts?.length,
-                description:
-                  "in " +
-                  districts?.filter((d: any) => d.parent == 1).length +
-                  " Boroughs",
+                stats: data?.districts.count,
+                description: "in " + data?.districts.boroughs + " Boroughs",
               },
             ]}
           />
         </Grid.Col>
         <Grid.Col xs={4}>
-          <Skeleton visible={!nyc} style={{ height: "100%" }}>
+          <Skeleton visible={!data} style={{ height: "100%" }}>
             <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
               <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
                 Progress by Borough
@@ -135,14 +115,10 @@ const Home: NextPage = ({}: any) => {
               <BarChart
                 dataset={{
                   label: "Progress by Distrct",
-                  labels: districts
-                    ?.filter((d: any) => d.parent === nyc?.id)
-                    .map((d: any) => d.name),
+                  labels: data?.districts.progress.map((d: any) => d.name),
                   data:
-                    nyc &&
-                    districts
-                      ?.filter((d: any) => d.parent === nyc?.id)
-                      .map((d: any) => d.progress),
+                    data &&
+                    data?.districts.progress.map((d: any) => d.progress),
                 }}
                 height={"160px"}
               />
@@ -153,7 +129,7 @@ const Home: NextPage = ({}: any) => {
           </Skeleton>
         </Grid.Col>
         <Grid.Col xs={4}>
-          <Skeleton visible={!nyc} style={{ height: "100%" }}>
+          <Skeleton visible={!data} style={{ height: "100%" }}>
             <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
               <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
                 Projects on Building Servers
@@ -161,8 +137,8 @@ const Home: NextPage = ({}: any) => {
               <LineChart
                 dataset={{
                   label: "Projects",
-                  labels: projects.labels,
-                  data: projects.datasets,
+                  labels: data?.projects.map((p: any) => p.date),
+                  data: data?.projects.map((p: any) => p.projects),
                 }}
                 height={"160px"}
               />
@@ -173,7 +149,7 @@ const Home: NextPage = ({}: any) => {
           </Skeleton>
         </Grid.Col>
         <Grid.Col xs={4}>
-          <Skeleton visible={!nyc} style={{ height: "100%" }}>
+          <Skeleton visible={!data} style={{ height: "100%" }}>
             <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
               <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
                 Players on the Network
@@ -181,8 +157,8 @@ const Home: NextPage = ({}: any) => {
               <LineChart
                 dataset={{
                   label: "Players",
-                  labels: players.labels,
-                  data: players.datasets,
+                  labels: data?.players.map((p: any) => p.date),
+                  data: data?.players.map((p: any) => p.averages.total),
                 }}
                 height={"160px"}
               />

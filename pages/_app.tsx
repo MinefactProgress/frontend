@@ -48,7 +48,9 @@ export default function App(props: AppProps) {
               ...init?.headers,
             },
             ...init,
-          }).then((res) => res.json()),
+          })
+            .then((res) => res.json())
+            .then((d) => d.data),
         shouldRetryOnError: false,
         revalidateIfStale: false,
         revalidateOnFocus: false,
