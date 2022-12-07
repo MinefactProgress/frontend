@@ -1,7 +1,9 @@
 import {
+  Card,
   Center,
   Group,
   Paper,
+  Progress,
   RingProgress,
   Skeleton,
   Text,
@@ -212,3 +214,60 @@ export const StatsText = (stat: IStatsGrid) => {
     </Paper>
   );
 };
+
+const useStylesProgress = createStyles((theme) => ({
+  card: {
+    backgroundColor: theme.fn.primaryColor(),
+  },
+
+  title: {
+    color: theme.fn.rgba(theme.white, 0.65),
+  },
+
+  stats: {
+    color: theme.white,
+  },
+
+  progressBar: {
+    backgroundColor: theme.white,
+  },
+
+  progressTrack: {
+    backgroundColor: theme.fn.rgba(theme.white, 0.4),
+  },
+}));
+interface IProgressCard {
+  title?: string;
+  max?: number;
+  value?: number;
+  descriptor?: string;
+}
+
+export function ProgressCard({ title, max, value, descriptor }: IProgressCard) {
+  const { classes } = useStylesProgress();
+  return (
+    <Card withBorder radius="md" p="xl" className={classes.card}>
+      <Text
+        size="xs"
+        transform="uppercase"
+        weight={700}
+        className={classes.title}
+      >
+        {title || "Loading..."}
+      </Text>
+      <Text size="lg" weight={500} className={classes.stats}>
+        {value || 0} / {max || 100} {descriptor}
+      </Text>
+      <Progress
+        value={((value || 0) / (max || 100)) * 100}
+        mt="md"
+        size="lg"
+        radius="xl"
+        classNames={{
+          root: classes.progressTrack,
+          bar: classes.progressBar,
+        }}
+      />
+    </Card>
+  );
+}
