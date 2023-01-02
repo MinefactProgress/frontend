@@ -47,43 +47,46 @@ const District: NextPage = ({ id }: any) => {
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    if (
-      editBlock &&
-      editBlock != data?.blocks.blocks.find((b: any) => b.id === editBlock?.id)
-    ) {
-      const builders = editBlock?.builder?.split(",");
-      editBlock.builder = builders;
-      fetch(process.env.NEXT_PUBLIC_API_URL + `/v1/blocks/${editBlock.uid}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + user?.token,
-        },
-        body: JSON.stringify({ district: data.id, ...editBlock }),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.error) {
-            showNotification({
-              title: "Error Updating Block",
-              message: res.message,
-              color: "red",
-            });
-          } else {
-            showNotification({
-              title: "Block Updated",
-              message:
-                "The data of Block " + editBlock?.id + " has been updated",
-              color: "green",
-              icon: <IconCheck />,
-            });
-          }
+    if (user) {
+      if (
+        editBlock &&
+        editBlock !=
+          data?.blocks.blocks.find((b: any) => b.id === editBlock?.id)
+      ) {
+        const builders = editBlock?.builder?.split(",");
+        editBlock.builder = builders;
+        fetch(process.env.NEXT_PUBLIC_API_URL + `/v1/blocks/${editBlock.uid}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + user?.token,
+          },
+          body: JSON.stringify({ district: data.id, ...editBlock }),
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            if (res.error) {
+              showNotification({
+                title: "Error Updating Block",
+                message: res.message,
+                color: "red",
+              });
+            } else {
+              showNotification({
+                title: "Block Updated",
+                message:
+                  "The data of Block " + editBlock?.id + " has been updated",
+                color: "green",
+                icon: <IconCheck />,
+              });
+            }
+          });
+      } else {
+        showNotification({
+          title: "Nothing Changed",
+          message: "No changes were made to the block",
         });
-    } else {
-      showNotification({
-        title: "Nothing Changed",
-        message: "No changes were made to the block",
-      });
+      }
     }
   };
   return (
@@ -101,18 +104,22 @@ const District: NextPage = ({ id }: any) => {
               dropdownPosition="top"
               label="Builders"
               searchable
+              disabled={!user}
               nothingFound="No builder found"
               placeholder="Select Builders"
               maxDropdownHeight={190}
               icon={<IconUsers size={18} />}
-              data={[
-                {
-                  value: user?.username ? user.username : "",
-                  label: user?.username,
-                  group: "You",
-                },
-              ].concat(
-                /*adminsettings?.value.map((s: any) => ({
+              data={[] /*.concat(
+                user
+                  ? [{
+                      value: user?.username ? user.username : "",
+                      label: user?.username,
+                      group: "You",
+                    }]
+                  : []
+              )*/
+                .concat(
+                  /*adminsettings?.value.map((s: any) => ({
                 value: s,
                 label: s,
                 group: "Special",
@@ -132,14 +139,14 @@ const District: NextPage = ({ id }: any) => {
                   !adminsettings?.value.some((s: any) => s === b) &&
                   !users?.some((u: any) => u.username === b)
               )*/
-                (editBlock?.builder != "" &&
-                  editBlock?.builder?.split(",")?.map((b: any) => ({
-                    value: b,
-                    label: b,
-                    group: "Special",
-                  }))) ||
-                  []
-              )}
+                  (editBlock?.builder != "" &&
+                    editBlock?.builder?.split(",")?.map((b: any) => ({
+                      value: b,
+                      label: b,
+                      group: "Special",
+                    }))) ||
+                    []
+                )}
               value={editBlock?.builder != "" && editBlock?.builder?.split(",")}
               onChange={(e: any) => {
                 setEditBlock({
@@ -151,6 +158,7 @@ const District: NextPage = ({ id }: any) => {
             <NumberInput
               mt="md"
               label="Progress"
+              disabled={!user}
               min={0}
               max={100}
               icon={<IconBackhoe size={18} />}
@@ -166,7 +174,7 @@ const District: NextPage = ({ id }: any) => {
             <Checkbox
               label="Street Details"
               mt="md"
-              disabled={editBlock?.progress != 100}
+              disabled={editBlock?.progress != 100 || !user}
               checked={editBlock?.details}
               onChange={(e: any) => {
                 setEditBlock({
@@ -176,7 +184,7 @@ const District: NextPage = ({ id }: any) => {
               }}
             />
 
-            <Button type="submit" mt="md" fullWidth>
+            <Button type="submit" mt="md" fullWidth disabled={!user}>
               Update Block
             </Button>
           </form>

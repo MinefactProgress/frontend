@@ -4,17 +4,17 @@ import { useRouter } from "next/router";
 
 export interface UserData {
   uid: number;
-  email?: string;
-  username?: string;
-  permission?: number;
-  discord?: string;
-  minecraft?: any;
-  about?: string;
-  image?: string;
-  picture?: string;
-  settings?: string;
-  password?: string;
-  token?: string;
+  email: string;
+  username: string;
+  permission: number;
+  discord: string;
+  minecraft: any;
+  about: string;
+  image: string;
+  picture: string;
+  settings: string;
+  password: string;
+  token: string;
 }
 
 export default function useUser() {
