@@ -149,7 +149,7 @@ const RegisterPage = () => {
       body: JSON.stringify({
         username: values.username !== "" ? values.username : undefined,
         discord: values.discord !== "" ? values.discord : undefined,
-        password: values.password !== "" ? sign(values.password) : undefined,
+        password: values.password !== "" ? values.password : undefined,
       }),
     });
     const data = await result.json();
