@@ -9,6 +9,7 @@ import { useHotkeys, useLocalStorage } from "@mantine/hooks";
 import { AppProps } from "next/app";
 import Head from "next/head";
 import NavProgress from "../components/NavProgress";
+import { NotificationsProvider } from "@mantine/notifications";
 import { Page } from "../components/Page";
 import React from "react";
 import { SWRConfig } from "swr";
@@ -61,14 +62,16 @@ export default function App(props: AppProps) {
         colorScheme={colorScheme}
         toggleColorScheme={toggleColorScheme}
       >
-        <MantineProvider
-          theme={colorScheme == "dark" ? darkTheme : lightTheme}
-          withGlobalStyles
-          withNormalizeCSS
-        >
-          <NavProgress />
-          <Component {...pageProps} />
-        </MantineProvider>{" "}
+        <NotificationsProvider>
+          <MantineProvider
+            theme={colorScheme == "dark" ? darkTheme : lightTheme}
+            withGlobalStyles
+            withNormalizeCSS
+          >
+            <NavProgress />
+            <Component {...pageProps} />
+          </MantineProvider>
+        </NotificationsProvider>
       </ColorSchemeProvider>
     </SWRConfig>
   );

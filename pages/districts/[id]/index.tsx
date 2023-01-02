@@ -1,295 +1,337 @@
 import {
   ActionIcon,
-  Badge,
-  Center,
+  Alert,
+  Button,
   Checkbox,
-  Grid,
   Group,
-  Image,
-  Menu,
-  Pagination,
-  Paper,
+  Modal,
+  MultiSelect,
+  NumberInput,
   Progress,
-  ScrollArea,
-  Table,
-  Tabs,
-  Text,
-  Tooltip,
-  createStyles,
   useMantineTheme,
 } from "@mantine/core";
 import {
+  IconAlertCircle,
+  IconBackhoe,
   IconBuildingBank,
-  IconBuildingSkyscraper,
-  IconChartBar,
-  IconDotsVertical,
-  IconEdit,
-  IconLink,
-  IconMap,
-  IconMapPin,
-  IconPhoto,
+  IconCheck,
   IconUsers,
 } from "@tabler/icons";
-import {
-  progressToColorName,
-  statusToColorName,
-  statusToName,
-} from "../../../util/block";
 
+import { BackButton } from "../../../components/FastNavigation";
+import Map from "../../../components/map/Map";
 import { NextPage } from "next";
 import { Page } from "../../../components/Page";
-import { Permissions } from "../../../util/permissions";
 import { ProgressCard } from "../../../components/Stats";
+import axios from "axios";
+import mapboxgl from "mapbox-gl";
+import { showNotification } from "@mantine/notifications";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { useState } from "react";
 import useUser from "../../../hooks/useUser";
 
-const useStyles = createStyles((theme) => ({
-  header: {
-    position: "sticky",
-    top: 0,
-    backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
-    transition: "box-shadow 150ms ease",
-    zIndex: 2,
-    "&::after": {
-      content: '""',
-      position: "absolute",
-      left: 0,
-      right: 0,
-      bottom: 0,
-      borderBottom: `1px solid ${
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[3]
-          : theme.colors.gray[2]
-      }`,
-    },
-  },
-
-  scrolled: {
-    boxShadow: theme.shadows.sm,
-  },
-}));
-const District: NextPage = ({}: any) => {
+const District: NextPage = ({ id }: any) => {
   const theme = useMantineTheme();
   const router = useRouter();
   const [user] = useUser();
-  const { classes, cx } = useStyles();
-  const { data } = useSWR(`/v1/districts/${router.query.id}`);
-  const [galleryActivePage, setGalleryActivePage] = useState(1);
+  const { data } = useSWR(`/v1/districts/${id}`);
+  const [editBlock, setEditBlock] = useState<any>(null);
+  const [editOpen, setEditOpen] = useState(false);
+  //TODO: readd this when routes are done
+  /*
+  const { data: users } = useSWR("/api/users/get");
+  const { data: adminsettings } = useSWR(
+    "/api/admin/settings/get/custom_builders"
+  );*/
+
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    if (
+      editBlock &&
+      editBlock != data?.blocks.blocks.find((b: any) => b.id === editBlock?.id)
+    ) {
+      const builders = editBlock?.builder?.split(",");
+      editBlock.builder = builders;
+      fetch(process.env.NEXT_PUBLIC_API_URL + `/v1/blocks/${editBlock.uid}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + user?.token,
+        },
+        body: JSON.stringify({ district: data.id, ...editBlock }),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.error) {
+            showNotification({
+              title: "Error Updating Block",
+              message: res.message,
+              color: "red",
+            });
+          } else {
+            showNotification({
+              title: "Block Updated",
+              message:
+                "The data of Block " + editBlock?.id + " has been updated",
+              color: "green",
+              icon: <IconCheck />,
+            });
+          }
+        });
+    } else {
+      showNotification({
+        title: "Nothing Changed",
+        message: "No changes were made to the block",
+      });
+    }
+  };
   return (
-    <Page name="District" icon={<IconBuildingBank />}>
-      <Grid style={{ height: "100%" }} columns={19}>
-        <Grid.Col span={9}>
-          <Grid style={{ height: "100%" }}>
-            <Grid.Col>
-              <ProgressCard
-                title={data?.name}
-                max={data?.blocks.total}
-                value={data?.blocks.done}
-                descriptor=" Blocks finished"
-              />
-            </Grid.Col>
-            <Grid.Col style={{ height: "100%" }}>
-              <Paper withBorder radius="md" p="xs" style={{ height: "86%" }}>
-                <Text
-                  color="dimmed"
-                  size="xs"
-                  transform="uppercase"
-                  weight={700}
-                >
-                  District Information
-                </Text>
-                <Tabs defaultValue="gallery" mt="md">
-                  <Tabs.List>
-                    <Tabs.Tab value="map" icon={<IconMap size={14} />}>
-                      Map
-                    </Tabs.Tab>
-                    <Tabs.Tab value="gallery" icon={<IconPhoto size={14} />}>
-                      Image Gallery
-                    </Tabs.Tab>
-                    <Tabs.Tab
-                      value="statuses"
-                      icon={<IconChartBar size={14} />}
-                    >
-                      Statuses
-                    </Tabs.Tab>
-                    <Tabs.Tab value="builders" icon={<IconUsers size={14} />}>
-                      Builders
-                    </Tabs.Tab>
-                  </Tabs.List>
-                  <Tabs.Panel value="gallery" pt="md">
-                    {data?.image?.length > 0 ? (
-                      <div>
-                        <Image
-                          width="100%"
-                          height="64vh"
-                          radius="md"
-                          fit="contain"
-                          src={data?.image[galleryActivePage - 1]}
-                          alt=""
-                        />
-                        <Center>
-                          <Pagination
-                            page={galleryActivePage}
-                            onChange={setGalleryActivePage}
-                            total={data?.image.length}
-                            style={{ marginTop: theme.spacing.md }}
-                          />
-                        </Center>
-                      </div>
-                    ) : (
-                      <Center style={{ height: "28vh", width: "100%" }}>
-                        No Images found!
-                      </Center>
-                    )}
-                  </Tabs.Panel>
-                </Tabs>
-              </Paper>
-            </Grid.Col>
-          </Grid>
-        </Grid.Col>
-        <Grid.Col span={10}>
-          <Paper
-            withBorder
-            radius="md"
-            p="xs"
-            style={{
-              marginBottom: theme.spacing.md,
-              height: "100%",
-            }}
-          >
-            <div style={{ width: "100%" }}>
-              <Text
-                color="dimmed"
-                size="xs"
-                transform="uppercase"
-                weight={700}
-                style={{ display: "inline-block" }}
-              >
-                Blocks
-              </Text>
-            </div>
-            <ScrollArea style={{ height: "89vh" }}>
-              <Table highlightOnHover>
-                <thead className={classes.header}>
-                  <tr>
-                    <th></th>
-                    <th>ID</th>
-                    <th>Status</th>
-                    <th>Progress</th>
-                    <th>Details</th>
-                    <th>Builder</th>
-                    <th>Completion Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data
-                    ? data?.blocks?.blocks.map((block: any, i: number) => (
-                        <tr key={i}>
-                          <td>
-                            <Group>
-                              <Menu>
-                                <Menu.Target>
-                                  <ActionIcon>
-                                    <IconDotsVertical />
-                                  </ActionIcon>
-                                </Menu.Target>
-                                <Menu.Dropdown>
-                                  {(user?.permission || 0) >=
-                                    Permissions.builder && (
-                                    <Menu.Item icon={<IconEdit size={14} />}>
-                                      Edit Block
-                                    </Menu.Item>
-                                  )}
-                                  <Menu.Item icon={<IconMapPin size={14} />}>
-                                    Copy Coordinates
-                                  </Menu.Item>
-                                  <Menu.Item icon={<IconLink size={14} />}>
-                                    Copy Link
-                                  </Menu.Item>
-                                </Menu.Dropdown>
-                              </Menu>
-                            </Group>
-                          </td>
-                          <td>
-                            <Group>
-                              {block.id}
-                              {block.landmarks.length > 0
-                                ? block.landmarks.map((landmark: any) => (
-                                    <Tooltip
-                                      key={landmark.id}
-                                      label={`Landmark | ${landmark.name}`}
-                                      withArrow
-                                    >
-                                      <ActionIcon>
-                                        <IconBuildingSkyscraper
-                                          size={20}
-                                          color={
-                                            landmark.completed
-                                              ? theme.colors.green[7]
-                                              : landmark.builder.length > 0
-                                              ? theme.colors.orange[7]
-                                              : theme.colors.red[7]
-                                          }
-                                        />
-                                      </ActionIcon>
-                                    </Tooltip>
-                                  ))
-                                : null}
-                            </Group>
-                          </td>
-                          <td>
-                            <Badge color={statusToColorName(block.status)}>
-                              {statusToName(block.status)}
-                            </Badge>
-                          </td>
-                          <td>
-                            <Center>
-                              {Math.round(block.progress * 100) / 100 + " %"}
-                            </Center>
-                            <Progress
-                              size="sm"
-                              value={block.progress}
-                              color={progressToColorName(block.progress)}
-                            />
-                          </td>
-                          <td>
-                            <Center>
-                              <Checkbox
-                                color="green"
-                                readOnly
-                                checked={block.details}
-                              />
-                            </Center>
-                          </td>
-                          <td>
-                            {block.builders.length > 4
-                              ? block.builders.slice(0, 4).join(", ") +
-                                " +" +
-                                (block.builders.length - 4) +
-                                " more"
-                              : block.builders.join(", ")}
-                          </td>
-                          <td>
-                            {!block.completionDate
-                              ? "---"
-                              : new Date(
-                                  block.completionDate
-                                ).toLocaleDateString()}
-                          </td>
-                        </tr>
-                      ))
-                    : null}
-                </tbody>
-              </Table>
-            </ScrollArea>
-          </Paper>
-        </Grid.Col>
-      </Grid>
+    <Page name="District" icon={<IconBuildingBank />} noMargin>
+      <div style={{ position: "relative", height: "100%", width: "100%" }}>
+        <Modal
+          size="md"
+          centered
+          opened={editOpen}
+          onClose={() => setEditOpen(false)}
+          title={`Block #${editBlock?.id}`}
+        >
+          <form onSubmit={handleSubmit}>
+            <MultiSelect
+              dropdownPosition="top"
+              label="Builders"
+              searchable
+              nothingFound="No builder found"
+              placeholder="Select Builders"
+              maxDropdownHeight={190}
+              icon={<IconUsers size={18} />}
+              data={[
+                {
+                  value: user?.username ? user.username : "",
+                  label: user?.username,
+                  group: "You",
+                },
+              ].concat(
+                /*adminsettings?.value.map((s: any) => ({
+                value: s,
+                label: s,
+                group: "Special",
+              })),
+              users
+                ?.filter(
+                  (u: any) =>
+                    u.username !== "root" && u.username !== user?.username
+                )
+                .sort((a: any, b: any) => a.username.localeCompare(b.username))
+                .map((u: any) => ({
+                  value: u.username,
+                  label: u.username,
+                  group: "Other Users",
+                })),*/ /*.filter(
+                (b: any) =>
+                  !adminsettings?.value.some((s: any) => s === b) &&
+                  !users?.some((u: any) => u.username === b)
+              )*/
+                (editBlock?.builder != "" &&
+                  editBlock?.builder?.split(",")?.map((b: any) => ({
+                    value: b,
+                    label: b,
+                    group: "Special",
+                  }))) ||
+                  []
+              )}
+              value={editBlock?.builder != "" && editBlock?.builder?.split(",")}
+              onChange={(e: any) => {
+                setEditBlock({
+                  ...editBlock,
+                  builder: e.join(","),
+                });
+              }}
+            />
+            <NumberInput
+              mt="md"
+              label="Progress"
+              min={0}
+              max={100}
+              icon={<IconBackhoe size={18} />}
+              value={editBlock?.progress}
+              onChange={(e: any) => {
+                setEditBlock({
+                  ...editBlock,
+                  progress: e,
+                });
+              }}
+            />
+            <Progress value={editBlock?.progress} mt="xs" />
+            <Checkbox
+              label="Street Details"
+              mt="md"
+              disabled={editBlock?.progress != 100}
+              checked={editBlock?.details}
+              onChange={(e: any) => {
+                setEditBlock({
+                  ...editBlock,
+                  details: e.currentTarget.checked,
+                });
+              }}
+            />
+
+            <Button type="submit" mt="md" fullWidth>
+              Update Block
+            </Button>
+          </form>
+        </Modal>
+        <div
+          style={{
+            position: "absolute",
+            top: theme.spacing.md,
+            left: theme.spacing.md,
+            marginRight: theme.spacing.md,
+            zIndex: 55,
+            minWidth: "25vw",
+          }}
+        >
+          <BackButton variant="outline" mb="md" />
+          <ProgressCard
+            value={data?.blocks.done}
+            title={data?.name}
+            max={data?.blocks.total}
+            descriptor="Blocks finished"
+          ></ProgressCard>
+          {data?.blocks.blocks.at(-1).area.length <= 0 && (
+            <Alert
+              icon={<IconAlertCircle size={16} />}
+              title="Warning!"
+              color="red"
+              variant="outline"
+              mt="md"
+            >
+              There may be blocks missing on this map, please wait till we have
+              <br />
+              added them. You cant change the progress of those yet.
+            </Alert>
+          )}
+        </div>
+        <Map
+          themeControls={false}
+          onMapLoaded={async (map) => {
+            // Hover effect
+            let hoveredStateId: string | number | undefined = undefined;
+            const popup = new mapboxgl.Popup({
+              closeButton: false,
+              closeOnClick: false,
+            });
+
+            map.on("mousemove", "blocks-layer", (e) => {
+              if (!e.features) {
+                popup.remove();
+                return;
+              }
+              if (e?.features.length > 0) {
+                // Hover effect
+                if (hoveredStateId !== undefined) {
+                  map.setFeatureState(
+                    { source: "blocks", id: hoveredStateId },
+                    { hover: false }
+                  );
+                }
+                hoveredStateId = e.features[0].id;
+                map.setFeatureState(
+                  { source: "blocks", id: hoveredStateId },
+                  { hover: true }
+                );
+
+                // Tooltip
+                const features = map.queryRenderedFeatures(e.point, {
+                  layers: ["blocks-layer"],
+                });
+
+                popup
+                  .setLngLat(e.lngLat)
+                  //@ts-ignore
+                  .setText("Block #" + features[0].properties.id)
+                  .addTo(map);
+              }
+            });
+            map.on("mouseleave", "blocks-layer", () => {
+              if (hoveredStateId !== undefined) {
+                map.setFeatureState(
+                  { source: "blocks", id: hoveredStateId },
+                  { hover: false }
+                );
+              }
+              hoveredStateId = undefined;
+
+              popup.remove();
+            });
+
+            map.on("click", (e) => {
+              // Find features intersecting the bounding box.
+              const selectedFeatures = map.queryRenderedFeatures(e.point, {
+                layers: ["blocks-layer"],
+              });
+              if (selectedFeatures.length > 0) {
+                setEditBlock(selectedFeatures[0].properties);
+                setEditOpen(true);
+              }
+              // Set a filter matching selected features by FIPS codes
+              // to activate the 'counties-highlighted' layer.
+            });
+          }}
+          layerSetup={async (map) => {
+            const blocks = await axios.get(
+              `${process.env.NEXT_PUBLIC_API_URL}/v1/map?district=${id}`
+            );
+            // Fly to district
+            if (blocks.data.center.length > 0) {
+              map.flyTo({
+                zoom: 14,
+                center: [blocks.data.center[1], blocks.data.center[0]],
+                essential: true, // this animation is considered essential with respect to prefers-reduced-motion
+              });
+            }
+
+            map.addSource(`blocks`, {
+              type: "geojson",
+              data: blocks.data,
+            });
+
+            map.addLayer({
+              id: `blocks-layer`,
+              type: "fill",
+              source: `blocks`,
+              paint: {
+                "fill-color": [
+                  "match",
+                  ["get", "status"],
+                  0,
+                  "rgb(201, 42, 42)",
+                  1,
+                  "rgb(16, 152, 173)",
+                  2,
+                  "rgb(245, 159, 0)",
+                  3,
+                  "rgb(245, 159, 0)",
+                  4,
+                  "rgb(55, 178, 77)",
+                  "rgb(201, 42, 42)",
+                ],
+                "fill-opacity": [
+                  "case",
+                  ["boolean", ["feature-state", "hover"], false],
+                  1,
+                  0.37,
+                ],
+              },
+            });
+          }}
+        />
+      </div>
     </Page>
   );
 };
+export async function getServerSideProps({ params }: any) {
+  return { props: { id: params.id } };
+}
 
 export default District;

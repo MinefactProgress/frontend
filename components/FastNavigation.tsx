@@ -1,4 +1,6 @@
 import {
+  ActionIcon,
+  ActionIconProps,
   Anchor,
   Card,
   Group,
@@ -8,6 +10,7 @@ import {
   createStyles,
 } from "@mantine/core";
 import {
+  IconArrowLeft,
   IconBuildingBank,
   IconBuildingCommunity,
   IconBuildingMonument,
@@ -117,5 +120,15 @@ export function FastNavigation() {
         {items}
       </SimpleGrid>
     </Card>
+  );
+}
+
+export function BackButton(props:ActionIconProps) {
+  const router = useRouter();
+
+  return (
+    <ActionIcon {...props} onClick={() => router.back()}>
+      <IconArrowLeft />
+    </ActionIcon>
   );
 }

@@ -8,7 +8,7 @@ export interface UserData {
   username?: string;
   permission?: number;
   discord?: string;
-  minecraft?: string;
+  minecraft?: any;
   about?: string;
   image?: string;
   picture?: string;

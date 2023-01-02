@@ -79,7 +79,7 @@ export default function Login() {
     });
     const data = await result.json();
     if (!data.error) {
-      setUser(data.data);
+      setUser({ token: data.data.token, ...data.data.user });
       router.back();
     } else {
       showNotification({

@@ -19,6 +19,7 @@ interface IMap {
   onMapRemoved?(): void;
   allowFullscreen?: boolean;
   themeControls?: boolean;
+  layerSetup?(map: mapboxgl.Map): void;
 }
 
 const styles: MapboxStyleDefinition[] = [
@@ -41,6 +42,7 @@ function Map({
   onMapRemoved,
   allowFullscreen,
   themeControls = true,
+  layerSetup,
 }: IMap) {
   const [map, setMap] = React.useState<mapboxgl.Map>();
   const [loading, setLoading] = React.useState(true);
@@ -67,11 +69,14 @@ function Map({
     });
 
     setMap(mapboxMap);
-    mapboxMap.once("load", (ev: any) => {
-      onMapLoaded && map && onMapLoaded(map);
+
+    mapboxMap.getCanvas().style.cursor = "default";
+
+    mapboxMap.once("load", async (ev: any) => {
+      onMapLoaded && (await onMapLoaded(mapboxMap));
       setLoading(false);
 
-      setupLayers();
+      layerSetup && (await layerSetup(mapboxMap));
 
       if (allowFullscreen)
         mapboxMap.addControl(new mapboxgl.FullscreenControl());
@@ -82,19 +87,6 @@ function Map({
           })
         );
     });
-    const setupLayers = async () => {
-      const blocks = await axios.get("");
-      mapboxMap.addSource("blocks", {
-        type: "geojson",
-        data: blocks.data,
-      });
-
-      mapboxMap.addLayer({
-        id: "blocks-layer",
-        type: "fill",
-        source: "blocks",
-      });
-    };
 
     return () => {
       mapboxMap.remove();
