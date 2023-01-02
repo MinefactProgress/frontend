@@ -40,6 +40,7 @@ import { LineChart } from "../components/charts/LineChart";
 import Motd from "../components/Motd";
 import type { NextPage } from "next";
 import { Page } from "../components/Page";
+import { useRouter } from "next/router";
 import useSWR from "swr";
 
 ChartJS.register(
@@ -56,9 +57,7 @@ ChartJS.register(
 );
 
 const Home: NextPage = ({}: any) => {
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const dark = colorScheme === "dark";
-  const theme = useMantineTheme();
+  const router = useRouter();
   const { data } = useSWR("/v1/progress");
 
   return (
@@ -122,7 +121,12 @@ const Home: NextPage = ({}: any) => {
                 }}
                 height={"160px"}
               />
-              <Button mt="md" fullWidth variant="outline">
+              <Button
+                mt="md"
+                fullWidth
+                variant="outline"
+                onClick={() => router.push("/districts")}
+              >
                 Open District Overview
               </Button>
             </Paper>
@@ -142,7 +146,12 @@ const Home: NextPage = ({}: any) => {
                 }}
                 height={"160px"}
               />
-              <Button mt="md" fullWidth variant="outline">
+              <Button
+                mt="md"
+                fullWidth
+                variant="outline"
+                onClick={() => router.push("/projects")}
+              >
                 Open Project List
               </Button>
             </Paper>
@@ -162,7 +171,12 @@ const Home: NextPage = ({}: any) => {
                 }}
                 height={"160px"}
               />
-              <Button mt="md" fullWidth variant="outline">
+              <Button
+                mt="md"
+                fullWidth
+                variant="outline"
+                onClick={() => router.push("/network")}
+              >
                 Open Network Statistics
               </Button>
             </Paper>

@@ -20,7 +20,7 @@ export interface UserData {
 export default function useUser() {
   return useLocalStorage<UserData | undefined | null>({
     key: "auth",
-    defaultValue: { uid: 0 },
+    defaultValue: null,
     getInitialValueInEffect: true,
   });
 }

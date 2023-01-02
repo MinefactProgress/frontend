@@ -16,11 +16,11 @@ import { Navbar } from "./Navbar";
 import { useRouter } from "next/router";
 
 const homeLinks = [
-  { icon: <IconHome />, label: "Home", href: "/", permission: 1 },
   {
     icon: <IconChartBar />,
     label: "Progress Overview",
-    href: "/progress",
+    href: "/",
+    permission: 1,
   },
   {
     icon: <IconBuildingCommunity />,
