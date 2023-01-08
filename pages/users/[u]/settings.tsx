@@ -23,7 +23,7 @@ const SettingsPage = () => {
   const { data } = useSWR("/api/users/get/" + user.username);
   const handleSubmit = async (values: typeof form.values) => {
     const result = await fetch(
-      process.env.NEXT_PUBLIC_API_URL+"/api/users/update?key=" + user.apikey,
+      process.env.NEXT_PUBLIC_API_URL + "/api/users/update?key=" + user.apikey,
       {
         method: "POST",
         headers: {
@@ -33,7 +33,7 @@ const SettingsPage = () => {
         body: JSON.stringify({
           uid: user.uid,
           values: {
-            password: values.password != "" ? sign(values.password) : undefined,
+            password: values.password != "" ? values.password : undefined,
             picture: values.picture != "" ? values.picture : undefined,
             image: values.image != "" ? values.image : undefined,
             about: values.about != "" ? values.about : undefined,
