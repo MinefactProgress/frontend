@@ -9,6 +9,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { IconMap, IconMoonStars, IconSun } from "@tabler/icons";
+import { useEffect, useState } from "react";
 
 import { Data } from "victory";
 import Head from "next/head";
@@ -17,13 +18,16 @@ import Map from "../components/map/BlockMap";
 import type { NextPage } from "next";
 import { Page } from "../components/Page";
 import axios from "axios";
-import { useState } from "react";
+import useSocket from "../hooks/useSocket";
 
 const Home: NextPage = ({}: any) => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
   const theme = useMantineTheme();
+  const socket = useSocket();
   const [opened, setOpen] = useState(false);
+  const [players, setPlayers] = useState();
+  const [playerMarkers, setPlayerMarkers] = useState();
   const [selected, setSelected] = useState<any>(null);
   const [extraData, setExtraData] = useState<any>(null);
   const setOpened = async (open: boolean) => {
@@ -36,6 +40,7 @@ const Home: NextPage = ({}: any) => {
       setExtraData({ ...extraData, district: data.data });
     }
   };
+
   return (
     <>
       <Page name="Map" icon={<IconMap />} noMargin>

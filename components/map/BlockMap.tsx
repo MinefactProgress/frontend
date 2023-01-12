@@ -15,6 +15,7 @@ import MapLoader from "./MapLoader";
 import axios from "axios";
 import { showNotification } from "@mantine/notifications";
 import { useClipboard } from "@mantine/hooks";
+import useSocket from "../../hooks/useSocket";
 
 interface IMap {
   initialOptions?: Omit<mapboxgl.MapboxOptions, "container">;
@@ -52,9 +53,15 @@ function Map({
   const [hoveredId, setHoveredId] = React.useState<undefined | string | number>(
     undefined
   );
+  const [players, setPlayers] = React.useState<any[]>([]);
+  const [playerMarkers, setPlayerMarkers] = React.useState<any[]>([]);
   const theme = useMantineTheme();
+  const socket = useSocket();
   const mapNode = React.useRef(null);
   const clipboard = useClipboard();
+  socket.on("player_locations", (e: any) => {
+    setPlayers(JSON.parse(e));
+  });
 
   React.useEffect(() => {
     const node = mapNode.current;
@@ -144,6 +151,35 @@ function Map({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  React.useEffect(() => {
+    if (players && map) {
+      if (playerMarkers && playerMarkers.length > 0) {
+        playerMarkers.forEach((m) => {
+          m.remove();
+        });
+        setPlayerMarkers([]);
+      }
+
+      for (const feature of players) {
+        const el = document.createElement("div");
+        el.className = "marker";
+        el.id = "marker";
+        el.style.backgroundImage = `url('https://mc-heads.net/avatar/${feature.uuid}')`;
+        el.style.width = `32px`;
+        el.style.height = `32px`;
+        el.style.backgroundSize = "100%";
+        el.style.borderRadius = "5px";
+
+        el.setAttribute("data-text", feature.username);
+        const ll = feature.latlon.split(",");
+        let marker = new mapboxgl.Marker(el)
+          .setLngLat([parseFloat(ll[1]), parseFloat(ll[0])])
+          .addTo(map);
+        playerMarkers.push(marker);
+        setPlayerMarkers(playerMarkers);
+      }
+    }
+  }, [players]);
   const flyTo = (lat: any, lon: any) => {
     map?.flyTo({
       center: [lon, lat],

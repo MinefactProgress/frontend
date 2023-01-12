@@ -31,7 +31,7 @@ export default function App(props: AppProps) {
 
   initializeSocket(
     process.env.NEXT_PUBLIC_API_URL || "",
-    ["motd"],
+    ["motd", "playerdata"],
     user?.token
   );
 
