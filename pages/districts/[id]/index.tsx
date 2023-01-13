@@ -38,9 +38,9 @@ const District: NextPage = ({ id }: any) => {
   const { data } = useSWR(`/v1/districts/${id}`);
   const [editBlock, setEditBlock] = useState<any>(null);
   const [editOpen, setEditOpen] = useState(false);
+  const { data: users } = useSWR("/v1/users");
   //TODO: readd this when routes are done
   /*
-  const { data: users } = useSWR("/api/users/get");
   const { data: adminsettings } = useSWR(
     "/api/admin/settings/get/custom_builders"
   );*/
@@ -109,44 +109,37 @@ const District: NextPage = ({ id }: any) => {
               placeholder="Select Builders"
               maxDropdownHeight={190}
               icon={<IconUsers size={18} />}
-              data={[] /*.concat(
+              data={
                 user
-                  ? [{
-                      value: user?.username ? user.username : "",
-                      label: user?.username,
-                      group: "You",
-                    }]
-                  : []
-              )*/
-                .concat(
-                  /*adminsettings?.value.map((s: any) => ({
+                  ? [
+                      {
+                        value: user?.username ? user.username : "",
+                        label: user?.username,
+                        group: "You",
+                      },
+                    ].concat(
+                      /*adminsettings?.value.map((s: any) => ({
                 value: s,
                 label: s,
                 group: "Special",
-              })),
-              users
-                ?.filter(
-                  (u: any) =>
-                    u.username !== "root" && u.username !== user?.username
-                )
-                .sort((a: any, b: any) => a.username.localeCompare(b.username))
-                .map((u: any) => ({
-                  value: u.username,
-                  label: u.username,
-                  group: "Other Users",
-                })),*/ /*.filter(
-                (b: any) =>
-                  !adminsettings?.value.some((s: any) => s === b) &&
-                  !users?.some((u: any) => u.username === b)
-              )*/
-                  (editBlock?.builder != "" &&
-                    editBlock?.builder?.split(",")?.map((b: any) => ({
-                      value: b,
-                      label: b,
-                      group: "Special",
-                    }))) ||
-                    []
-                )}
+              })),*/
+                      users
+                        ?.filter(
+                          (u: any) =>
+                            u.username !== "root" &&
+                            u.username !== user?.username
+                        )
+                        .sort((a: any, b: any) =>
+                          a.username.localeCompare(b.username)
+                        )
+                        .map((u: any) => ({
+                          value: u.username,
+                          label: u.username,
+                          group: "Other Users",
+                        }))
+                    )
+                  : []
+              }
               value={editBlock?.builder != "" && editBlock?.builder?.split(",")}
               onChange={(e: any) => {
                 setEditBlock({
