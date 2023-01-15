@@ -42,7 +42,7 @@ const Staff: NextPage = ({}: any) => {
   ];
 
   const data = dataRaw
-    ?.filter((user: any) => user.rank !== null)
+    ?.filter((user: any) => user.rank !== null && user.rank !== "Player")
     .sort((a: any, b: any) => {
       const indexA = rankSort.indexOf(a.rank);
       const indexB = rankSort.indexOf(b.rank);
