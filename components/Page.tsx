@@ -113,8 +113,8 @@ export const Page = (props: {
           },
         })}
       >
-        {(user?.permission || 0) >=
-        (links.find((l: any) => l.href == router.pathname)?.permission || 9) ? (
+        {(user?.permission || 0) >= //@ts-ignore
+        links.find((l: any) => l.href == router.pathname)?.permission ? (
           props.children
         ) : (
           <h1>You dont have permissions to access this page</h1>
