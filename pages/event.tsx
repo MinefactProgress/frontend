@@ -18,51 +18,43 @@ import {
   IconUsers,
 } from "@tabler/icons";
 
-import { BackButton } from "../../../components/FastNavigation";
-import Map from "../../../components/map/Map";
+import { BackButton } from "../components/FastNavigation";
+import { Data } from "victory";
+import Map from "../components/map/Map";
 import { NextPage } from "next";
-import { Page } from "../../../components/Page";
-import { Permissions } from "../../../util/permissions";
-import { ProgressCard } from "../../../components/Stats";
+import { Page } from "../components/Page";
+import { Permissions } from "../util/permissions";
+import { ProgressCard } from "../components/Stats";
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
 import { showNotification } from "@mantine/notifications";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { useState } from "react";
-import useUser from "../../../hooks/useUser";
+import useUser from "../hooks/useUser";
 
-const District: NextPage = ({ id }: any) => {
+const Event = () => {
+  const id = 16;
   const theme = useMantineTheme();
-  const router = useRouter();
   const [user] = useUser();
-  const { data } = useSWR(`/v1/districts/${id}`);
   const [editBlock, setEditBlock] = useState<any>(null);
   const [editOpen, setEditOpen] = useState(false);
+  const { data } = useSWR("/v1/event/blocks");
   const { data: users } = useSWR("/v1/users");
-  //TODO: readd this when routes are done
-  /*
-  const { data: adminsettings } = useSWR(
-    "/api/admin/settings/get/custom_builders"
-  );*/
-
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    if ((user?.permission || 0) >= Permissions.builder) {
-      if (
-        editBlock &&
-        editBlock !=
-          data?.blocks.blocks.find((b: any) => b.id === editBlock?.id)
-      ) {
-        const builders = editBlock?.builder?.split(",");
+    if ((user?.permission || 0) >= Permissions.event) {
+      if (editBlock) {
+        const builders = editBlock?.builder.split(",");
         editBlock.builder = builders;
+        console.log(builders);
         fetch(process.env.NEXT_PUBLIC_API_URL + `/v1/blocks/${editBlock.uid}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
             Authorization: "Bearer " + user?.token,
           },
-          body: JSON.stringify({ district: data.id, ...editBlock }),
+          body: JSON.stringify({ ...editBlock }),
         })
           .then((res) => res.json())
           .then((res) => {
@@ -90,6 +82,7 @@ const District: NextPage = ({ id }: any) => {
       }
     }
   };
+
   return (
     <Page name="District" icon={<IconBuildingBank />} noMargin>
       <div style={{ position: "relative", height: "100%", width: "100%" }}>
@@ -119,11 +112,6 @@ const District: NextPage = ({ id }: any) => {
                         group: "You",
                       },
                     ].concat(
-                      /*adminsettings?.value.map((s: any) => ({
-                value: s,
-                label: s,
-                group: "Special",
-              })),*/
                       users
                         ?.filter(
                           (u: any) =>
@@ -195,24 +183,11 @@ const District: NextPage = ({ id }: any) => {
         >
           <BackButton variant="outline" mb="md" />
           <ProgressCard
-            value={data?.blocks.done}
-            title={data?.name}
-            max={data?.blocks.total}
+            value={data?.filter((d: any) => d.status == 4).length}
+            title={"Event"}
+            max={data?.length}
             descriptor="Blocks finished"
           ></ProgressCard>
-          {data?.blocks.blocks.at(-1).area.length <= 0 && (
-            <Alert
-              icon={<IconAlertCircle size={16} />}
-              title="Warning!"
-              color="red"
-              variant="outline"
-              mt="md"
-            >
-              There may be blocks missing on this map, please wait till we have
-              <br />
-              added them. You cant change the progress of those yet.
-            </Alert>
-          )}
         </div>
         <Map
           themeControls={false}
@@ -282,17 +257,8 @@ const District: NextPage = ({ id }: any) => {
           }}
           layerSetup={async (map: any) => {
             const blocks = await axios.get(
-              `${process.env.NEXT_PUBLIC_API_URL}/v1/map?district=${id}`
+              `${process.env.NEXT_PUBLIC_API_URL}/v1/map?event=true`
             );
-            // Fly to district
-            if (blocks.data.center.length > 0) {
-              map.flyTo({
-                zoom: 14,
-                center: [blocks.data.center[1], blocks.data.center[0]],
-                essential: true, // this animation is considered essential with respect to prefers-reduced-motion
-              });
-            }
-
             map.addSource(`blocks`, {
               type: "geojson",
               data: blocks.data,
@@ -332,8 +298,4 @@ const District: NextPage = ({ id }: any) => {
     </Page>
   );
 };
-export async function getServerSideProps({ params }: any) {
-  return { props: { id: params.id } };
-}
-
-export default District;
+export default Event;

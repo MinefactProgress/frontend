@@ -62,14 +62,16 @@ export default function App(props: AppProps) {
         colorScheme={colorScheme}
         toggleColorScheme={toggleColorScheme}
       >
-        <MantineProvider
-          theme={colorScheme == "dark" ? darkTheme : lightTheme}
-          withGlobalStyles
-          withNormalizeCSS
-        >
-          <NavProgress />
-          <Component {...pageProps} />
-        </MantineProvider>
+        <NotificationsProvider>
+          <MantineProvider
+            theme={colorScheme == "dark" ? darkTheme : lightTheme}
+            withGlobalStyles
+            withNormalizeCSS
+          >
+            <NavProgress />
+            <Component {...pageProps} />
+          </MantineProvider>
+        </NotificationsProvider>
       </ColorSchemeProvider>
     </SWRConfig>
   );
