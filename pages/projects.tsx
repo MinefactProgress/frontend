@@ -33,6 +33,7 @@ import { useForm } from "@mantine/form";
 import useSWR from "swr";
 import { useState } from "react";
 import useUser from "../utils/hooks/useUser";
+import { Permissions } from "../utils/userUtils";
 
 ChartJS.register(
   CategoryScale,
@@ -65,7 +66,7 @@ const ProjectsPage = () => {
     daysSinceStart - 1,
   ]);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  data?.slice(rangeValue[0] - 1, rangeValue[1]+2).forEach((element: any) => {
+  data?.slice(rangeValue[0] - 1, rangeValue[1] + 2).forEach((element: any) => {
     projects.labels.push(new Date(element.date).toLocaleDateString());
     projects.datasets.push(element.projects);
   });
@@ -220,7 +221,7 @@ const ProjectsPage = () => {
               }
             </Text>
           </Paper>
-          {(user.permission || 0) >= 2 && (
+          {(user.permission || 0) >= Permissions.moderator && (
             <Paper
               withBorder
               radius="md"
@@ -299,7 +300,10 @@ const ProjectsPage = () => {
                                 : undefined,
                           }}
                         >
-                          <td>{new Date(item.date).toLocaleDateString()} {i == 0?"(Today)":null}</td>
+                          <td>
+                            {new Date(item.date).toLocaleDateString()}{" "}
+                            {i == 0 ? "(Today)" : null}
+                          </td>
                           <td>
                             {item.projects}
                             <Badge

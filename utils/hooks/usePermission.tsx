@@ -4,8 +4,9 @@ import { useRouter } from "next/router";
 
 export const Permissions = {
   Default: 0,
-  Builder: 1,
-  Moderator: 2,
+  Event: 1,
+  Builder: 2,
+  Moderator: 3,
   Admin: 4,
 };
 
@@ -14,11 +15,11 @@ export function getRoleFromPermission(permission: number) {
     case 0:
       return "User";
     case 1:
-      return "Builder";
+      return "Event";
     case 2:
-      return "Moderator";
+      return "Builder";
     case 3:
-      return "Admin";
+      return "Moderator";
     case 4:
       return "Admin";
     default:
