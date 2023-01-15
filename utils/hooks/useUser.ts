@@ -1,20 +1,17 @@
-import { sign, verify } from "../jwt";
-
-import React from "react";
 import { useLocalStorage } from "@mantine/hooks";
-import { useRouter } from "next/router";
 
 export interface UserData {
   uid: number;
-  email?: string;
   username?: string;
+  uuid?: string;
   permission?: number;
   discord?: string;
-  minecraft?: string;
   about?: string;
   image?: string;
   picture?: string;
   settings?: string;
+  online?: boolean;
+  last_online?: Date;
   password?: string;
   apikey?: string;
 }

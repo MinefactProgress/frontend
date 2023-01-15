@@ -93,8 +93,8 @@ const UsersPage = () => {
           <br />
           All Claims and Statisitics will not be deleted.
           <br />
-          Please message <b>{userD.discord}</b> ({userD.email}) to let them know
-          you are deleting their account.
+          Please message <b>{userD.discord}</b> to let them know you are
+          deleting their account.
         </Text>
       ),
       labels: { confirm: "Delete Account", cancel: "Cancel Deletion" },
@@ -407,7 +407,6 @@ const UsersPage = () => {
                     <th>Name</th>
                     <th>Discord</th>
                     <th>Minecraft Role</th>
-                    <th>Email</th>
                     <th>Role</th>
                     <th>Actions</th>
                   </tr>
@@ -420,7 +419,6 @@ const UsersPage = () => {
                           <td>{user.username}</td>
                           <td>{user.discord}</td>
                           <td>{user.rank}</td>
-                          <td>{user.email}</td>
                           <td>{getRoleFromPermission(user.permission)}</td>
                           <td>
                             <Group spacing="xs">
