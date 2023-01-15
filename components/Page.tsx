@@ -1,3 +1,4 @@
+import { AppShell, CSSObject } from "@mantine/core";
 import {
   IconBuildingCommunity,
   IconBuildingMonument,
@@ -10,9 +11,9 @@ import {
   TablerIcon,
 } from "@tabler/icons";
 
-import { AppShell } from "@mantine/core";
 import Head from "next/head";
 import { Navbar } from "./Navbar";
+import React from "react";
 import { useRouter } from "next/router";
 
 const homeLinks = [
@@ -59,6 +60,7 @@ export const Page = (props: {
   name: string;
   icon: any;
   noMargin?: boolean;
+  style?: CSSObject;
 }) => {
   const router = useRouter();
   var links = [...homeLinks];
@@ -86,6 +88,8 @@ export const Page = (props: {
             minHeight: "100vh",
             maxWidth: "100%",
             overflowX: "hidden",
+            
+            ...props.style,
           },
         })}
       >

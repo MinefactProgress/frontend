@@ -8,6 +8,7 @@ import {
   MapboxStyleDefinition,
   MapboxStyleSwitcherControl,
 } from "mapbox-gl-style-switcher";
+import { Socket, io } from "socket.io-client";
 import mapboxgl, { EventData, MapMouseEvent } from "mapbox-gl";
 
 import { IconCheck } from "@tabler/icons";
@@ -59,7 +60,8 @@ function Map({
   const socket = useSocket();
   const mapNode = React.useRef(null);
   const clipboard = useClipboard();
-  socket.on("player_locations", (e: any) => {
+
+  socket.off("player_locations").on("player_locations", (e: any) => {
     setPlayers(JSON.parse(e));
   });
 
@@ -168,7 +170,7 @@ function Map({
         el.style.width = `32px`;
         el.style.height = `32px`;
         el.style.backgroundSize = "100%";
-        el.style.borderRadius = "5px";
+        el.style.borderRadius = theme.radius.md + "px";
 
         el.setAttribute("data-text", feature.username);
         const ll = feature.latlon.split(",");

@@ -11,11 +11,13 @@ import {
 import { IconMap, IconMoonStars, IconSun } from "@tabler/icons";
 import { useEffect, useState } from "react";
 
+import Chat from "../components/Chat";
 import { Data } from "victory";
 import Head from "next/head";
 import Image from "next/image";
 import Map from "../components/map/BlockMap";
 import type { NextPage } from "next";
+import { NotificationsProvider } from "@mantine/notifications";
 import { Page } from "../components/Page";
 import axios from "axios";
 import useSocket from "../hooks/useSocket";
@@ -54,6 +56,20 @@ const Home: NextPage = ({}: any) => {
             {extraData?.district.name}, Block #{selected?.id}
           </Title>
         </Drawer>
+        <Chat
+          socketEvents={{
+            join: "player_join",
+            leave: "player_leave",
+            chat: "player_chat",
+            response: "frontend_chat",
+          }}
+          style={{
+            position: "absolute",
+            zIndex: 88,
+            bottom: theme.spacing.md,
+            left: 80 + theme.spacing.md,
+          }}
+        />
         <Map
           onClick={(e, map) => {
             const bbox: any = [
