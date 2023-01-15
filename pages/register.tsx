@@ -57,16 +57,18 @@ export default function Login() {
   const form = useForm({
     initialValues: {
       username: "",
+      discord: "",
       password: "",
     },
 
     validate: {
-      username: (value) => (value ? null : "Please enter a username"),
-      password: (value) => (value ? null : "Please enter a password"),
+      username: (value) => (value ? null : "Please enter a username."),
+      discord: (value) => (value ? null : "Please enter a discord tag."),
+      password: (value) => (value ? null : "Please enter a password."),
     },
   });
   const handleSubmit = async (values: typeof form.values) => {
-    const result = await fetch(process.env.NEXT_PUBLIC_API_URL + "/auth", {
+    const result = await fetch(process.env.NEXT_PUBLIC_API_URL + "/v1/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -74,17 +76,22 @@ export default function Login() {
       },
       body: JSON.stringify({
         username: values.username,
+        discord: values.discord,
         password: values.password,
       }),
     });
     const data = await result.json();
     if (!data.error) {
-      setUser({ token: data.data.token, ...data.data.user });
-      router.push("/");
+      router.push("/login");
+      showNotification({
+        title: "Success",
+        message: data.message,
+        color: "green",
+      });
     } else {
       showNotification({
         title: "Error",
-        message: data.message,
+        message: data.error,
         color: "red",
         icon: <Login />,
       });
@@ -104,45 +111,36 @@ export default function Login() {
         </Title>
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput
-            disabled={auth}
-            label="Email address"
-            placeholder="hello@gmail.com"
+            label="Username"
+            placeholder="Your minecraft name..."
             size="md"
             {...form.getInputProps("username")}
           />
+          <TextInput
+            label="Discord"
+            placeholder=". . .#1234"
+            size="md"
+            {...form.getInputProps("discord")}
+          />
           <PasswordInput
-            disabled={auth}
             label="Password"
             placeholder="Your password"
             mt="md"
             size="md"
             {...form.getInputProps("password")}
           />
-          <Button fullWidth mt="xl" size="md" disabled={auth} type="submit">
-            Login
+          <Button fullWidth mt="xl" size="md" type="submit">
+            Register
           </Button>
         </form>
-        {auth && (
-          <Button
-            fullWidth
-            mt="xl"
-            size="md"
-            type="submit"
-            onClick={() => {
-              setUser(undefined);
-            }}
-          >
-            Log out instead
-          </Button>
-        )}
         <Text align="center" mt="md">
-          Don&apos;t have an account?{" "}
+          Already have an account?{" "}
           <Anchor<"a">
             href="#"
             weight={700}
-            onClick={(event) => router.push("/register")}
+            onClick={(event) => router.push("/login")}
           >
-            Register
+            Log In
           </Anchor>
         </Text>
       </Paper>
