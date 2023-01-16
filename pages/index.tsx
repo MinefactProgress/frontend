@@ -1,19 +1,11 @@
-import * as V from "victory";
-
 import {
-  ActionIcon,
   Button,
-  Center,
-  Container,
   Grid,
   Group,
   Paper,
   Skeleton,
   Text,
   Title,
-  Tooltip,
-  useMantineColorScheme,
-  useMantineTheme,
 } from "@mantine/core";
 import {
   ArcElement,
@@ -28,14 +20,11 @@ import {
   LinearScale,
   PointElement,
 } from "chart.js";
-import { Bar, Line } from "react-chartjs-2";
-import { IconCalendar, IconHome, IconMoonStars, IconSun } from "@tabler/icons";
-import { StatsGroup, StatsText } from "../components/Stats";
+import { IconHome } from "@tabler/icons";
+import { StatsGroup } from "../components/Stats";
 
 import { BarChart } from "../components/charts/BarChart";
 import { FastNavigation } from "../components/FastNavigation";
-import Head from "next/head";
-import Image from "next/image";
 import { LineChart } from "../components/charts/LineChart";
 import Motd from "../components/Motd";
 import type { NextPage } from "next";
@@ -85,10 +74,10 @@ const Home: NextPage = ({}: any) => {
             data={[
               {
                 title: "Projects",
-                stats: data?.projects?.[data?.projects?.length - 1].projects,
+                stats: data?.projects?.[0].projects,
                 description:
-                  data?.projects?.[data?.projects?.length - 1].projects -
-                  data?.projects?.[data?.projects?.length - 2].projects +
+                  data?.projects?.[0].projects -
+                  data?.projects?.[1].projects +
                   " new Projects since yesterday.",
               },
               {
@@ -141,8 +130,14 @@ const Home: NextPage = ({}: any) => {
               <LineChart
                 dataset={{
                   label: "Projects",
-                  labels: data?.projects.map((p: any) => p.date),
-                  data: data?.projects.map((p: any) => p.projects),
+                  labels: data?.projects
+                    .slice()
+                    .reverse()
+                    .map((p: any) => p.date),
+                  data: data?.projects
+                    .slice()
+                    .reverse()
+                    .map((p: any) => p.projects),
                 }}
                 height={"160px"}
               />
@@ -166,8 +161,14 @@ const Home: NextPage = ({}: any) => {
               <LineChart
                 dataset={{
                   label: "Players",
-                  labels: data?.players.map((p: any) => p.date),
-                  data: data?.players.map((p: any) => p.averages.total),
+                  labels: data?.players
+                    .slice()
+                    .reverse()
+                    .map((p: any) => p.date),
+                  data: data?.players
+                    .slice()
+                    .reverse()
+                    .map((p: any) => p.averages.total),
                 }}
                 height={"160px"}
               />
