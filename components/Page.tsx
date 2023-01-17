@@ -23,7 +23,7 @@ const homeLinks = [
     icon: <IconChartBar />,
     label: "Progress Overview",
     href: "/",
-    permission: 0,
+    permission: 2,
   },
   {
     icon: <IconCalendarEvent />,
