@@ -80,7 +80,7 @@ export default function Login() {
     const data = await result.json();
     if (!data.error) {
       setUser({ token: data.data.token, ...data.data.user });
-      router.push("/");
+      router.push(router.query.red?.toString() || "/");
     } else {
       showNotification({
         title: "Error",

@@ -82,7 +82,9 @@ export default function Login() {
     });
     const data = await result.json();
     if (!data.error) {
-      router.push("/login");
+      router.push(
+        `/login${router.query.red ? "?red=" + router.query.red : ""}`
+      );
       showNotification({
         title: "Success",
         message: data.message,
@@ -138,7 +140,11 @@ export default function Login() {
           <Anchor<"a">
             href="#"
             weight={700}
-            onClick={(event) => router.push("/login")}
+            onClick={(event) =>
+              router.push(
+                `/login${router.query.red ? "?red=" + router.query.red : ""}`
+              )
+            }
           >
             Log In
           </Anchor>
