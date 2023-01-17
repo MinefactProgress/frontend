@@ -1,13 +1,4 @@
 import {
-  Button,
-  Grid,
-  Group,
-  Paper,
-  Skeleton,
-  Text,
-  Title,
-} from "@mantine/core";
-import {
   ArcElement,
   BarElement,
   CategoryScale,
@@ -20,17 +11,29 @@ import {
   LinearScale,
   PointElement,
 } from "chart.js";
-import { IconHome } from "@tabler/icons";
-import { StatsGroup } from "../components/Stats";
+import {
+  Button,
+  Grid,
+  Group,
+  Paper,
+  Skeleton,
+  Text,
+  Title,
+} from "@mantine/core";
 
 import { BarChart } from "../components/charts/BarChart";
 import { FastNavigation } from "../components/FastNavigation";
+import { IconHome } from "@tabler/icons";
 import { LineChart } from "../components/charts/LineChart";
 import Motd from "../components/Motd";
 import type { NextPage } from "next";
 import { Page } from "../components/Page";
+import { Permissions } from "../util/permissions";
+import { StatsGroup } from "../components/Stats";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import useUser from "../hooks/useUser";
 
 ChartJS.register(
   CategoryScale,
@@ -48,6 +51,10 @@ ChartJS.register(
 const Home: NextPage = ({}: any) => {
   const router = useRouter();
   const { data } = useSWR("/v1/progress");
+  const [user] = useUser();
+  useEffect(() => {
+    router.push("/event");
+  });
 
   return (
     <Page name="Home" icon={<IconHome />}>
