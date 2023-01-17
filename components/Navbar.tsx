@@ -114,7 +114,12 @@ export function Navbar({
   return (
     <MNavbar width={{ base: 80 }} p="md">
       <Center>
-        <Image src="/logo.webp" alt="logo" width={64} height={64}></Image>
+        <Image
+          src="/BTE_NYC_Logo.webp"
+          alt="logo"
+          width={64}
+          height={64}
+        ></Image>
       </Center>
       <MNavbar.Section grow mt={50}>
         <Stack justify="center" spacing={0}>

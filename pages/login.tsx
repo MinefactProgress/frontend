@@ -105,8 +105,8 @@ export default function Login() {
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput
             disabled={auth}
-            label="Email address"
-            placeholder="hello@gmail.com"
+            label="Username"
+            placeholder="Your username"
             size="md"
             {...form.getInputProps("username")}
           />
