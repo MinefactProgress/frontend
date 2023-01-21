@@ -45,17 +45,21 @@ const Event = () => {
     event.preventDefault();
     if ((user?.permission || 0) >= Permissions.event) {
       if (editBlock) {
-        const builders = editBlock?.builder.split(",");
-        editBlock.builder = builders;
+        const editBlockClone = { ...editBlock };
+        const builders = editBlockClone?.builder.split(",");
+        editBlockClone.builder = builders;
         console.log(builders);
-        fetch(process.env.NEXT_PUBLIC_API_URL + `/v1/blocks/${editBlock.uid}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + user?.token,
-          },
-          body: JSON.stringify({ ...editBlock }),
-        })
+        fetch(
+          process.env.NEXT_PUBLIC_API_URL + `/v1/blocks/${editBlockClone.uid}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + user?.token,
+            },
+            body: JSON.stringify({ ...editBlockClone }),
+          }
+        )
           .then((res) => res.json())
           .then((res) => {
             if (res.error) {
@@ -68,7 +72,9 @@ const Event = () => {
               showNotification({
                 title: "Block Updated",
                 message:
-                  "The data of Block " + editBlock?.id + " has been updated",
+                  "The data of Block " +
+                  editBlockClone?.id +
+                  " has been updated",
                 color: "green",
                 icon: <IconCheck />,
               });
