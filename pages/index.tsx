@@ -52,9 +52,6 @@ const Home: NextPage = ({}: any) => {
   const router = useRouter();
   const { data } = useSWR("/v1/progress");
   const [user] = useUser();
-  useEffect(() => {
-    router.push("/event");
-  });
 
   return (
     <Page name="Home" icon={<IconHome />}>
@@ -66,11 +63,12 @@ const Home: NextPage = ({}: any) => {
         </Grid.Col>
         <Grid.Col xs={7}>
           <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
-            <Title>BTE NYC Progress Tracking</Title>
+            <Title>Welcome back{user ? " " + user?.username : null}!</Title>
             <Text>
               We are tracking the Progress made on the BTE New York City
               building Project.
             </Text>
+            {user?.username}
           </Paper>
         </Grid.Col>
         <Grid.Col xs={5}>

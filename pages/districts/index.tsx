@@ -3,10 +3,12 @@ import {
   Badge,
   Center,
   Grid,
+  LoadingOverlay,
   MediaQuery,
   Paper,
   Progress,
   ScrollArea,
+  Skeleton,
   Table,
   Text,
   createStyles,
@@ -165,6 +167,7 @@ const Districts: NextPage = ({}: any) => {
 
   return (
     <Page name="Districts" icon={<IconBuildingCommunity />}>
+      <LoadingOverlay visible={!(boroughs && data)} />
       <Grid>
         <Grid.Col>
           <Paper withBorder radius="md" p="xs">

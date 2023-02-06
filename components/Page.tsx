@@ -90,7 +90,7 @@ export const Page = (props: {
   return (
     <>
       <Head>
-        <title>Minefact Progress</title>
+        <title>Minefact Progress - {props.name}</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
@@ -114,7 +114,10 @@ export const Page = (props: {
         })}
       >
         {(user?.permission || 0) >= //@ts-ignore
-        links.find((l: any) => l.href == router.pathname)?.permission ? (
+        links.find(
+          (l: any) =>
+            l.href == router.pathname || router.pathname.includes(l.href)
+        )?.permission ? (
           props.children
         ) : (
           <h1>You dont have permissions to access this page</h1>

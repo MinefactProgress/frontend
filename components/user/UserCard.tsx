@@ -18,7 +18,7 @@ const useStyles = createStyles((theme) => ({
 
   avatar: {
     border: `2px solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white
+      theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[4]
     }`,
   },
 }));
@@ -56,7 +56,13 @@ export function UserCard({
   return (
     <Card withBorder p="xl" radius="md" className={classes.card}>
       <Indicator color="green" size={16} withBorder disabled={!online}>
-        <Avatar src={avatar} size={80} radius={80} mx="auto" />
+        <Avatar
+          src={avatar}
+          size={80}
+          radius={80}
+          mx="auto"
+          className={classes.avatar}
+        />
       </Indicator>
       <Text align="center" size="lg" weight={500} mt="sm">
         {name}

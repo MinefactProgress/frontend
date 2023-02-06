@@ -26,11 +26,13 @@ import { Permissions } from "../../util/permissions";
 import { UserCard } from "../../components/user/UserCard";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import useUser from "../../hooks/useUser";
 
 const Staff: NextPage = ({}: any) => {
   const { data: dataRaw } = useSWR("/v1/users");
   const router = useRouter();
   const theme = useMantineTheme();
+  const [user] = useUser();
 
   const rankSort = [
     "Owner",
@@ -67,7 +69,7 @@ const Staff: NextPage = ({}: any) => {
           <Grid.Col sm={2} key={u.uid}>
             <UserCard
               id={u.uid}
-              avatar={u.picture || `https://mc-heads.net/avatar/${u.username}`}
+              avatar={`https://mc-heads.net/avatar/${u.username}`}
               name={u.username}
               role={u.rank || "Collaborator"}
               online={u.online}
