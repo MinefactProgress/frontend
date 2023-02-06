@@ -91,7 +91,7 @@ const District: NextPage = ({ id }: any) => {
     }
   };
   return (
-    <Page name="District" icon={<IconBuildingBank />} noMargin>
+    <Page name={data?.name || "District"} icon={<IconBuildingBank />} noMargin>
       <div style={{ position: "relative", height: "100%", width: "100%" }}>
         <Modal
           size="md"
