@@ -265,6 +265,7 @@ const Event = () => {
             const blocks = await axios.get(
               `${process.env.NEXT_PUBLIC_API_URL}/v1/map?event=true`
             );
+            console.log(blocks);
             map.addSource(`blocks`, {
               type: "geojson",
               data: blocks.data,
