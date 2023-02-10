@@ -9,17 +9,22 @@ import { useHotkeys, useLocalStorage } from "@mantine/hooks";
 import { AppProps } from "next/app";
 import Head from "next/head";
 import NavProgress from "../components/NavProgress";
+import { NextShield } from "next-shield";
 import { NotificationsProvider } from "@mantine/notifications";
 import { Page } from "../components/Page";
+import { Permissions } from "../util/permissions";
 import React from "react";
 import { SWRConfig } from "swr";
 import { initializeSocket } from "../hooks/useSocket";
+import react from "react";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import useUser from "../hooks/useUser";
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
   const [user] = useUser();
+  const router = useRouter();
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: "scheme",
     defaultValue: "dark",
@@ -68,8 +73,20 @@ export default function App(props: AppProps) {
             withGlobalStyles
             withNormalizeCSS
           >
-            <NavProgress />
-            <Component {...pageProps} />
+            <NextShield
+              isAuth={user ? user?.permission >= Permissions.moderator : false}
+              isLoading={false}
+              router={router}
+              privateRoutes={["/admin"]}
+              hybridRoutes={["/", "/login", "/register"]}
+              publicRoutes={["/login"]}
+              accessRoute="/"
+              loginRoute="/login"
+              LoadingComponent={<p>Loading...</p>}
+            >
+              <NavProgress />
+              <Component {...pageProps} />
+            </NextShield>
           </MantineProvider>
         </NotificationsProvider>
       </ColorSchemeProvider>

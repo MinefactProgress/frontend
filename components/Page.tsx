@@ -23,43 +23,43 @@ const homeLinks = [
     icon: <IconChartBar />,
     label: "Progress Overview",
     href: "/",
-    permission: 2,
+    permission: 0,
   },
   {
     icon: <IconCalendarEvent />,
     label: "Event",
     href: "/event",
-    permission: 1,
+    permission: 0,
   },
   {
     icon: <IconBuildingCommunity />,
     label: "Districts",
     href: "/districts",
-    permission: 4,
+    permission: 0,
   },
   {
     icon: <IconUsers />,
     label: "Staff Team",
     href: "/staff",
-    permission: 4,
+    permission: 0,
   },
   {
     icon: <IconHierarchy />,
     label: "Network",
     href: "/network",
-    permission: 4,
+    permission: 0,
   },
   {
     icon: <IconBuildingMonument />,
     label: "Landmarks",
     href: "/landmarks",
-    permission: 4,
+    permission: 0,
   },
   {
     icon: <IconMap />,
     label: "Map",
     href: "/map",
-    permission: 4,
+    permission: 0,
   },
   {
     icon: <IconTool />,
@@ -84,13 +84,13 @@ export const Page = (props: {
       icon: props.icon,
       label: props.name,
       href: router.pathname,
-      permission: 9,
+      permission: 0,
     });
   }
   return (
     <>
       <Head>
-        <title>Minefact Progress - {props.name}</title>
+        <title>Minefact Progress - {props.name.toString()}</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
@@ -113,15 +113,7 @@ export const Page = (props: {
           },
         })}
       >
-        {(user?.permission || 0) >= //@ts-ignore
-        links.find(
-          (l: any) =>
-            l.href == router.pathname || router.pathname.includes(l.href)
-        )?.permission ? (
-          props.children
-        ) : (
-          <h1>You dont have permissions to access this page</h1>
-        )}
+        {props.children}
       </AppShell>
     </>
   );

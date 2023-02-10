@@ -2609,6 +2609,11 @@ natural-compare@^1.4.0:
   resolved "https://registry.npmjs.org/natural-compare/-/natural-compare-1.4.0.tgz"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
+next-shield@^2.1.3:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/next-shield/-/next-shield-2.1.3.tgz#a936f70c4056d9419056274e8349d4a7874adbfa"
+  integrity sha512-QI9AL6o0j9XCJkTLRRlW7/HapmwnuEhzuZtINN5ly1NBYDbMyA6GuNvlLiMyp+wjlJ23cAC/mXodOzKrzo0arg==
+
 next@13.0.3:
   version "13.0.3"
   resolved "https://registry.npmjs.org/next/-/next-13.0.3.tgz"
