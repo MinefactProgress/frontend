@@ -14,15 +14,18 @@ import Image from "next/image";
 import type { NextPage } from "next";
 import { Page } from "../components/Page";
 
-const Home: NextPage = ({}: any) => {
+const Home: NextPage = ({ error }: any) => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
   const theme = useMantineTheme();
   return (
-    <Page name="404" icon={<IconBug />} noMargin>
-      <Error error={404} />
+    <Page name={error} icon={<IconBug />} noMargin>
+      <Error error={error} />
     </Page>
   );
 };
-
+export function getInitialProps({ res, err }: any) {
+  const error = res ? res.statusCode : err ? err.statusCode : 404;
+  return { error };
+}
 export default Home;

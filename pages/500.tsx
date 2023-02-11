@@ -19,8 +19,8 @@ const Home: NextPage = ({}: any) => {
   const dark = colorScheme === "dark";
   const theme = useMantineTheme();
   return (
-    <Page name="404" icon={<IconBug />} noMargin>
-      <Error error={404} />
+    <Page name="500" icon={<IconBug />} noMargin>
+      <Error error={500} />
     </Page>
   );
 };
