@@ -12,12 +12,14 @@ import {
 import MapLoader from "./MapLoader";
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
+import { useRouter } from "next/router";
 
 interface IMap {
   initialOptions?: Omit<mapboxgl.MapboxOptions, "container">;
   onMapLoaded?(map: mapboxgl.Map): void;
   onMapRemoved?(): void;
   allowFullscreen?: boolean;
+  savePos?: boolean;
   themeControls?: boolean;
   layerSetup?(map: mapboxgl.Map): void;
 }
@@ -41,13 +43,31 @@ function Map({
   onMapLoaded,
   onMapRemoved,
   allowFullscreen,
+  savePos = true,
   themeControls = true,
   layerSetup,
 }: IMap) {
   const [map, setMap] = React.useState<mapboxgl.Map>();
+  const router = useRouter();
+  const [posSet, setPosSet] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const theme = useMantineTheme();
   const mapNode = React.useRef(null);
+
+  React.useEffect(() => {
+    if (posSet) return;
+    const initialZoom = router.query.z?.toString();
+    const initialLat = router.query.lat?.toString();
+    const initialLng = router.query.lng?.toString();
+    if (initialLat && initialLng && initialZoom) {
+      map?.flyTo({
+        center: [parseFloat(initialLng), parseFloat(initialLat)],
+        zoom: parseFloat(initialZoom),
+      });
+      setPosSet(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.query]);
 
   React.useEffect(() => {
     const node = mapNode.current;
@@ -87,6 +107,19 @@ function Map({
           })
         );
     });
+
+    if (savePos) {
+      mapboxMap.on("moveend", () => {
+        triggerPosChange();
+      });
+    }
+    const triggerPosChange = () => {
+      const zoom = Math.round(mapboxMap.getZoom() * 10) / 10;
+      const pos = mapboxMap.getCenter();
+      router.push(`?z=${zoom}&lat=${pos.lat}&lng=${pos.lng}`, undefined, {
+        shallow: true,
+      });
+    };
 
     return () => {
       mapboxMap.remove();

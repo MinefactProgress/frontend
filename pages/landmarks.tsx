@@ -79,7 +79,6 @@ const Landmarks = () => {
       }
       // Requests
       for (const user of landmark.requests) {
-        console.log(user, landmark.name);
         if (requests.some((e: any) => e.name === user.user)) {
           requests.some((e: any) => {
             if (e.name === user.user) {
@@ -340,13 +339,6 @@ const Landmarks = () => {
                   selected?.requests &&
                   JSON.parse(selected?.requests).map((u: any) => {
                     const user = users.find((us: any) => us.uid == u.user);
-                    console.log(
-                      selected?.builder != "[]"
-                        ? JSON.parse(selected?.builder).some(
-                            (b: any) => user?.uid == b.user
-                          )
-                        : "truedd"
-                    );
                     return {
                       avatar: `https://mc-heads.net/avatar/${user.username}`,
                       name: user.username,
