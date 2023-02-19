@@ -116,9 +116,13 @@ function Map({
     const triggerPosChange = () => {
       const zoom = Math.round(mapboxMap.getZoom() * 10) / 10;
       const pos = mapboxMap.getCenter();
-      router.push(`?z=${zoom}&lat=${pos.lat}&lng=${pos.lng}`, undefined, {
-        shallow: true,
-      });
+      router.push(
+        { query: { ...router.query, z: zoom, lat: pos.lat, lng: pos.lng } },
+        undefined,
+        {
+          shallow: true,
+        }
+      );
     };
 
     return () => {
