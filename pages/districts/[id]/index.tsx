@@ -22,6 +22,8 @@ import Map, {
   mapCopyCoordinates,
   mapHoverEffect,
   mapLoadGeoJson,
+  mapStatusColorLine,
+  mapStatusColorPolygon,
 } from "../../../components/map/Map";
 
 import { BackButton } from "../../../components/FastNavigation";
@@ -245,29 +247,8 @@ const District: NextPage = ({ id }: any) => {
               "blocks-layer",
               "fill",
               "blocks",
-              {
-                "fill-color": [
-                  "match",
-                  ["get", "status"],
-                  0,
-                  "rgb(201, 42, 42)",
-                  1,
-                  "rgb(16, 152, 173)",
-                  2,
-                  "rgb(245, 159, 0)",
-                  3,
-                  "rgb(245, 159, 0)",
-                  4,
-                  "rgb(55, 178, 77)",
-                  "rgb(201, 42, 42)",
-                ],
-                "fill-opacity": [
-                  "case",
-                  ["boolean", ["feature-state", "hover"], false],
-                  1,
-                  0.37,
-                ],
-              },
+              mapStatusColorPolygon,
+              mapStatusColorLine,
               (geojson) => {
                 if (geojson.data.center.length > 0) {
                   map.flyTo({

@@ -15,10 +15,15 @@ import {
   IconCross,
   IconSwitchVertical,
 } from "@tabler/icons";
+import Map, {
+  mapClickEvent,
+  mapCopyCoordinates,
+  mapHoverEffect,
+  mapLoadGeoJson,
+} from "../components/map/Map";
 import useSWR, { mutate } from "swr";
 
 import { BackButton } from "../components/FastNavigation";
-import Map from "../components/map/Map";
 import { Page } from "../components/Page";
 import { Permissions } from "../util/permissions";
 import { ProgressCard } from "../components/Stats";
@@ -26,6 +31,7 @@ import { UsersStack } from "../components/user/UserStack";
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
 import { showNotification } from "@mantine/notifications";
+import { useClipboard } from "@mantine/hooks";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import useUser from "../hooks/useUser";
@@ -36,6 +42,7 @@ const Landmarks = () => {
   const [user] = useUser();
   const theme = useMantineTheme();
   const router = useRouter();
+  const clipboard = useClipboard();
   const [selected, setSelected] = useState<any>();
   const [editOpen, setEditOpen] = useState(false);
 
@@ -429,83 +436,24 @@ const Landmarks = () => {
         <Map
           themeControls={false}
           onMapLoaded={async (map: any) => {
-            // Hover effect
-            let hoveredStateId: string | number | undefined = undefined;
-            const popup = new mapboxgl.Popup({
-              closeButton: false,
-              closeOnClick: false,
+            mapHoverEffect(map, "blocks-layer", "blocks", (f) => f.name);
+            mapClickEvent(map, "blocks-layer", (f) => {
+              setSelected(f.properties);
+              setEditOpen(true);
             });
-
-            map.on("mousemove", "blocks-layer", (e: any) => {
-              if (!e.features) {
-                popup.remove();
-                return;
-              }
-              if (e?.features.length > 0) {
-                // Hover effect
-                if (hoveredStateId !== undefined) {
-                  map.setFeatureState(
-                    { source: "blocks", id: hoveredStateId },
-                    { hover: false }
-                  );
-                }
-                hoveredStateId = e.features[0].id;
-                map.setFeatureState(
-                  { source: "blocks", id: hoveredStateId },
-                  { hover: true }
-                );
-
-                // Tooltip
-                const features = map.queryRenderedFeatures(e.point, {
-                  layers: ["blocks-layer"],
-                });
-
-                popup
-                  .setLngLat(e.lngLat)
-                  //@ts-ignore
-                  .setText(features[0].properties.name)
-                  .addTo(map);
-              }
-            });
-            map.on("mouseleave", "blocks-layer", () => {
-              if (hoveredStateId !== undefined) {
-                map.setFeatureState(
-                  { source: "blocks", id: hoveredStateId },
-                  { hover: false }
-                );
-              }
-              hoveredStateId = undefined;
-
-              popup.remove();
-            });
-
-            map.on("click", (e: any) => {
-              // Find features intersecting the bounding box.
-              const selectedFeatures = map.queryRenderedFeatures(e.point, {
-                layers: ["blocks-layer"],
-              });
-              if (selectedFeatures.length > 0) {
-                setSelected(selectedFeatures[0].properties);
-                setEditOpen(true);
-              }
-              // Set a filter matching selected features by FIPS codes
-              // to activate the 'counties-highlighted' layer.
-            });
+            mapCopyCoordinates(map, clipboard);
           }}
           layerSetup={async (map: any) => {
             const blocks = await axios.get(
               `${process.env.NEXT_PUBLIC_API_URL}/v1/map?landmarks=true`
             );
-            map.addSource(`blocks`, {
-              type: "geojson",
-              data: blocks.data,
-            });
-
-            map.addLayer({
-              id: `blocks-layer`,
-              type: "circle",
-              source: `blocks`,
-              paint: {
+            mapLoadGeoJson(
+              map,
+              `${process.env.NEXT_PUBLIC_API_URL}/v1/map?landmarks=true`,
+              "blocks-layer",
+              "circle",
+              "blocks",
+              {
                 "circle-radius": {
                   stops: [
                     [8, 1],
@@ -534,8 +482,8 @@ const Landmarks = () => {
                   1,
                   0.37,
                 ],
-              },
-            });
+              }
+            );
           }}
         />
       </div>

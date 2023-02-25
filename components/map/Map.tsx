@@ -8,10 +8,12 @@ import {
   MapboxStyleDefinition,
   MapboxStyleSwitcherControl,
 } from "mapbox-gl-style-switcher";
+import axios, { AxiosResponse } from "axios";
 
 import { IconCheck } from "@tabler/icons";
 import MapLoader from "./MapLoader";
-import axios from "axios";
+import { Socket } from "socket.io-client";
+import { UserData } from "../../hooks/useUser";
 import mapboxgl from "mapbox-gl";
 import { showNotification } from "@mantine/notifications";
 import { useRouter } from "next/router";
@@ -276,14 +278,29 @@ export function mapClickEvent(
     }
   });
 }
-export function mapCopyCoordinates(map: any, clipboard: any) {
+export function mapCopyCoordinates(
+  map: any,
+  clipboard: any,
+  socket?: Socket,
+  user?: UserData
+) {
   map.on("contextmenu", (e: any) => {
     clipboard.copy(e.lngLat.lat + ", " + e.lngLat.lng);
     showNotification({
-      title: "Copied successfully",
-      message: "The coordinates have been copied to your clipboard!",
+      title: "Coordinates copied",
+      message: socket && user ? "Click to teleport." : "Paste them anywhere.",
       icon: <IconCheck size={18} />,
       color: "teal",
+      ...(socket && user
+        ? {
+            styles: { root: { cursor: "pointer" } },
+            onClick: () =>
+              socket.emit("teleport", {
+                coordinates: [e.lngLat.lat, e.lngLat.lng],
+                user: user.uid,
+              }),
+          }
+        : undefined),
     });
   });
 }
@@ -292,21 +309,29 @@ export function mapCopyCoordinates(map: any, clipboard: any) {
 
 export async function mapLoadGeoJson(
   map: any,
-  url: string,
+  url: string | AxiosResponse,
   layer: string,
   layerType: string,
   source: string,
   paint: any,
+  outline?: boolean | any,
   afterFetch?: (geojson: any) => void
 ) {
-  const geojson = await axios.get(url);
+  var geojson = null;
+  if (typeof url == "string") {
+    geojson = await axios.get(url);
+  } else {
+    geojson = url;
+  }
 
   afterFetch && afterFetch(geojson);
 
-  map.addSource(source, {
-    type: "geojson",
-    data: geojson.data,
-  });
+  if (!map.getSource(source)) {
+    map.addSource(source, {
+      type: "geojson",
+      data: geojson.data,
+    });
+  }
 
   map.addLayer({
     id: layer,
@@ -314,6 +339,60 @@ export async function mapLoadGeoJson(
     source: source,
     paint: paint,
   });
+  if (outline)
+    mapLoadGeoJson(
+      map,
+      geojson,
+      layer + "-outline",
+      "line",
+      source,
+      typeof outline == "boolean" ? paint : outline,
+      false
+    );
 }
+
+// Map Color Helper Functions
+
+export const mapStatusColorPolygon = {
+  "fill-color": [
+    "match",
+    ["get", "status"],
+    0,
+    "rgb(201, 42, 42)",
+    1,
+    "rgb(16, 152, 173)",
+    2,
+    "rgb(245, 159, 0)",
+    3,
+    "rgb(245, 159, 0)",
+    4,
+    "rgb(55, 178, 77)",
+    "rgb(201, 42, 42)",
+  ],
+  "fill-opacity": [
+    "case",
+    ["boolean", ["feature-state", "hover"], false],
+    1,
+    0.37,
+  ],
+};
+export const mapStatusColorLine = {
+  "line-color": [
+    "match",
+    ["get", "status"],
+    0,
+    "rgb(201, 42, 42)",
+    1,
+    "rgb(16, 152, 173)",
+    2,
+    "rgb(245, 159, 0)",
+    3,
+    "rgb(245, 159, 0)",
+    4,
+    "rgb(55, 178, 77)",
+    "rgb(201, 42, 42)",
+  ],
+  "line-width": 2,
+};
 
 export default Map;

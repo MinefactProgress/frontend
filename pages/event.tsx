@@ -17,10 +17,17 @@ import {
   IconCheck,
   IconUsers,
 } from "@tabler/icons";
+import Map, {
+  mapClickEvent,
+  mapCopyCoordinates,
+  mapHoverEffect,
+  mapLoadGeoJson,
+  mapStatusColorLine,
+  mapStatusColorPolygon,
+} from "../components/map/Map";
 
 import { BackButton } from "../components/FastNavigation";
 import { Data } from "victory";
-import Map from "../components/map/Map";
 import { NextPage } from "next";
 import { Page } from "../components/Page";
 import { Permissions } from "../util/permissions";
@@ -28,6 +35,7 @@ import { ProgressCard } from "../components/Stats";
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
 import { showNotification } from "@mantine/notifications";
+import { useClipboard } from "@mantine/hooks";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { useState } from "react";
@@ -40,6 +48,7 @@ const Event = () => {
   const [editBlock, setEditBlock] = useState<any>(null);
   const [editOpen, setEditOpen] = useState(false);
   const { data } = useSWR("/v1/event/blocks");
+  const clipboard = useClipboard();
   const { data: users } = useSWR("/v1/users");
   const handleSubmit = (event: any) => {
     event.preventDefault();
@@ -198,107 +207,33 @@ const Event = () => {
         <Map
           themeControls={false}
           onMapLoaded={async (map: any) => {
-            // Hover effect
-            let hoveredStateId: string | number | undefined = undefined;
-            const popup = new mapboxgl.Popup({
-              closeButton: false,
-              closeOnClick: false,
+            mapHoverEffect(
+              map,
+              "blocks-layer",
+              "blocks",
+              (f) => "Block #" + f.properties.id
+            );
+
+            mapClickEvent(map, "blocks-layer", (f) => {
+              setEditBlock(f.properties);
+              setEditOpen(true);
             });
 
-            map.on("mousemove", "blocks-layer", (e: any) => {
-              if (!e.features) {
-                popup.remove();
-                return;
-              }
-              if (e?.features.length > 0) {
-                // Hover effect
-                if (hoveredStateId !== undefined) {
-                  map.setFeatureState(
-                    { source: "blocks", id: hoveredStateId },
-                    { hover: false }
-                  );
-                }
-                hoveredStateId = e.features[0].id;
-                map.setFeatureState(
-                  { source: "blocks", id: hoveredStateId },
-                  { hover: true }
-                );
-
-                // Tooltip
-                const features = map.queryRenderedFeatures(e.point, {
-                  layers: ["blocks-layer"],
-                });
-
-                popup
-                  .setLngLat(e.lngLat)
-                  //@ts-ignore
-                  .setText("Block #" + features[0].properties.id)
-                  .addTo(map);
-              }
-            });
-            map.on("mouseleave", "blocks-layer", () => {
-              if (hoveredStateId !== undefined) {
-                map.setFeatureState(
-                  { source: "blocks", id: hoveredStateId },
-                  { hover: false }
-                );
-              }
-              hoveredStateId = undefined;
-
-              popup.remove();
-            });
-
-            map.on("click", (e: any) => {
-              // Find features intersecting the bounding box.
-              const selectedFeatures = map.queryRenderedFeatures(e.point, {
-                layers: ["blocks-layer"],
-              });
-              if (selectedFeatures.length > 0) {
-                setEditBlock(selectedFeatures[0].properties);
-                setEditOpen(true);
-              }
-              // Set a filter matching selected features by FIPS codes
-              // to activate the 'counties-highlighted' layer.
-            });
+            mapCopyCoordinates(map, clipboard);
           }}
           layerSetup={async (map: any) => {
-            const blocks = await axios.get(
+            const data = await axios.get(
               `${process.env.NEXT_PUBLIC_API_URL}/v1/map?event=true`
             );
-            console.log(blocks);
-            map.addSource(`blocks`, {
-              type: "geojson",
-              data: blocks.data,
-            });
-
-            map.addLayer({
-              id: `blocks-layer`,
-              type: "fill",
-              source: `blocks`,
-              paint: {
-                "fill-color": [
-                  "match",
-                  ["get", "status"],
-                  0,
-                  "rgb(201, 42, 42)",
-                  1,
-                  "rgb(16, 152, 173)",
-                  2,
-                  "rgb(245, 159, 0)",
-                  3,
-                  "rgb(245, 159, 0)",
-                  4,
-                  "rgb(55, 178, 77)",
-                  "rgb(201, 42, 42)",
-                ],
-                "fill-opacity": [
-                  "case",
-                  ["boolean", ["feature-state", "hover"], false],
-                  1,
-                  0.37,
-                ],
-              },
-            });
+            await mapLoadGeoJson(
+              map,
+              data,
+              "blocks-layer",
+              "fill",
+              "blocks",
+              mapStatusColorPolygon,
+              mapStatusColorLine
+            );
           }}
         />
       </div>
