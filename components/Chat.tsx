@@ -1,8 +1,8 @@
 import { Image, Notification, ScrollArea } from "@mantine/core";
+import { useEffect, useState } from "react";
+import { useInterval, useQueue } from "@mantine/hooks";
 
-import { useQueue } from "@mantine/hooks";
 import useSocket from "../hooks/useSocket";
-import { useState } from "react";
 
 function Chat({
   allowChat,
@@ -19,6 +19,7 @@ function Chat({
   };
 }) {
   const socket = useSocket();
+
   const {
     state,
     queue,
@@ -34,7 +35,7 @@ function Chat({
   });
 
   function add(props: { msg: string; user: string }) {
-    if (state.length >= 20) {
+    if (state.length >= 10) {
       state.shift();
     }
     addTQ(props);
