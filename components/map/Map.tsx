@@ -9,10 +9,13 @@ import {
   MapboxStyleSwitcherControl,
 } from "mapbox-gl-style-switcher";
 
+import { IconCheck } from "@tabler/icons";
 import MapLoader from "./MapLoader";
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
+import { showNotification } from "@mantine/notifications";
 import { useRouter } from "next/router";
+import useSocket from "../../hooks/useSocket";
 
 interface IMap {
   initialOptions?: Omit<mapboxgl.MapboxOptions, "container">;
@@ -21,6 +24,7 @@ interface IMap {
   allowFullscreen?: boolean;
   savePos?: boolean;
   themeControls?: boolean;
+  showPlayers?: boolean;
   layerSetup?(map: mapboxgl.Map): void;
 }
 
@@ -45,15 +49,28 @@ function Map({
   allowFullscreen,
   savePos = true,
   themeControls = true,
+  showPlayers = false,
   layerSetup,
 }: IMap) {
+  // Mapbox map
   const [map, setMap] = React.useState<mapboxgl.Map>();
+  // Next Router
   const router = useRouter();
+  // Boolean if position from url was loaded
   const [posSet, setPosSet] = React.useState(false);
+  // Boolean if map is loading (-> Display mapLoader)
   const [loading, setLoading] = React.useState(true);
+  // Player markers
+  const [players, setPlayers] = React.useState<any[]>([]);
+  const [playerMarkers, setPlayerMarkers] = React.useState<any[]>([]);
+  // Mantine Theme
   const theme = useMantineTheme();
+  // Ref to the map div
   const mapNode = React.useRef(null);
+  // Websocket
+  const socket = useSocket();
 
+  // Update Query Parameters with position
   React.useEffect(() => {
     if (posSet) return;
     const initialZoom = router.query.z?.toString();
@@ -69,6 +86,7 @@ function Map({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query]);
 
+  // Setup Map
   React.useEffect(() => {
     const node = mapNode.current;
 
@@ -108,6 +126,7 @@ function Map({
         );
     });
 
+    // Move to pos from query
     if (savePos) {
       mapboxMap.on("moveend", () => {
         triggerPosChange();
@@ -133,6 +152,43 @@ function Map({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Player Markers
+  socket.off("player_locations").on("player_locations", (e: any) => {
+    if (showPlayers) {
+      setPlayers(JSON.parse(e));
+    }
+  });
+  React.useEffect(() => {
+    if (players && map && showPlayers) {
+      if (playerMarkers && playerMarkers.length > 0) {
+        playerMarkers.forEach((m) => {
+          m.remove();
+        });
+        setPlayerMarkers([]);
+      }
+
+      for (const feature of players) {
+        const el = document.createElement("div");
+        el.className = "marker";
+        el.id = "marker";
+        el.style.backgroundImage = `url('https://mc-heads.net/avatar/${feature.uuid}')`;
+        el.style.width = `32px`;
+        el.style.height = `32px`;
+        el.style.backgroundSize = "100%";
+        el.style.borderRadius = theme.radius.md + "px";
+
+        el.setAttribute("data-text", feature.username);
+        const ll = feature.latlon.split(",");
+        let marker = new mapboxgl.Marker(el)
+          .setLngLat([parseFloat(ll[1]), parseFloat(ll[0])])
+          .addTo(map);
+        playerMarkers.push(marker);
+        setPlayerMarkers(playerMarkers);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [players]);
+
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
       <LoadingOverlay visible={loading} />
@@ -145,6 +201,119 @@ function Map({
       />
     </div>
   );
+}
+
+// Map Event Helper Functions
+
+export function mapHoverEffect(
+  map: any,
+  layer: string,
+  source: string,
+  text: (feature: any) => string
+) {
+  // Hover effect
+  let hoveredStateId: string | number | undefined = undefined;
+  const popup = new mapboxgl.Popup({
+    closeButton: false,
+    closeOnClick: false,
+  });
+
+  map.on("mousemove", layer, (e: any) => {
+    if (!e.features) {
+      popup.remove();
+      return;
+    }
+    if (e?.features.length > 0) {
+      // Hover effect
+      if (hoveredStateId !== undefined) {
+        map.setFeatureState(
+          { source: source, id: hoveredStateId },
+          { hover: false }
+        );
+      }
+      hoveredStateId = e.features[0].id;
+      map.setFeatureState(
+        { source: source, id: hoveredStateId },
+        { hover: true }
+      );
+
+      // Tooltip
+      const features = map.queryRenderedFeatures(e.point, {
+        layers: [layer],
+      });
+
+      popup
+        .setLngLat(e.lngLat)
+        //@ts-ignore
+        .setText(text(features[0]))
+        .addTo(map);
+    }
+  });
+  map.on("mouseleave", layer, () => {
+    if (hoveredStateId !== undefined) {
+      map.setFeatureState(
+        { source: source, id: hoveredStateId },
+        { hover: false }
+      );
+    }
+    hoveredStateId = undefined;
+
+    popup.remove();
+  });
+}
+export function mapClickEvent(
+  map: any,
+  layer: string,
+  callback: (feature: any) => void
+) {
+  map.on("click", (e: any) => {
+    // Find features intersecting the bounding box.
+    const selectedFeatures = map.queryRenderedFeatures(e.point, {
+      layers: [layer],
+    });
+    if (selectedFeatures.length > 0) {
+      callback(selectedFeatures[0]);
+    }
+  });
+}
+export function mapCopyCoordinates(map: any, clipboard: any) {
+  map.on("contextmenu", (e: any) => {
+    clipboard.copy(e.lngLat.lat + ", " + e.lngLat.lng);
+    showNotification({
+      title: "Copied successfully",
+      message: "The coordinates have been copied to your clipboard!",
+      icon: <IconCheck size={18} />,
+      color: "teal",
+    });
+  });
+}
+
+// Map Load Helper Functions
+
+export async function mapLoadGeoJson(
+  map: any,
+  url: string,
+  layer: string,
+  layerType: string,
+  source: string,
+  paint: any,
+  afterFetch?: (geojson: any) => void
+) {
+  const geojson = await axios.get(url);
+
+  afterFetch && afterFetch(geojson);
+
+  map.addSource(source, {
+    type: "geojson",
+    data: geojson.data,
+  });
+
+  map.addLayer({
+    id: layer,
+    type: layerType,
+    source: source,
+    paint: paint,
+  });
 }
 
 export default Map;

@@ -17,9 +17,14 @@ import {
   IconCheck,
   IconUsers,
 } from "@tabler/icons";
+import Map, {
+  mapClickEvent,
+  mapCopyCoordinates,
+  mapHoverEffect,
+  mapLoadGeoJson,
+} from "../../../components/map/Map";
 
 import { BackButton } from "../../../components/FastNavigation";
-import Map from "../../../components/map/Map";
 import { NextPage } from "next";
 import { Page } from "../../../components/Page";
 import { Permissions } from "../../../util/permissions";
@@ -27,6 +32,7 @@ import { ProgressCard } from "../../../components/Stats";
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
 import { showNotification } from "@mantine/notifications";
+import { useClipboard } from "@mantine/hooks";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { useState } from "react";
@@ -34,6 +40,7 @@ import useUser from "../../../hooks/useUser";
 
 const District: NextPage = ({ id }: any) => {
   const theme = useMantineTheme();
+  const clipboard = useClipboard();
   const router = useRouter();
   const [user] = useUser();
   const { data } = useSWR(`/v1/districts/${id}`);
@@ -217,92 +224,28 @@ const District: NextPage = ({ id }: any) => {
         <Map
           themeControls={false}
           onMapLoaded={async (map: any) => {
-            // Hover effect
-            let hoveredStateId: string | number | undefined = undefined;
-            const popup = new mapboxgl.Popup({
-              closeButton: false,
-              closeOnClick: false,
+            mapHoverEffect(
+              map,
+              "blocks-layer",
+              "blocks",
+              (f) => "Block #" + f.properties.id
+            );
+
+            mapClickEvent(map, "blocks-layer", (f) => {
+              setEditBlock(f.properties);
+              setEditOpen(true);
             });
 
-            map.on("mousemove", "blocks-layer", (e: any) => {
-              if (!e.features) {
-                popup.remove();
-                return;
-              }
-              if (e?.features.length > 0) {
-                // Hover effect
-                if (hoveredStateId !== undefined) {
-                  map.setFeatureState(
-                    { source: "blocks", id: hoveredStateId },
-                    { hover: false }
-                  );
-                }
-                hoveredStateId = e.features[0].id;
-                map.setFeatureState(
-                  { source: "blocks", id: hoveredStateId },
-                  { hover: true }
-                );
-
-                // Tooltip
-                const features = map.queryRenderedFeatures(e.point, {
-                  layers: ["blocks-layer"],
-                });
-
-                popup
-                  .setLngLat(e.lngLat)
-                  //@ts-ignore
-                  .setText("Block #" + features[0].properties.id)
-                  .addTo(map);
-              }
-            });
-            map.on("mouseleave", "blocks-layer", () => {
-              if (hoveredStateId !== undefined) {
-                map.setFeatureState(
-                  { source: "blocks", id: hoveredStateId },
-                  { hover: false }
-                );
-              }
-              hoveredStateId = undefined;
-
-              popup.remove();
-            });
-
-            map.on("click", (e: any) => {
-              // Find features intersecting the bounding box.
-              const selectedFeatures = map.queryRenderedFeatures(e.point, {
-                layers: ["blocks-layer"],
-              });
-              if (selectedFeatures.length > 0) {
-                setEditBlock(selectedFeatures[0].properties);
-                setEditOpen(true);
-              }
-              // Set a filter matching selected features by FIPS codes
-              // to activate the 'counties-highlighted' layer.
-            });
+            mapCopyCoordinates(map, clipboard);
           }}
           layerSetup={async (map: any) => {
-            const blocks = await axios.get(
-              `${process.env.NEXT_PUBLIC_API_URL}/v1/map?district=${id}`
-            );
-            // Fly to district
-            if (blocks.data.center.length > 0) {
-              map.flyTo({
-                zoom: 14,
-                center: [blocks.data.center[1], blocks.data.center[0]],
-                essential: true, // this animation is considered essential with respect to prefers-reduced-motion
-              });
-            }
-
-            map.addSource(`blocks`, {
-              type: "geojson",
-              data: blocks.data,
-            });
-
-            map.addLayer({
-              id: `blocks-layer`,
-              type: "fill",
-              source: `blocks`,
-              paint: {
+            await mapLoadGeoJson(
+              map,
+              `${process.env.NEXT_PUBLIC_API_URL}/v1/map?district=${id}`,
+              "blocks-layer",
+              "fill",
+              "blocks",
+              {
                 "fill-color": [
                   "match",
                   ["get", "status"],
@@ -325,7 +268,15 @@ const District: NextPage = ({ id }: any) => {
                   0.37,
                 ],
               },
-            });
+              (geojson) => {
+                if (geojson.data.center.length > 0) {
+                  map.flyTo({
+                    zoom: 14,
+                    center: [geojson.data.center[1], geojson.data.center[0]],
+                  });
+                }
+              }
+            );
           }}
         />
       </div>

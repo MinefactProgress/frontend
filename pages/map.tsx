@@ -28,8 +28,6 @@ const Home: NextPage = ({}: any) => {
   const theme = useMantineTheme();
   const socket = useSocket();
   const [opened, setOpen] = useState(false);
-  const [players, setPlayers] = useState();
-  const [playerMarkers, setPlayerMarkers] = useState();
   const [selected, setSelected] = useState<any>(null);
   const [extraData, setExtraData] = useState<any>(null);
   const setOpened = async (open: boolean) => {
@@ -46,16 +44,6 @@ const Home: NextPage = ({}: any) => {
   return (
     <>
       <Page name="Map" icon={<IconMap />} noMargin>
-        <Drawer
-          opened={opened}
-          onClose={() => setOpened(false)}
-          padding="xl"
-          size="xl"
-        >
-          <Title>
-            {extraData?.district.name}, Block #{selected?.id}
-          </Title>
-        </Drawer>
         <Chat
           socketEvents={{
             join: "player_join",

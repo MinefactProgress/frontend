@@ -99,15 +99,6 @@ function Map({
     mapboxMap.on("click", (e) => {
       if (onClick) onClick(e, mapboxMap);
     });
-    mapboxMap.on("contextmenu", (e) => {
-      clipboard.copy(e.lngLat.lat + ", " + e.lngLat.lng);
-      showNotification({
-        title: "Copied successfully",
-        message: "The coordinates have been copied to your clipboard!",
-        icon: <IconCheck size={18} />,
-        color: "teal",
-      });
-    });
     const setupLayers = async () => {
       const blocks = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/v1/map`
