@@ -72,25 +72,12 @@ function Map({
   // Websocket
   const socket = useSocket();
 
-  // Update Query Parameters with position
-  React.useEffect(() => {
-    if (posSet) return;
-    const initialZoom = router.query.z?.toString();
-    const initialLat = router.query.lat?.toString();
-    const initialLng = router.query.lng?.toString();
-    if (initialLat && initialLng && initialZoom) {
-      map?.flyTo({
-        center: [parseFloat(initialLng), parseFloat(initialLat)],
-        zoom: parseFloat(initialZoom),
-      });
-      setPosSet(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.query]);
-
   // Setup Map
   React.useEffect(() => {
     const node = mapNode.current;
+    const initialZoom = router.query.z?.toString();
+    const initialLat = router.query.lat?.toString();
+    const initialLng = router.query.lng?.toString();
 
     if (typeof window === "undefined" || node === null) return;
 
@@ -98,8 +85,11 @@ function Map({
       container: node,
       accessToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN,
       style: theme.colorScheme == "dark" ? styles[0].uri : styles[1].uri,
-      center: [-73.88218471055006, 40.742418839242944],
-      zoom: 10.5,
+      center: [
+        parseFloat(initialLng || "-73.88218471055006"),
+        parseFloat(initialLat || "40.742418839242944"),
+      ],
+      zoom: parseFloat(initialZoom || "10.5"),
       antialias: true,
       maxBounds: [
         [-74.45544404703202, 40.45899214198122],
