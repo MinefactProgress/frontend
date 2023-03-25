@@ -436,7 +436,12 @@ const Landmarks = () => {
         <Map
           themeControls={false}
           onMapLoaded={async (map: any) => {
-            mapHoverEffect(map, "blocks-layer", "blocks", (f) => f.name);
+            mapHoverEffect(
+              map,
+              "blocks-layer",
+              "blocks",
+              (f) => f.properties.name
+            );
             mapClickEvent(map, "blocks-layer", (f) => {
               setSelected(f.properties);
               setEditOpen(true);
