@@ -114,10 +114,10 @@ function Map({
 
     mapboxMap.once("load", async (ev: any) => {
       onMapLoaded && (await onMapLoaded(mapboxMap));
-      setLoading(false);
 
       layerSetup && (await layerSetup(mapboxMap));
 
+      setLoading(false);
       if (allowFullscreen)
         mapboxMap.addControl(new mapboxgl.FullscreenControl());
       if (themeControls)

@@ -28,6 +28,7 @@ import { Page } from "../components/Page";
 import axios from "axios";
 import { mapClickEvent } from "../components/map/Map";
 import { useClipboard } from "@mantine/hooks";
+import { useRouter } from "next/router";
 import useSocket from "../hooks/useSocket";
 import useUser from "../hooks/useUser";
 
@@ -37,19 +38,9 @@ const Home: NextPage = ({}: any) => {
   const theme = useMantineTheme();
   const clipboard = useClipboard();
   const socket = useSocket();
-  const [opened, setOpen] = useState(false);
   const [selected, setSelected] = useState<any>(null);
   const [extraData, setExtraData] = useState<any>(null);
-  const setOpened = async (open: boolean) => {
-    setOpen(open);
-    if (open) {
-      console.log(selected);
-      const data = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/v1/districts/` + selected.district
-      );
-      setExtraData({ ...extraData, district: data.data });
-    }
-  };
+  const router = useRouter();
 
   return (
     <>
@@ -89,9 +80,7 @@ const Home: NextPage = ({}: any) => {
               (f) => "Block #" + f.properties.uid
             );
             mapClickEvent(map, "blocks-layer", (f) => {
-              console.log(f.properties);
-              setSelected(f.properties);
-              setOpened(true);
+              router.push("/districts/" + f.properties.district);
             });
             mapCopyCoordinates(map, clipboard, socket);
           }}
