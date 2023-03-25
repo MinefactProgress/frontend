@@ -58,8 +58,6 @@ function Map({
   const [map, setMap] = React.useState<mapboxgl.Map>();
   // Next Router
   const router = useRouter();
-  // Boolean if position from url was loaded
-  const [posSet, setPosSet] = React.useState(false);
   // Boolean if map is loading (-> Display mapLoader)
   const [loading, setLoading] = React.useState(true);
   // Player markers
