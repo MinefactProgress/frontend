@@ -1,28 +1,8 @@
-import {
-  Accordion,
-  Badge,
-  Center,
-  Grid,
-  MediaQuery,
-  Paper,
-  Progress,
-  ScrollArea,
-  Table,
-  Text,
-  Title,
-  createStyles,
-  useMantineTheme,
-} from "@mantine/core";
-import {
-  progressToColorName,
-  statusToColorName,
-  statusToName,
-} from "../../util/block";
+import { Grid, Title, useMantineTheme } from "@mantine/core";
 
 import { IconBuildingCommunity } from "@tabler/icons";
 import type { NextPage } from "next";
 import { Page } from "../../components/Page";
-import { Permissions } from "../../util/permissions";
 import { UserCard } from "../../components/user/UserCard";
 import { useRouter } from "next/router";
 import useSWR from "swr";
@@ -30,9 +10,6 @@ import useUser from "../../hooks/useUser";
 
 const Staff: NextPage = ({}: any) => {
   const { data: dataRaw } = useSWR("/v1/users");
-  const router = useRouter();
-  const theme = useMantineTheme();
-  const [user] = useUser();
 
   const rankSort = [
     "Owner",
@@ -75,8 +52,8 @@ const Staff: NextPage = ({}: any) => {
               online={u.online}
               stats={[
                 {
-                  value: "34",
-                  label: "Claims",
+                  value: u.discord,
+                  label: "Discord Name",
                 },
               ]}
             ></UserCard>

@@ -3,6 +3,7 @@ import {
   BackgroundImage,
   Box,
   Center,
+  Grid,
   Group,
   Indicator,
   Stack,
@@ -20,7 +21,7 @@ const UserPage = ({ id }: any) => {
   const theme = useMantineTheme();
   const { data } = useSWR(`/v1/users/${id}`);
   return (
-    <Page name={id} icon={<IconUsers />} noMargin>
+    <Page name={data?.username || id} icon={<IconUsers />} noMargin>
       <BackgroundImage src={data?.image}>
         <Center
           style={{
@@ -61,29 +62,39 @@ const UserPage = ({ id }: any) => {
           </Stack>
         </Center>
       </BackgroundImage>
-      <StatsGroup
-        data={[
-          {
-            title: "Projects",
-            stats: data?.projects?.[0].projects,
-            description:
-              data?.projects?.[0].projects -
-              data?.projects?.[1].projects +
-              " new Projects since yesterday.",
-          },
-          {
-            title: "Blocks",
-            stats: data?.blocks.total,
-            description:
-              "out of which " + data?.blocks.done + " Blocks are done.",
-          },
-          {
-            title: "Districts",
-            stats: data?.districts.count,
-            description: "in " + data?.districts.boroughs + " Boroughs",
-          },
-        ]}
-      />
+      <Grid mx="md" mt="xl">
+        <Grid.Col span={12}>
+          <StatsGroup
+            data={[
+              {
+                title: "Blocks",
+                stats: data?.claims.total,
+                description: "in total.",
+              },
+              {
+                title: "Blocks",
+                stats: data?.claims.reserved,
+                description: "are reserved.",
+              },
+              {
+                title: "Blocks",
+                stats: data?.claims.building,
+                description: "are under construction.",
+              },
+              {
+                title: "Blocks",
+                stats: data?.claims.detailing,
+                description: "need to be detailed.",
+              },
+              {
+                title: "Blocks",
+                stats: data?.claims.done,
+                description: "are done",
+              },
+            ]}
+          />
+        </Grid.Col>
+      </Grid>
     </Page>
   );
 };

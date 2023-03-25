@@ -29,10 +29,11 @@ import axios from "axios";
 import { mapClickEvent } from "../components/map/Map";
 import { useClipboard } from "@mantine/hooks";
 import useSocket from "../hooks/useSocket";
+import useUser from "../hooks/useUser";
 
 const Home: NextPage = ({}: any) => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const dark = colorScheme === "dark";
+  const [user] = useUser();
   const theme = useMantineTheme();
   const clipboard = useClipboard();
   const socket = useSocket();
@@ -92,7 +93,7 @@ const Home: NextPage = ({}: any) => {
               setSelected(f.properties);
               setOpened(true);
             });
-            mapCopyCoordinates(map, clipboard);
+            mapCopyCoordinates(map, clipboard, socket);
           }}
         />
       </Page>

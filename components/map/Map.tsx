@@ -9,11 +9,11 @@ import {
   MapboxStyleSwitcherControl,
 } from "mapbox-gl-style-switcher";
 import axios, { AxiosResponse } from "axios";
+import useUser, { UserData } from "../../hooks/useUser";
 
 import { IconCheck } from "@tabler/icons";
 import MapLoader from "./MapLoader";
 import { Socket } from "socket.io-client";
-import { UserData } from "../../hooks/useUser";
 import mapboxgl from "mapbox-gl";
 import { showNotification } from "@mantine/notifications";
 import { useRouter } from "next/router";
@@ -282,28 +282,31 @@ export function mapCopyCoordinates(
   map: any,
   clipboard: any,
   socket?: Socket,
-  user?: UserData
 ) {
   map.on("contextmenu", (e: any) => {
+    const user = JSON.parse(window.localStorage.getItem("auth")||"{}");
     clipboard.copy(e.lngLat.lat + ", " + e.lngLat.lng);
     showNotification({
       title: "Coordinates copied",
-      message: socket && user ? "Click to teleport." : "Paste them anywhere.",
+      message: socket ? "Click to teleport." : "Paste them anywhere.",
       icon: <IconCheck size={18} />,
       color: "teal",
-      ...(socket && user
+      ...(socket
         ? {
             styles: { root: { cursor: "pointer" } },
-            onClick: () =>
+            onClick: () => {
               socket.emit("teleport", {
                 coordinates: [e.lngLat.lat, e.lngLat.lng],
-                user: user.uid,
-              }),
+                user: user?.uid,
+              });
+              console.log(user);
+            },
           }
         : undefined),
     });
   });
 }
+;
 
 // Map Load Helper Functions
 

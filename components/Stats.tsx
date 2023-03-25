@@ -89,9 +89,7 @@ export function StatsGroup({ data }: IStatsGroup) {
   const { classes } = useStylesGroup();
   const stats = data.map((stat) => (
     <div key={stat.title} className={classes.stat}>
-      <Text className={classes.count}>
-        {stat.stats || <Skeleton>1</Skeleton>}
-      </Text>
+      <Text className={classes.count}>{stat.stats || 0}</Text>
       <Text className={classes.title}>
         {stat.title || <Skeleton>1</Skeleton>}
       </Text>
