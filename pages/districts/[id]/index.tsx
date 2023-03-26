@@ -1,21 +1,18 @@
 import {
-  ActionIcon,
   Alert,
   Button,
-  Checkbox,
-  Group,
-  Modal,
+  Checkbox, Modal,
   MultiSelect,
   NumberInput,
   Progress,
-  useMantineTheme,
+  useMantineTheme
 } from "@mantine/core";
 import {
   IconAlertCircle,
   IconBackhoe,
   IconBuildingBank,
   IconCheck,
-  IconUsers,
+  IconUsers
 } from "@tabler/icons";
 import Map, {
   mapClickEvent,
@@ -23,22 +20,20 @@ import Map, {
   mapHoverEffect,
   mapLoadGeoJson,
   mapStatusColorLine,
-  mapStatusColorPolygon,
+  mapStatusColorPolygon
 } from "../../../components/map/Map";
 
-import { BackButton } from "../../../components/FastNavigation";
-import { NextPage } from "next";
-import { Page } from "../../../components/Page";
-import { Permissions } from "../../../util/permissions";
-import { ProgressCard } from "../../../components/Stats";
-import axios from "axios";
-import mapboxgl from "mapbox-gl";
-import { showNotification } from "@mantine/notifications";
 import { useClipboard } from "@mantine/hooks";
+import { showNotification } from "@mantine/notifications";
+import { NextPage } from "next";
 import { useRouter } from "next/router";
-import useSWR from "swr";
 import { useState } from "react";
+import useSWR from "swr";
+import { BackButton } from "../../../components/FastNavigation";
+import { Page } from "../../../components/Page";
+import { ProgressCard } from "../../../components/Stats";
 import useUser from "../../../hooks/useUser";
+import { Permissions } from "../../../util/permissions";
 
 const District: NextPage = ({ id }: any) => {
   const theme = useMantineTheme();

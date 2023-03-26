@@ -12,8 +12,8 @@ import {
   PointElement,
   TooltipItem,
 } from "chart.js";
-import { Bar, Line } from "react-chartjs-2";
 
+import { Line } from "react-chartjs-2";
 import { useMantineTheme } from "@mantine/core";
 
 ChartJS.register(

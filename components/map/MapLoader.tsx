@@ -12,7 +12,7 @@ function MapLoader() {
         zIndex: 99,
       }}
     >
-          <LoadingOverlay visible={true} />
+      <LoadingOverlay visible={true} />
     </Center>
   );
 }

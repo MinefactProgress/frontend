@@ -1,5 +1,5 @@
-import "mapbox-gl/dist/mapbox-gl.css";
 import "mapbox-gl-style-switcher/styles.css";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 import * as React from "react";
 
@@ -9,10 +9,8 @@ import {
   MapboxStyleSwitcherControl,
 } from "mapbox-gl-style-switcher";
 import axios, { AxiosResponse } from "axios";
-import useUser, { UserData } from "../../hooks/useUser";
 
 import { IconCheck } from "@tabler/icons";
-import MapLoader from "./MapLoader";
 import { Socket } from "socket.io-client";
 import mapboxgl from "mapbox-gl";
 import { showNotification } from "@mantine/notifications";
@@ -266,13 +264,9 @@ export function mapClickEvent(
     }
   });
 }
-export function mapCopyCoordinates(
-  map: any,
-  clipboard: any,
-  socket?: Socket,
-) {
+export function mapCopyCoordinates(map: any, clipboard: any, socket?: Socket) {
   map.on("contextmenu", (e: any) => {
-    const user = JSON.parse(window.localStorage.getItem("auth")||"{}");
+    const user = JSON.parse(window.localStorage.getItem("auth") || "{}");
     clipboard.copy(e.lngLat.lat + ", " + e.lngLat.lng);
     showNotification({
       title: "Coordinates copied",
@@ -294,8 +288,6 @@ export function mapCopyCoordinates(
     });
   });
 }
-;
-
 // Map Load Helper Functions
 
 export async function mapLoadGeoJson(

@@ -1,33 +1,17 @@
 import {
   ActionIcon,
-  ActionIconProps,
-  Anchor,
-  Card,
-  Group,
+  ActionIconProps, Card, createStyles, Group,
   SimpleGrid,
   Text,
-  UnstyledButton,
-  createStyles,
+  UnstyledButton
 } from "@mantine/core";
 import {
-  IconArrowLeft,
-  IconBuildingBank,
-  IconBuildingCommunity,
-  IconBuildingMonument,
-  IconCashBanknote,
-  IconCoin,
-  IconCreditCard,
-  IconHierarchy,
-  IconMap,
-  IconReceipt,
-  IconReceiptRefund,
-  IconReceiptTax,
-  IconRepeat,
-  IconReport,
-  IconSearch,
-  IconUsers,
+  IconArrowLeft, IconBuildingCommunity,
+  IconBuildingMonument, IconHierarchy,
+  IconMap, IconSearch,
+  IconUsers
 } from "@tabler/icons";
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
 
 const data = [
   { title: "Staff Team", icon: IconUsers, color: "orange", href: "/staff" },
@@ -123,7 +107,7 @@ export function FastNavigation() {
   );
 }
 
-export function BackButton(props:ActionIconProps) {
+export function BackButton(props: ActionIconProps) {
   const router = useRouter();
 
   return (

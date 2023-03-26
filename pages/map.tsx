@@ -91,4 +91,3 @@ const Home: NextPage = ({}: any) => {
 };
 
 export default Home;
-  

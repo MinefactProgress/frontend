@@ -1,20 +1,10 @@
 import {
-  ActionIcon,
   Avatar,
   Group,
-  Menu,
   ScrollArea,
   Table,
-  Text,
+  Text
 } from "@mantine/core";
-import {
-  IconDots,
-  IconMessages,
-  IconNote,
-  IconPencil,
-  IconReportAnalytics,
-  IconTrash,
-} from "@tabler/icons";
 
 interface UsersStackProps {
   data: {
