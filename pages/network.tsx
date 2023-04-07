@@ -2,6 +2,8 @@ import {
   ActionIcon,
   Badge,
   Center,
+  CheckIcon,
+  Checkbox,
   Chip,
   Code,
   Grid,
@@ -52,7 +54,7 @@ ChartJS.register(
 );
 
 const Network = () => {
-  const router = useRouter();
+  const [serverSearch, setServerSearch] = useState<string | undefined>("");
   const [dateNow, setDateNow] = useState(new Date());
   const dateInverval = useInterval(() => setDateNow(new Date()), 1000);
   const { data } = useSWR("/v1/network/status");
@@ -220,6 +222,62 @@ const Network = () => {
               },
             ]}
           />
+        </Grid.Col>
+        <Grid.Col span={12}>
+          <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
+            <Text style={{ fontWeight: 700 }}>
+              Build Team Servers ({data?.length} listed)
+            </Text>
+            <Group position="right">
+              <TextInput
+                placeholder="Search Server ID..."
+                onChange={(e) => setServerSearch(e.currentTarget.value)}
+                value={serverSearch}
+              />
+            </Group>
+            <Table highlightOnHover>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Version</th>
+                  <th>Players</th>
+                  <th>Cached</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data
+                  ?.filter((e: any) => e.id.includes(serverSearch))
+                  .sort((a: any, b: any) => b.online - a.online)
+                  .map((server: any) => (
+                    <tr key={server.id}>
+                      <td>
+                        <Group spacing="xs">
+                          <ThemeIcon
+                            variant="light"
+                            color={server.online ? "green" : "red"}
+                          >
+                            {server.online ? <IconCheck /> : <IconX />}
+                          </ThemeIcon>
+                          {server.id}
+                        </Group>
+                      </td>
+                      <td>
+                        {server.version.name.includes(" ")
+                          ? server.version.name.split(" ")[0].toLowerCase() ==
+                            "mohist"
+                            ? "1.12.2 (M)"
+                            : server.version.name.split(" ")[1] + " (V)"
+                          : server.version.name + " (V)"}
+                      </td>
+                      <td>{`${server.players.online} / ${server.players.max}`}</td>
+                      <td>
+                        <Checkbox checked={server.players.max > 0} />
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </Table>
+          </Paper>
         </Grid.Col>
       </Grid>
     </Page>
