@@ -2,6 +2,7 @@ import {
   Avatar,
   Center,
   Navbar as MNavbar,
+  Menu,
   Stack,
   Tooltip,
   UnstyledButton,
@@ -145,6 +146,7 @@ export function Navbar({
                 />
               }
               label="Account"
+              onClick={() => router.push("/account")}
             />
           )}
           <NavbarLink
