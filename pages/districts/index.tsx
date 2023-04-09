@@ -76,13 +76,11 @@ const Districts: NextPage = ({}: any) => {
         key={`d${district.id}-${i}`}
       >
         <td>{district.name}</td>
-        <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
-          <td>
-            <Badge color={statusToColorName(district.status)}>
-              {statusToName(district.status)}
-            </Badge>
-          </td>
-        </MediaQuery>
+        <td>
+          <Badge color={statusToColorName(district.status)}>
+            {statusToName(district.status)}
+          </Badge>
+        </td>
         <td>
           <Center>{district.progress.toFixed(2) + "%"}</Center>
           <Progress
@@ -129,12 +127,7 @@ const Districts: NextPage = ({}: any) => {
                   <thead className={classes.header}>
                     <tr>
                       <th>Name</th>
-                      <MediaQuery
-                        smallerThan={"sm"}
-                        styles={{ display: "none" }}
-                      >
-                        <th>Status</th>
-                      </MediaQuery>
+                      <th>Status</th>
                       <th>Progress</th>
                       <MediaQuery
                         smallerThan={"sm"}
@@ -178,9 +171,7 @@ const Districts: NextPage = ({}: any) => {
               <thead>
                 <tr>
                   <th>Name</th>
-                  <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
-                    <th>Status</th>
-                  </MediaQuery>
+                  <th>Status</th>
                   <th>Progress</th>
                   <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
                     <th>Blocks Done</th>
@@ -203,16 +194,11 @@ const Districts: NextPage = ({}: any) => {
                         }}
                       >
                         <td>{district.name}</td>
-                        <MediaQuery
-                          smallerThan={"sm"}
-                          styles={{ display: "none" }}
-                        >
-                          <td>
-                            <Badge color={statusToColorName(district.status)}>
-                              {statusToName(district.status)}
-                            </Badge>
-                          </td>
-                        </MediaQuery>
+                        <td>
+                          <Badge color={statusToColorName(district.status)}>
+                            {statusToName(district.status)}
+                          </Badge>
+                        </td>
                         <td>
                           <Center>{district.progress.toFixed(2) + "%"}</Center>
                           <Progress

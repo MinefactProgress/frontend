@@ -5,6 +5,7 @@ import {
   Code,
   Grid,
   Group,
+  MediaQuery,
   Paper,
   Table,
   Text,
@@ -99,7 +100,7 @@ const Network = () => {
         </Center>
       </Paper>
       <Grid>
-        <Grid.Col sm={4}>
+        <Grid.Col md={4}>
           <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
             <Text style={{ fontWeight: 700 }}>Proxy Status</Text>
 
@@ -135,7 +136,7 @@ const Network = () => {
             </Group>
           </Paper>
         </Grid.Col>
-        <Grid.Col sm={4}>
+        <Grid.Col sm={6} md={4}>
           <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
             <Text style={{ fontWeight: 700 }}>Proxy Versions</Text>
 
@@ -153,7 +154,7 @@ const Network = () => {
             </Group>
           </Paper>
         </Grid.Col>
-        <Grid.Col sm={4}>
+        <Grid.Col sm={6} md={4}>
           <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
             <Text style={{ fontWeight: 700 }}>Last Update</Text>
 
@@ -233,9 +234,13 @@ const Network = () => {
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Version</th>
+                  <MediaQuery smallerThan={"xs"} styles={{ display: "none" }}>
+                    <th>Version</th>
+                  </MediaQuery>
                   <th>Players</th>
-                  <th>Cached</th>
+                  <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+                    <th>Cached</th>
+                  </MediaQuery>
                 </tr>
               </thead>
               <tbody>
@@ -255,18 +260,28 @@ const Network = () => {
                           {server.id}
                         </Group>
                       </td>
-                      <td>
-                        {server.version.name.includes(" ")
-                          ? server.version.name.split(" ")[0].toLowerCase() ==
-                            "mohist"
-                            ? "1.12.2 (M)"
-                            : server.version.name.split(" ")[1] + " (V)"
-                          : server.version.name + " (V)"}
-                      </td>
+                      <MediaQuery
+                        smallerThan={"xs"}
+                        styles={{ display: "none" }}
+                      >
+                        <td>
+                          {server.version.name.includes(" ")
+                            ? server.version.name.split(" ")[0].toLowerCase() ==
+                              "mohist"
+                              ? "1.12.2 (M)"
+                              : server.version.name.split(" ")[1] + " (V)"
+                            : server.version.name + " (V)"}
+                        </td>
+                      </MediaQuery>
                       <td>{`${server.players.online} / ${server.players.max}`}</td>
-                      <td>
-                        <Checkbox checked={server.players.max > 0} />
-                      </td>
+                      <MediaQuery
+                        smallerThan={"sm"}
+                        styles={{ display: "none" }}
+                      >
+                        <td>
+                          <Checkbox checked={server.players.max > 0} />
+                        </td>
+                      </MediaQuery>
                     </tr>
                   ))}
               </tbody>

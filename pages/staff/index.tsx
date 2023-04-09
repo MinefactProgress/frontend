@@ -43,7 +43,7 @@ const Staff: NextPage = ({}: any) => {
       <Title my="lg">BuildTheEarth New York City Staff Members</Title>
       <Grid>
         {data?.map((u: any) => (
-          <Grid.Col sm={2} key={u.uid}>
+          <Grid.Col span={12} xs={6} md={4} lg={3} key={u.uid}>
             <UserCard
               id={u.uid}
               avatar={`https://mc-heads.net/avatar/${u.username}`}
