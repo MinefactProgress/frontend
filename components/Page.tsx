@@ -1,4 +1,11 @@
-import { AppShell, CSSObject } from "@mantine/core";
+import {
+  Anchor,
+  AppShell,
+  CSSObject,
+  Container,
+  Group,
+  Paper,
+} from "@mantine/core";
 import {
   IconBuildingCommunity,
   IconBuildingMonument,
@@ -99,6 +106,25 @@ export const Page = (props: {
       <AppShell
         navbar={<Navbar data={links} />}
         padding={props.noMargin ? 0 : undefined}
+        footer={
+          <Paper withBorder>
+            <Container>
+              <Group position="apart">
+                <p>
+                  Copyright &copy; {new Date().getFullYear()} Minefact Progress
+                </p>
+                <Group>
+                  <Anchor<"a"> color="dimmed" size="sm">
+                    Privacy
+                  </Anchor>
+                  <Anchor<"a"> color="dimmed" size="sm">
+                    Discord
+                  </Anchor>
+                </Group>
+              </Group>
+            </Container>
+          </Paper>
+        }
         styles={(theme) => ({
           main: {
             backgroundColor:
