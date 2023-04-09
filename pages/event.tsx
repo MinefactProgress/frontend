@@ -1,9 +1,7 @@
 import {
-  ActionIcon,
   Alert,
   Button,
   Checkbox,
-  Group,
   Modal,
   MultiSelect,
   NumberInput,
@@ -27,16 +25,12 @@ import Map, {
 } from "../components/map/Map";
 
 import { BackButton } from "../components/FastNavigation";
-import { Data } from "victory";
-import { NextPage } from "next";
 import { Page } from "../components/Page";
 import { Permissions } from "../util/permissions";
 import { ProgressCard } from "../components/Stats";
 import axios from "axios";
-import mapboxgl from "mapbox-gl";
 import { showNotification } from "@mantine/notifications";
 import { useClipboard } from "@mantine/hooks";
-import { useRouter } from "next/router";
 import useSWR from "swr";
 import { useState } from "react";
 import useUser from "../hooks/useUser";
@@ -99,7 +93,7 @@ const Event = () => {
   };
 
   return (
-    <Page name="District" icon={<IconBuildingBank />} noMargin>
+    <Page name="Event" icon={<IconBuildingBank />} noMargin>
       <div style={{ position: "relative", height: "100%", width: "100%" }}>
         <Modal
           size="md"
@@ -197,12 +191,24 @@ const Event = () => {
           }}
         >
           <BackButton variant="outline" mb="md" />
-          <ProgressCard
-            value={data?.filter((d: any) => d.status == 4).length}
-            title={"Event"}
-            max={data?.length}
-            descriptor="Blocks finished"
-          ></ProgressCard>
+          {data?.length <= 0 ? (
+            <Alert
+              icon={<IconAlertCircle size={16} />}
+              title="Warning!"
+              color="red"
+              variant="outline"
+              mt="md"
+            >
+              There is currently no ongoing event.
+            </Alert>
+          ) : (
+            <ProgressCard
+              value={data?.filter((d: any) => d.status == 4).length}
+              title={"Event"}
+              max={data?.length}
+              descriptor="Blocks finished"
+            ></ProgressCard>
+          )}
         </div>
         <Map
           themeControls={false}

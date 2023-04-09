@@ -27,5 +27,7 @@ export default function NavProgress() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.asPath]);
 
-  return <NavigationProgress autoReset={true} />;
+  return !router.query?.lat ? (
+    <NavigationProgress autoReset={true} />
+  ) : undefined;
 }

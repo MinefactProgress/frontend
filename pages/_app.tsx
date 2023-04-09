@@ -34,11 +34,7 @@ export default function App(props: AppProps) {
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
   useHotkeys([["mod+J", () => toggleColorScheme()]]);
 
-  initializeSocket(
-    process.env.NEXT_PUBLIC_API_URL || "",
-    ["motd", "playerdata"],
-    user?.token
-  );
+  initializeSocket(process.env.NEXT_PUBLIC_API_URL || "", user?.token);
 
   return (
     <SWRConfig

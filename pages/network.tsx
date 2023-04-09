@@ -1,15 +1,11 @@
 import {
   ActionIcon,
-  Badge,
   Center,
-  CheckIcon,
   Checkbox,
-  Chip,
   Code,
   Grid,
   Group,
   Paper,
-  ScrollArea,
   Table,
   Text,
   TextInput,
@@ -29,7 +25,6 @@ import {
   Tooltip,
 } from "chart.js";
 import { IconCheck, IconHierarchy, IconReload, IconX } from "@tabler/icons";
-import { Line, Pie } from "react-chartjs-2";
 import { useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 
@@ -37,7 +32,6 @@ import { Page } from "../components/Page";
 import { StatsGroup } from "../components/Stats";
 import { timeDiff } from "../util/time";
 import { useInterval } from "@mantine/hooks";
-import { useRouter } from "next/router";
 
 const humanizeDuration = require("humanize-duration");
 
