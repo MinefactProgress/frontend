@@ -61,7 +61,7 @@ const Home: NextPage = ({}: any) => {
             <Motd />
           </Group>
         </Grid.Col>
-        <Grid.Col xs={7}>
+        <Grid.Col sm={7}>
           <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
             <Title>Welcome back{user ? " " + user?.username : null}!</Title>
             <Text>
@@ -71,7 +71,7 @@ const Home: NextPage = ({}: any) => {
             {user?.username}
           </Paper>
         </Grid.Col>
-        <Grid.Col xs={5}>
+        <Grid.Col sm={5}>
           <FastNavigation />
         </Grid.Col>
         <Grid.Col xs={12}>
@@ -99,7 +99,7 @@ const Home: NextPage = ({}: any) => {
             ]}
           />
         </Grid.Col>
-        <Grid.Col xs={4}>
+        <Grid.Col sm={6} lg={4}>
           <Skeleton visible={!data} style={{ height: "100%" }}>
             <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
               <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
@@ -126,7 +126,7 @@ const Home: NextPage = ({}: any) => {
             </Paper>
           </Skeleton>
         </Grid.Col>
-        <Grid.Col xs={4}>
+        <Grid.Col sm={6} lg={4}>
           <Skeleton visible={!data} style={{ height: "100%" }}>
             <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
               <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
@@ -157,7 +157,7 @@ const Home: NextPage = ({}: any) => {
             </Paper>
           </Skeleton>
         </Grid.Col>
-        <Grid.Col xs={4}>
+        <Grid.Col sm={6} lg={4}>
           <Skeleton visible={!data} style={{ height: "100%" }}>
             <Paper withBorder radius="md" p="xs" style={{ height: "100%" }}>
               <Text color="dimmed" size="xs" transform="uppercase" weight={700}>

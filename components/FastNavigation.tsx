@@ -1,16 +1,23 @@
 import {
   ActionIcon,
-  ActionIconProps, Card, createStyles, Group,
-  SimpleGrid,
+  ActionIconProps,
+  Card,
+  Grid,
+  Group,
   Text,
-  UnstyledButton
+  UnstyledButton,
+  createStyles,
 } from "@mantine/core";
 import {
-  IconArrowLeft, IconBuildingCommunity,
-  IconBuildingMonument, IconHierarchy,
-  IconMap, IconSearch,
-  IconUsers
+  IconArrowLeft,
+  IconBuildingCommunity,
+  IconBuildingMonument,
+  IconHierarchy,
+  IconMap,
+  IconSearch,
+  IconUsers,
 } from "@tabler/icons";
+
 import { useRouter } from "next/router";
 
 const data = [
@@ -63,6 +70,7 @@ const useStyles = createStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
     textAlign: "center",
+    width: "100%",
     borderRadius: theme.radius.md,
     height: 90,
     backgroundColor:
@@ -83,16 +91,17 @@ export function FastNavigation() {
   const router = useRouter();
 
   const items = data.map((item) => (
-    <UnstyledButton
-      key={item.title}
-      className={classes.item}
-      onClick={() => item.onClick || router.push(item.href)}
-    >
-      <item.icon color={theme.colors[item.color][6]} size={32} />
-      <Text size="xs" mt={7}>
-        {item.title}
-      </Text>
-    </UnstyledButton>
+    <Grid.Col key={item.title} span={6} md={4}>
+      <UnstyledButton
+        className={classes.item}
+        onClick={() => item.onClick || router.push(item.href)}
+      >
+        <item.icon color={theme.colors[item.color][6]} size={32} />
+        <Text size="xs" mt={7}>
+          {item.title}
+        </Text>
+      </UnstyledButton>
+    </Grid.Col>
   ));
 
   return (
@@ -100,9 +109,7 @@ export function FastNavigation() {
       <Group position="apart">
         <Text className={classes.title}>Quick Links</Text>
       </Group>
-      <SimpleGrid cols={3} mt="md">
-        {items}
-      </SimpleGrid>
+      <Grid mt="md">{items}</Grid>
     </Card>
   );
 }
