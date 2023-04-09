@@ -92,7 +92,7 @@ export function Navbar({
 }) {
   const router = useRouter();
   const auth = useAuth();
-  const [user] = useUser();
+  const [user, setUser] = useUser();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
   const theme = useMantineTheme();
@@ -152,7 +152,7 @@ export function Navbar({
           <NavbarLink
             icon={auth ? <IconLogout /> : <IconLogin />}
             label={auth ? "Logout" : "Login"}
-            onClick={() => router.push("/login")}
+            onClick={() => (auth ? setUser(undefined) : router.push("/login"))}
           />
         </Stack>
       </MNavbar.Section>
