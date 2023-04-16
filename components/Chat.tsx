@@ -19,6 +19,7 @@ function Chat({
   };
 }) {
   const socket = useSocket();
+  const interval = useInterval(() => state.shift(), 5000);
 
   const {
     state,
@@ -59,6 +60,11 @@ function Chat({
       add({ msg: `left`, user: d.username });
     });
   }
+
+  useEffect(() => {
+    interval.start();
+    return interval.stop;
+  });
 
   return (
     <div style={style}>

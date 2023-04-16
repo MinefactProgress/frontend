@@ -12,10 +12,12 @@ import {
 import { Error } from "../components/Error";
 import { Page } from "../components/Page";
 import { showNotification } from "@mantine/notifications";
+import { useState } from "react";
 import useUser from "../hooks/useUser";
 
 const SettingsPage = () => {
   const [user, setUser] = useUser();
+  const [code, setCode] = useState();
   const handleLink = () => {
     fetch(process.env.NEXT_PUBLIC_API_URL + `/v1/verify`, {
       method: "POST",
@@ -33,7 +35,7 @@ const SettingsPage = () => {
             color: "red",
           });
         } else {
-          console.log("ddd ", res);
+          setCode(res?.data.data.code);
           showNotification({
             title: "Linking started",
             message:
@@ -50,6 +52,7 @@ const SettingsPage = () => {
   if (!user) return <Error error={404} />;
   return (
     <Page name="User Settings" icon={<IconUser />}>
+      <p>{code && "/progress verify " + code}</p>
       <Button onClick={handleLink}>Link Minecraft Account</Button>
     </Page>
   );
