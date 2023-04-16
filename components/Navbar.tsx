@@ -53,16 +53,25 @@ interface NavbarLinkProps {
   icon: React.ReactNode;
   label: string;
   active?: boolean;
-  onClick?(): void;
+  href?: string;
+  onClick?: () => void;
 }
 
-export function NavbarLink({ icon, label, active, onClick }: NavbarLinkProps) {
+export function NavbarLink({
+  icon,
+  label,
+  active,
+  href,
+  onClick,
+}: NavbarLinkProps) {
   const { classes, cx } = useStyles();
   if (label) {
     return (
       <Tooltip label={label} position="right" transitionDuration={0}>
-        <UnstyledButton
+        <UnstyledButton<"a">
+          href={href}
           onClick={onClick}
+          component="a"
           className={cx(classes.link, { [classes.active]: active })}
         >
           {icon}
@@ -71,8 +80,9 @@ export function NavbarLink({ icon, label, active, onClick }: NavbarLinkProps) {
     );
   }
   return (
-    <UnstyledButton
-      onClick={onClick}
+    <UnstyledButton<"a">
+      href={href}
+      component="a"
       className={cx(classes.link, { [classes.active]: active })}
     >
       {icon}
@@ -104,10 +114,7 @@ export function Navbar({
           label={link.label}
           key={"l" + index}
           active={router.pathname.toLowerCase() == link.href.toLowerCase()}
-          onClick={() =>
-            router.pathname.toLowerCase() != link.href.toLowerCase() &&
-            router.push(link.href)
-          }
+          href={link.href}
         />
       )
   );
@@ -123,7 +130,7 @@ export function Navbar({
         ></Image>
       </Center>
       <MNavbar.Section grow mt={50}>
-        <Stack justify="center" spacing={0}>
+        <Stack justify="center" spacing={"xs"}>
           {links}
         </Stack>
       </MNavbar.Section>
@@ -146,7 +153,7 @@ export function Navbar({
                 />
               }
               label="Account"
-              onClick={() => router.push("/account")}
+              href={"/account"}
             />
           )}
           <NavbarLink

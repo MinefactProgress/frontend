@@ -92,9 +92,10 @@ export function FastNavigation() {
 
   const items = data.map((item) => (
     <Grid.Col key={item.title} span={6} md={4}>
-      <UnstyledButton
+      <UnstyledButton<"a">
         className={classes.item}
-        onClick={() => item.onClick || router.push(item.href)}
+        href={item.href}
+        component="a"
       >
         <item.icon color={theme.colors[item.color][6]} size={32} />
         <Text size="xs" mt={7}>

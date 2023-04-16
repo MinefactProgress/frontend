@@ -115,11 +115,12 @@ const Home: NextPage = ({}: any) => {
                 }}
                 height={"160px"}
               />
-              <Button
+              <Button<"a">
                 mt="md"
                 fullWidth
                 variant="outline"
-                onClick={() => router.push("/districts")}
+                href={"/districts"}
+                component="a"
               >
                 Open District Overview
               </Button>
@@ -146,11 +147,12 @@ const Home: NextPage = ({}: any) => {
                 }}
                 height={"160px"}
               />
-              <Button
+              <Button<"a">
                 mt="md"
                 fullWidth
                 variant="outline"
-                onClick={() => router.push("/projects")}
+                href={"/projects"}
+                component="a"
               >
                 Open Project List
               </Button>
@@ -177,11 +179,12 @@ const Home: NextPage = ({}: any) => {
                 }}
                 height={"160px"}
               />
-              <Button
+              <Button<"a">
                 mt="md"
                 fullWidth
                 variant="outline"
-                onClick={() => router.push("/network")}
+                href={"/network"}
+                component="a"
               >
                 Open Network Statistics
               </Button>

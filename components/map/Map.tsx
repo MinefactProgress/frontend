@@ -141,7 +141,7 @@ function Map({
   }, []);
 
   // Player Markers
-  socket.off("player_locations").on("player_locations", (e: any) => {
+  socket.off("player_location").on("player_location", (e: any) => {
     if (showPlayers) {
       setPlayers(JSON.parse(e));
     }
