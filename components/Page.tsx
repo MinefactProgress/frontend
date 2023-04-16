@@ -27,9 +27,15 @@ import useUser from "../hooks/useUser";
 
 const homeLinks = [
   {
+    icon: <IconMap />,
+    label: "Map",
+    href: "/",
+    permission: 0,
+  },
+  {
     icon: <IconChartBar />,
     label: "Progress Overview",
-    href: "/",
+    href: "/dashboard",
     permission: 0,
   },
   {
@@ -60,12 +66,6 @@ const homeLinks = [
     icon: <IconBuildingMonument />,
     label: "Landmarks",
     href: "/landmarks",
-    permission: 0,
-  },
-  {
-    icon: <IconMap />,
-    label: "Map",
-    href: "/map",
     permission: 0,
   },
   {
