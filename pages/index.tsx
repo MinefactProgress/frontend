@@ -1,4 +1,4 @@
-import { IconMap, IconMoonStars, IconSun } from "@tabler/icons";
+import { IconMap } from "@tabler/icons";
 import Map, {
   mapCopyCoordinates,
   mapHoverEffect,
@@ -6,12 +6,12 @@ import Map, {
   mapStatusColorLine,
   mapStatusColorPolygon,
 } from "../components/map/Map";
-import { useMantineColorScheme, useMantineTheme } from "@mantine/core";
+import { Button, useMantineColorScheme, useMantineTheme } from "@mantine/core";
 
 import Chat from "../components/Chat";
 import type { NextPage } from "next";
 import { Page } from "../components/Page";
-import React from 'react'
+import React from "react";
 import { mapClickEvent } from "../components/map/Map";
 import { useClipboard } from "@mantine/hooks";
 import { useRouter } from "next/router";
@@ -31,6 +31,12 @@ const Home: NextPage = ({}: any) => {
 
   return (
     <Page name="Map" icon={<IconMap />} noMargin>
+      <Button
+        onClick={() => router.push("/dynmap")}
+        style={{ position: "absolute", left: "90px", top: "10px ", zIndex: 1 }}
+      >
+        View Dynmap
+      </Button>
       <Chat
         socketEvents={{
           join: "player_join",

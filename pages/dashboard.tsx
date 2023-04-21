@@ -28,10 +28,7 @@ import { LineChart } from "../components/charts/LineChart";
 import Motd from "../components/Motd";
 import type { NextPage } from "next";
 import { Page } from "../components/Page";
-import { Permissions } from "../util/permissions";
 import { StatsGroup } from "../components/Stats";
-import { useEffect } from "react";
-import { useRouter } from "next/router";
 import useSWR from "swr";
 import useUser from "../hooks/useUser";
 
@@ -49,7 +46,6 @@ ChartJS.register(
 );
 
 const Home: NextPage = ({}: any) => {
-  const router = useRouter();
   const { data } = useSWR("/v1/progress");
   const [user] = useUser();
 
@@ -68,7 +64,6 @@ const Home: NextPage = ({}: any) => {
               We are tracking the Progress made on the BTE New York City
               building Project.
             </Text>
-            {user?.username}
           </Paper>
         </Grid.Col>
         <Grid.Col sm={5}>
