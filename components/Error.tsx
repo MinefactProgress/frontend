@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 
 import toText from "error-to-text";
+import { useRouter } from "next/router";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -59,7 +60,7 @@ export function Error(props: { error: number }) {
   const theme = useMantineTheme();
   const { classes } = useStyles();
   const error = toText(props.error);
-
+  const router = useRouter();
   return (
     <div className={classes.root}>
       <Center style={{ height: "100%" }}>
@@ -70,7 +71,7 @@ export function Error(props: { error: number }) {
             {error?.description}
           </Text>
           <Group position="center">
-            <Button size="md">Back</Button>
+            <Button size="md" onClick={() => router.back()}>Back</Button>
           </Group>
         </Container>
       </Center>
