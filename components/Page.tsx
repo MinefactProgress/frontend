@@ -114,7 +114,7 @@ export const Page = (props: {
                   Copyright &copy; {new Date().getFullYear()} Minefact Progress
                 </p>
                 <Group>
-                  <Anchor<"a"> color="dimmed" size="sm">
+                  <Anchor<"a"> color="dimmed" size="sm" href="privacy">
                     Privacy
                   </Anchor>
                   <Anchor<"a"> color="dimmed" size="sm">
