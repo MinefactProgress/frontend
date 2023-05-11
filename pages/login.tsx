@@ -11,7 +11,9 @@ import {
 } from "@mantine/core";
 import useUser, { useAuth } from "../hooks/useUser";
 
+import { getCookie } from "cookies-next";
 import { showNotification } from "@mantine/notifications";
+import useCookie from "../hooks/useCookie";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/router";
 
@@ -53,6 +55,7 @@ export default function Login() {
   const { classes } = useStyles();
   const [user, setUser] = useUser();
   const auth = useAuth();
+  const cookie = useCookie();
   const router = useRouter();
   const form = useForm({
     initialValues: {
@@ -90,6 +93,7 @@ export default function Login() {
       });
     }
   };
+
   return (
     <div className={classes.wrapper}>
       <Paper className={classes.form} radius={0} p={30}>
@@ -118,7 +122,18 @@ export default function Login() {
             size="md"
             {...form.getInputProps("password")}
           />
-          <Button fullWidth mt="xl" size="md" disabled={auth} type="submit">
+          {!cookie.consent && (
+            <Text color="dimmed" pt="xl">
+              To be able to log in you have to agree to our cookie policy.
+            </Text>
+          )}
+          <Button
+            fullWidth
+            mt="xl"
+            size="md"
+            disabled={auth || !cookie.consent}
+            type="submit"
+          >
             Login
           </Button>
         </form>

@@ -7,6 +7,7 @@ import { darkTheme, lightTheme } from "../util/theme";
 import { useHotkeys, useLocalStorage } from "@mantine/hooks";
 
 import { AppProps } from "next/app";
+import CookieConsent from "../components/CookieConsent";
 import Head from "next/head";
 import NavProgress from "../components/NavProgress";
 import { NextShield } from "next-shield";
@@ -17,6 +18,7 @@ import React from "react";
 import { SWRConfig } from "swr";
 import { initializeSocket } from "../hooks/useSocket";
 import react from "react";
+import useCookie from "../hooks/useCookie";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import useUser from "../hooks/useUser";
@@ -25,6 +27,7 @@ export default function App(props: AppProps) {
   const { Component, pageProps } = props;
   const [user] = useUser();
   const router = useRouter();
+  const cookie = useCookie();
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: "scheme",
     defaultValue: "dark",
@@ -32,7 +35,7 @@ export default function App(props: AppProps) {
   });
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
-  useHotkeys([["mod+J", () => toggleColorScheme()]]);
+  useHotkeys([["mod+J", () => cookie.consent && toggleColorScheme()]]);
 
   initializeSocket(process.env.NEXT_PUBLIC_API_URL || "", user?.token);
 
@@ -81,6 +84,7 @@ export default function App(props: AppProps) {
               LoadingComponent={<p>Loading...</p>}
             >
               <NavProgress />
+              <CookieConsent />
               <Component {...pageProps} />
             </NextShield>
           </MantineProvider>

@@ -12,6 +12,7 @@ import {
 import useUser, { useAuth } from "../hooks/useUser";
 
 import { showNotification } from "@mantine/notifications";
+import useCookie from "../hooks/useCookie";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/router";
 
@@ -52,6 +53,7 @@ const useStyles = createStyles((theme) => ({
 export default function Login() {
   const { classes } = useStyles();
   const [user, setUser] = useUser();
+  const cookie = useCookie();
   const auth = useAuth();
   const router = useRouter();
   const form = useForm({
@@ -121,6 +123,7 @@ export default function Login() {
           <TextInput
             label="Discord"
             placeholder=". . .#1234"
+            mt="md"
             size="md"
             {...form.getInputProps("discord")}
           />
@@ -131,7 +134,18 @@ export default function Login() {
             size="md"
             {...form.getInputProps("password")}
           />
-          <Button fullWidth mt="xl" size="md" type="submit">
+          {!cookie.consent && (
+            <Text color="dimmed" pt="xl">
+              To be able to register you have to agree to our cookie policy.
+            </Text>
+          )}
+          <Button
+            fullWidth
+            mt="xl"
+            size="md"
+            type="submit"
+            disabled={auth || !cookie.consent}
+          >
             Register
           </Button>
         </form>

@@ -23,7 +23,6 @@ import Head from "next/head";
 import { Navbar } from "./Navbar";
 import React from "react";
 import { useRouter } from "next/router";
-import useUser from "../hooks/useUser";
 
 const homeLinks = [
   {
@@ -84,7 +83,6 @@ export const Page = (props: {
   style?: CSSObject;
 }) => {
   const router = useRouter();
-  const [user] = useUser();
   var links = [...homeLinks];
   if (links.filter((l) => l.href == router.pathname).length < 1) {
     links.push({

@@ -9,11 +9,13 @@ import {
   MapboxStyleSwitcherControl,
 } from "mapbox-gl-style-switcher";
 import axios, { AxiosResponse } from "axios";
+import { getCookie, hasCookie } from "cookies-next";
 
 import { IconCheck } from "@tabler/icons";
 import { Socket } from "socket.io-client";
 import mapboxgl from "mapbox-gl";
 import { showNotification } from "@mantine/notifications";
+import useCookie from "../../hooks/useCookie";
 import { useRouter } from "next/router";
 import useSocket from "../../hooks/useSocket";
 
@@ -67,6 +69,8 @@ function Map({
   const mapNode = React.useRef(null);
   // Websocket
   const socket = useSocket();
+  // Cookie Consent
+  const cookie = useCookie();
 
   // Setup Map
   React.useEffect(() => {
@@ -75,7 +79,14 @@ function Map({
     const initialLat = router.query.lat?.toString();
     const initialLng = router.query.lng?.toString();
 
-    if (typeof window === "undefined" || node === null) return;
+    if (
+      typeof window === "undefined" ||
+      node === null ||
+      !(hasCookie("mfpConsent") ? getCookie("mfpConsent") : false)
+    ) {
+      console.log(hasCookie("mfpConsent") ? getCookie("mfpConsent") : false);
+      return;
+    }
 
     const mapboxMap = new mapboxgl.Map({
       container: node,
@@ -185,6 +196,7 @@ function Map({
         style={{
           width: "100%",
           height: "100%",
+          visibility: cookie.consent ? "visible" : "hidden",
         }}
       />
     </div>

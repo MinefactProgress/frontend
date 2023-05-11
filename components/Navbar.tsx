@@ -14,6 +14,7 @@ import { IconLogin, IconLogout, IconMoonStars, IconSun } from "@tabler/icons";
 import useUser, { useAuth } from "../hooks/useUser";
 
 import Image from "next/image";
+import useCookie from "../hooks/useCookie";
 import { useRouter } from "next/router";
 
 const useStyles = createStyles((theme) => ({
@@ -105,7 +106,7 @@ export function Navbar({
   const [user, setUser] = useUser();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
-  const theme = useMantineTheme();
+  const cookie = useCookie();
   const links = data.map(
     (link, index) =>
       hasPermission(link.permission || 0, user?.permission) && (
@@ -136,11 +137,13 @@ export function Navbar({
       </MNavbar.Section>
       <MNavbar.Section>
         <Stack justify="center" spacing={0}>
-          <NavbarLink
-            icon={dark ? <IconSun /> : <IconMoonStars />}
-            label="Toggle Theme"
-            onClick={() => toggleColorScheme()}
-          />
+          {cookie.consent && (
+            <NavbarLink
+              icon={dark ? <IconSun /> : <IconMoonStars />}
+              label="Toggle Theme"
+              onClick={() => toggleColorScheme()}
+            />
+          )}
           {auth && (
             <NavbarLink
               icon={
