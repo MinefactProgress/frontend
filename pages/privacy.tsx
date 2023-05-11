@@ -62,7 +62,7 @@ const Privacy = () => {
           bezeichnet.
         </Text>
         <br />
-        <Text>Stand: 1. Mai 2023</Text>
+        <Text>Stand: 11. Mai 2023</Text>
         <Title order={2} py="lg">
           Inhaltsübersicht
         </Title>
