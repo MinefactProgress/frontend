@@ -1,18 +1,21 @@
 import {
   Alert,
   Button,
-  Checkbox, Modal,
+  Checkbox,
+  Group,
+  Modal,
   MultiSelect,
   NumberInput,
   Progress,
-  useMantineTheme
+  SegmentedControl,
+  useMantineTheme,
 } from "@mantine/core";
 import {
   IconAlertCircle,
   IconBackhoe,
   IconBuildingBank,
   IconCheck,
-  IconUsers
+  IconUsers,
 } from "@tabler/icons";
 import Map, {
   mapClickEvent,
@@ -20,20 +23,20 @@ import Map, {
   mapHoverEffect,
   mapLoadGeoJson,
   mapStatusColorLine,
-  mapStatusColorPolygon
+  mapStatusColorPolygon,
 } from "../../../components/map/Map";
+import useSWR, { mutate } from "swr";
 
-import { useClipboard } from "@mantine/hooks";
-import { showNotification } from "@mantine/notifications";
+import { BackButton } from "../../../components/FastNavigation";
 import { NextPage } from "next";
+import { Page } from "../../../components/Page";
+import { Permissions } from "../../../util/permissions";
+import { ProgressCard } from "../../../components/Stats";
+import { showNotification } from "@mantine/notifications";
+import { useClipboard } from "@mantine/hooks";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import useSWR from "swr";
-import { BackButton } from "../../../components/FastNavigation";
-import { Page } from "../../../components/Page";
-import { ProgressCard } from "../../../components/Stats";
 import useUser from "../../../hooks/useUser";
-import { Permissions } from "../../../util/permissions";
 
 const District: NextPage = ({ id }: any) => {
   const theme = useMantineTheme();
@@ -84,7 +87,9 @@ const District: NextPage = ({ id }: any) => {
                 color: "green",
                 icon: <IconCheck />,
               });
+              mutate(`/v1/districts/${id}`)
             }
+            editBlock.builder = editBlock.builder.join(",")
           });
       } else {
         showNotification({
@@ -197,7 +202,21 @@ const District: NextPage = ({ id }: any) => {
             minWidth: "25vw",
           }}
         >
-          <BackButton variant="outline" mb="md" />
+          <Group mb="md">
+            <BackButton variant="outline" />
+            <SegmentedControl
+              onChange={(value) =>
+                value == "table"
+                  ? router.push(`/districts/${id}/table`)
+                  : router.push(`/districts/${id}`)
+              }
+              color="primary"
+              data={[
+                { label: "Map", value: "map" },
+                { label: "Table", value: "table" },
+              ]}
+            />
+          </Group>
           <ProgressCard
             value={data?.blocks.done}
             title={data?.name}
