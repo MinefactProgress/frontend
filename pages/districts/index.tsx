@@ -68,6 +68,8 @@ const Districts: NextPage = ({}: any) => {
     );
   const genDistricts = (parent: any) => {
     const districts = data.filter((d: any) => d.parent == parent.id);
+    districts.sort(dynamicSort("progress"));
+    console.log(districts);
     return districts?.map((district: any, i: number) => (
       <tr
         onClick={(e) => {
@@ -77,7 +79,7 @@ const Districts: NextPage = ({}: any) => {
       >
         <td>{district.name}</td>
         <td>
-          <Badge color={statusToColorName(district.status)}>
+          <Badge color={statusToColorName(district.status)} variant="outline">
             {statusToName(district.status)}
           </Badge>
         </td>
@@ -109,7 +111,46 @@ const Districts: NextPage = ({}: any) => {
     return data
       ?.filter((d: any) => d.parent == parent.id)
       ?.map((child: any, i: number) => {
-        return genDistricts(child);
+        return (
+          <>
+            <tr
+              key={`s${child.id}-${i}`}
+              style={{
+                backgroundColor:
+                  theme.colorScheme == "dark"
+                    ? theme.colors.dark[6]
+                    : theme.colors.gray[0],
+              }}
+            >
+              <td>
+                <b>{child.name}</b>
+              </td>
+              <td>
+                <Badge color="gray" variant="outline">
+                  {statusToName(child.status)}
+                </Badge>
+              </td>
+              <td>
+                <Center>{child.progress.toFixed(2) + "%"}</Center>
+                <Progress size="sm" value={child.progress} color="gray" />
+              </td>
+              <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+                <td>{child.blocks.done}</td>
+              </MediaQuery>
+              <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+                <td>{child.blocks.total - child.blocks.done}</td>
+              </MediaQuery>
+              <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+                <td>
+                  {!child.completionDate
+                    ? ""
+                    : new Date(child.completionDate).toLocaleDateString()}
+                </td>
+              </MediaQuery>
+            </tr>
+            {genDistricts(child)}
+          </>
+        );
       });
   };
   const genBoroughs = () => {
@@ -195,7 +236,10 @@ const Districts: NextPage = ({}: any) => {
                       >
                         <td>{district.name}</td>
                         <td>
-                          <Badge color={statusToColorName(district.status)}>
+                          <Badge
+                            color={statusToColorName(district.status)}
+                            variant="outline"
+                          >
                             {statusToName(district.status)}
                           </Badge>
                         </td>

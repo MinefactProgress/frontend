@@ -290,7 +290,10 @@ const Districts: NextPage = ({ id }: any) => {
                   >
                     <td>{block.id}</td>
                     <td>
-                      <Badge color={statusToColorName(block.status)}>
+                      <Badge
+                        color={statusToColorName(block.status)}
+                        variant="outline"
+                      >
                         {statusToName(block.status)}
                       </Badge>
                     </td>
