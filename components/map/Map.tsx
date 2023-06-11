@@ -1,5 +1,6 @@
 import "mapbox-gl-style-switcher/styles.css";
 import "mapbox-gl/dist/mapbox-gl.css";
+import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import * as React from "react";
 
@@ -12,6 +13,8 @@ import axios, { AxiosResponse } from "axios";
 import { getCookie, hasCookie } from "cookies-next";
 
 import { IconCheck } from "@tabler/icons";
+import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import Pin from "../../public/pin.svg";
 import { Socket } from "socket.io-client";
 import mapboxgl from "mapbox-gl";
 import { showNotification } from "@mantine/notifications";
@@ -26,6 +29,7 @@ interface IMap {
   allowFullscreen?: boolean;
   savePos?: boolean;
   themeControls?: boolean;
+  geocoderControls?: boolean;
   showPlayers?: boolean;
   layerSetup?(map: mapboxgl.Map): void;
 }
@@ -48,9 +52,10 @@ function Map({
   initialOptions = {},
   onMapLoaded,
   onMapRemoved,
-  allowFullscreen,
+  allowFullscreen = true,
   savePos = true,
   themeControls = true,
+  geocoderControls = true,
   showPlayers = false,
   layerSetup,
 }: IMap) {
@@ -112,9 +117,22 @@ function Map({
     mapboxMap.once("load", async (ev: any) => {
       onMapLoaded && (await onMapLoaded(mapboxMap));
 
-      layerSetup && (await layerSetup(mapboxMap));
-
       setLoading(false);
+      if (geocoderControls)
+        mapboxMap.addControl(
+          new MapboxGeocoder({
+            accessToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "",
+            mapboxgl: mapboxgl,
+            render: function (item) {
+              return `<div class='geocoder-dropdown-item'>
+              <img class='geocoder-dropdown-icon' src="./pin.svg">
+              <span class='geocoder-dropdown-text'>
+              ${item.text}, ${item.place_name.split(", ")[1]}
+              </span>
+              </div>`;
+            },
+          })
+        );
       if (allowFullscreen)
         mapboxMap.addControl(new mapboxgl.FullscreenControl());
       if (themeControls)
@@ -123,6 +141,10 @@ function Map({
             defaultStyle: theme.colorScheme == "dark" ? "Dark" : "Light",
           })
         );
+    });
+
+    mapboxMap.on("style.load", async () => {
+      layerSetup && (await layerSetup(mapboxMap));
     });
 
     // Move to pos from query
