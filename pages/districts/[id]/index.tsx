@@ -87,9 +87,9 @@ const District: NextPage = ({ id }: any) => {
                 color: "green",
                 icon: <IconCheck />,
               });
-              mutate(`/v1/districts/${id}`)
+              mutate(`/v1/districts/${id}`);
             }
-            editBlock.builder = editBlock.builder.join(",")
+            editBlock.builder = editBlock.builder.join(",");
           });
       } else {
         showNotification({
@@ -262,6 +262,7 @@ const District: NextPage = ({ id }: any) => {
               "fill",
               "blocks",
               mapStatusColorPolygon,
+              undefined,
               mapStatusColorLine,
               (geojson) => {
                 if (geojson.data.center.length > 0) {

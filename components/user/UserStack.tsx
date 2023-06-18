@@ -1,10 +1,4 @@
-import {
-  Avatar,
-  Group,
-  ScrollArea,
-  Table,
-  Text
-} from "@mantine/core";
+import { Avatar, Group, ScrollArea, Table, Text } from "@mantine/core";
 
 interface UsersStackProps {
   data: {

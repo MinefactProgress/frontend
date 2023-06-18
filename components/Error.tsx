@@ -71,7 +71,9 @@ export function Error(props: { error: number }) {
             {error?.description}
           </Text>
           <Group position="center">
-            <Button size="md" onClick={() => router.back()}>Back</Button>
+            <Button size="md" onClick={() => router.back()}>
+              Back
+            </Button>
           </Group>
         </Container>
       </Center>

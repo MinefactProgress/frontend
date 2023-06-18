@@ -32,6 +32,7 @@ interface IMap {
   geocoderControls?: boolean;
   showPlayers?: boolean;
   layerSetup?(map: mapboxgl.Map): void;
+  statusFilter?: { status?: number; layers: string[] };
 }
 
 const styles: MapboxStyleDefinition[] = [
@@ -58,6 +59,7 @@ function Map({
   geocoderControls = true,
   showPlayers = false,
   layerSetup,
+  statusFilter,
 }: IMap) {
   // Mapbox map
   const [map, setMap] = React.useState<mapboxgl.Map>();
@@ -210,6 +212,23 @@ function Map({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [players]);
 
+  // Status Filter
+  React.useEffect(() => {
+    if (statusFilter && map && statusFilter.status != undefined) {
+      for (const layer in statusFilter.layers) {
+        if (statusFilter.status != -2) {
+          map.setFilter(statusFilter.layers[layer], [
+            "in",
+            "status",
+            statusFilter.status,
+          ]);
+        } else {
+          map.setFilter(statusFilter.layers[layer], ["has", "status"]);
+        }
+      }
+    }
+  }, [statusFilter]);
+
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
       <LoadingOverlay visible={loading} />
@@ -231,7 +250,8 @@ export function mapHoverEffect(
   map: any,
   layer: string,
   source: string,
-  text: (feature: any) => string
+  text: (feature: any) => string,
+  statusFilter?: (status: number) => void
 ) {
   // Hover effect
   let hoveredStateId: string | number | undefined = undefined;
@@ -262,6 +282,9 @@ export function mapHoverEffect(
         { hover: true }
       );
 
+      // Filter
+      statusFilter && statusFilter(e.features[0].properties.status);
+
       // Tooltip
       const features = map.queryRenderedFeatures(e.point, {
         layers: [layer],
@@ -282,6 +305,9 @@ export function mapHoverEffect(
       );
     }
     hoveredStateId = undefined;
+
+    // Filter
+    statusFilter && statusFilter(-2);
 
     map.getCanvas().style.cursor = "";
     popup.remove();
@@ -335,6 +361,7 @@ export async function mapLoadGeoJson(
   layerType: string,
   source: string,
   paint: any,
+  statusFilter?: number,
   outline?: boolean | any,
   afterFetch?: (geojson: any) => void
 ) {
@@ -359,6 +386,10 @@ export async function mapLoadGeoJson(
     type: layerType,
     source: source,
     paint: paint,
+    filter:
+      statusFilter != undefined
+        ? ["in", "status", statusFilter]
+        : ["has", "status"],
   });
   if (outline)
     mapLoadGeoJson(
@@ -368,6 +399,7 @@ export async function mapLoadGeoJson(
       "line",
       source,
       typeof outline == "boolean" ? paint : outline,
+      statusFilter,
       false
     );
 }

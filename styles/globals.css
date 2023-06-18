@@ -16,7 +16,6 @@ body,
 }
 
 .marker:after {
-
   content: attr(data-text);
   color: black;
   background-color: rgb(255, 255, 255);
