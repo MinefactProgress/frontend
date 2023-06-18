@@ -238,6 +238,7 @@ const Event = () => {
               "fill",
               "blocks",
               mapStatusColorPolygon,
+              undefined,
               mapStatusColorLine
             );
           }}
