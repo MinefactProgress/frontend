@@ -112,7 +112,7 @@ function Map({
 
     setMap(mapboxMap);
 
-    mapboxMap.getCanvas().style.cursor = "default";
+    mapboxMap.getCanvas().style.cursor = "";
 
     mapboxMap.once("load", async (ev: any) => {
       onMapLoaded && (await onMapLoaded(mapboxMap));
@@ -254,6 +254,9 @@ export function mapHoverEffect(
         );
       }
       hoveredStateId = e.features[0].id;
+
+      map.getCanvas().style.cursor = "pointer";
+
       map.setFeatureState(
         { source: source, id: hoveredStateId },
         { hover: true }
@@ -280,6 +283,7 @@ export function mapHoverEffect(
     }
     hoveredStateId = undefined;
 
+    map.getCanvas().style.cursor = "";
     popup.remove();
   });
 }

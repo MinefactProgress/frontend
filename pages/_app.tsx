@@ -1,3 +1,5 @@
+import "../styles/globals.css";
+
 import {
   ColorScheme,
   ColorSchemeProvider,
