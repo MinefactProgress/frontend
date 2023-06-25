@@ -38,10 +38,16 @@ const Privacy = () => {
             ? "Sie haben der Benutzung von Funktionalen Cookies in diesem Browser zugestimmt. Sie können diese Berechtigung jederzeit über die Schaltfläche unten zurückziehen."
             : "Sie haben der Benutzung von Funktionalen Cookies in diesem Browser nicht zugestimmt. Sie können diese Berechtigung jederzeit über die Schaltfläche unten oder über das Banner erteilen oder ablehnen."}
           <Group mt="md">
-            <Button variant="outline" onClick={() => cookie.setConsent(true)}>
+            <Button
+              variant="outline"
+              onClick={() => cookie.setConsent(true, 30)}
+            >
               Cookies akzeptieren
             </Button>
-            <Button variant="default" onClick={() => cookie.setConsent(false)}>
+            <Button
+              variant="default"
+              onClick={() => cookie.setConsent(false, 30)}
+            >
               Cookies ablehnen
             </Button>
           </Group>

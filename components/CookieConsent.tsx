@@ -24,7 +24,7 @@ const CookieConsent = () => {
 
   const changeCookie = (state: boolean) => {
     setShowConsent(false);
-    cookie.setConsent(state);
+    cookie.setConsent(state, 30);
     router.reload();
   };
 
