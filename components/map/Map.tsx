@@ -33,6 +33,7 @@ interface IMap {
   showPlayers?: boolean;
   layerSetup?(map: mapboxgl.Map): void;
   statusFilter?: { status?: number; layers: string[] };
+  setMapRef?(map: mapboxgl.Map): void;
 }
 
 const styles: MapboxStyleDefinition[] = [
@@ -60,6 +61,7 @@ function Map({
   showPlayers = false,
   layerSetup,
   statusFilter,
+  setMapRef,
 }: IMap) {
   // Mapbox map
   const [map, setMap] = React.useState<mapboxgl.Map>();
@@ -113,6 +115,7 @@ function Map({
     });
 
     setMap(mapboxMap);
+    setMapRef && setMapRef(mapboxMap);
 
     mapboxMap.getCanvas().style.cursor = "";
 
