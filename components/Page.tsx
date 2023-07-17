@@ -12,11 +12,9 @@ import {
   IconCalendarEvent,
   IconChartBar,
   IconHierarchy,
-  IconHome,
   IconMap,
   IconTool,
   IconUsers,
-  TablerIcon,
 } from "@tabler/icons";
 
 import Head from "next/head";
@@ -70,7 +68,7 @@ const homeLinks = [
   {
     icon: <IconTool />,
     label: "Admin Tools",
-    href: "/admin",
+    href: "/admin/dashboard/users",
     permission: 3,
   },
 ];

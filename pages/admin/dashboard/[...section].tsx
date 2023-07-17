@@ -1,10 +1,18 @@
-import { createStyles, Container, Tabs, Title } from "@mantine/core";
-import { IconBuildingCommunity, IconUsers } from "@tabler/icons";
-
-import { Permissions } from "../util/permissions";
-import useUser from "../hooks/useUser";
-import { useState } from "react";
-import { Users } from "./adminpanel/Users";
+import { NextPage } from "next";
+import {
+  createStyles,
+  Anchor,
+  Breadcrumbs,
+  Container,
+  Tabs,
+  Title,
+} from "@mantine/core";
+import { Page } from "../../../components/Page";
+import { IconBuildingCommunity, IconTool, IconUsers } from "@tabler/icons";
+import { Permissions } from "../../../util/permissions";
+import { Users } from "../../../components/adminpanel/Users";
+import useUser from "../../../hooks/useUser";
+import { useRouter } from "next/router";
 
 interface TabProps {
   name: string;
@@ -99,23 +107,40 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export const AdminPanel = () => {
+const AdminPage: NextPage = ({}: any) => {
+  const router = useRouter();
   const [user] = useUser();
   const { classes } = useStyles();
-  const [activeTab, setActiveTab] = useState<string | null>(tabs[0].name);
+  const { section } = router.query;
+  const activeTab = tabs.find(
+    (tab) =>
+      tab.name.toLowerCase() === (Array.isArray(section) ? section[0] : section)
+  );
+
+  const breadcrumbs = [
+    { title: "Dashboard", href: "#" },
+    { title: activeTab?.name, href: "#" },
+  ].map((item, index) => (
+    <Anchor key={index} href={item.href}>
+      {item.title}
+    </Anchor>
+  ));
 
   return (
-    <>
+    <Page name="Admin Panel" icon={<IconTool />} noMargin>
       <div className={classes.header}>
         <Container className={classes.mainSection}>
-          <Title>Admin Panel {`> ${activeTab}`}</Title>
+          <Title>Admin Panel</Title>
+          <Breadcrumbs separator="→">{breadcrumbs}</Breadcrumbs>
         </Container>
         <Container>
           <Tabs
             defaultValue="Home"
             variant="outline"
-            value={activeTab}
-            onTabChange={setActiveTab}
+            value={activeTab?.name}
+            onTabChange={(value) =>
+              router.push(`/admin/dashboard/${value?.toLowerCase()}`)
+            }
             classNames={{
               root: classes.tabs,
               tabsList: classes.tabsList,
@@ -138,9 +163,13 @@ export const AdminPanel = () => {
           </Tabs>
         </Container>
       </div>
-      <div style={{ margin: "20px" }}>
-        {tabs.find((tab) => tab.name === activeTab)?.component}
+      <div>
+        {activeTab && (
+          <div style={{ margin: "20px" }}>{activeTab.component}</div>
+        )}
       </div>
-    </>
+    </Page>
   );
 };
+
+export default AdminPage;
