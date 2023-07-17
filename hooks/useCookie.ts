@@ -9,12 +9,24 @@ const useCookie = () => {
   return {
     consent,
     hasCookie: hasCookie("mfpConsent"),
-    toggleConsent: () => {
-      setCookie("mfpConsent", !consent);
+    toggleConsent: (expireDays?: number) => {
+      const expireDate = new Date();
+      expireDate.setDate(expireDate.getDate() + (expireDays || 0));
+      setCookie(
+        "mfpConsent",
+        !consent,
+        expireDays ? { expires: expireDate } : undefined
+      );
       setConsent(!consent);
     },
-    setConsent: (consent: boolean) => {
-      setCookie("mfpConsent", consent);
+    setConsent: (consent: boolean, expireDays?: number) => {
+      const expireDate = new Date();
+      expireDate.setDate(expireDate.getDate() + (expireDays || 0));
+      setCookie(
+        "mfpConsent",
+        consent,
+        expireDays ? { expires: expireDate } : undefined
+      );
       setConsent(consent);
     },
     deleteConsent: () => {
