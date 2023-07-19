@@ -13,6 +13,7 @@ import {
   IconChartBar,
   IconHierarchy,
   IconMap,
+  IconTable,
   IconTool,
   IconUsers,
 } from "@tabler/icons";
@@ -33,6 +34,12 @@ const homeLinks = [
     icon: <IconChartBar />,
     label: "Progress Overview",
     href: "/dashboard",
+    permission: 0,
+  },
+  {
+    icon: <IconTable />,
+    label: "Projects",
+    href: "/projects",
     permission: 0,
   },
   {

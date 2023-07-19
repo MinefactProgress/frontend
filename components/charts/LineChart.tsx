@@ -32,6 +32,7 @@ ChartJS.register(
 export const LineChart = ({
   dataset,
   height,
+  width,
 }: {
   dataset: {
     data: any;
@@ -44,6 +45,7 @@ export const LineChart = ({
       | undefined;
   };
   height?: string;
+  width?: string;
 }) => {
   const theme = useMantineTheme();
   return (
@@ -89,6 +91,7 @@ export const LineChart = ({
         },
       }}
       height={height || "100px"}
+      width={width}
       data={{
         labels: dataset.labels,
         datasets: [

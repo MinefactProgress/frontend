@@ -9,8 +9,14 @@ import {
   Text,
   Tooltip,
   createStyles,
+  useMantineTheme,
 } from "@mantine/core";
-import { IconArrowDown, IconArrowUp } from "@tabler/icons";
+import {
+  IconArrowDown,
+  IconArrowDownRight,
+  IconArrowUp,
+  IconArrowUpRight,
+} from "@tabler/icons";
 
 interface IStatsRing {
   label: string;
@@ -22,8 +28,8 @@ interface IStatsRing {
 }
 
 const icons = {
-  up: IconArrowUp,
-  down: IconArrowDown,
+  up: IconArrowUpRight,
+  down: IconArrowDownRight,
 };
 const useStylesGroup = createStyles((theme) => ({
   root: {
@@ -160,8 +166,8 @@ const useStylesText = createStyles((theme) => ({
 interface IStatsGrid {
   title: string;
   icon?: any;
-  children: React.ReactNode;
-  diff?: number;
+  children?: React.ReactNode;
+  diff?: any;
   subtitle?: string;
   style?: any;
   showIcon?: boolean;
@@ -171,7 +177,9 @@ interface IStatsGrid {
 
 export const StatsText = (stat: IStatsGrid) => {
   const { classes } = useStylesText();
-  const DiffIcon = stat.icon || (stat.diff || 0 > 0 ? icons.up : icons.down);
+  const theme = useMantineTheme();
+  const DiffIcon = stat.diff || 0 > 0 ? icons.up : icons.down;
+  const Icon = stat.icon;
 
   return (
     <Paper
@@ -186,7 +194,14 @@ export const StatsText = (stat: IStatsGrid) => {
         <Text size="xs" color="dimmed" className={classes.title}>
           {stat.title}
         </Text>
-        {stat.icon}
+        <Icon
+          style={{
+            color:
+              theme.colorScheme === "dark"
+                ? theme.colors.dark[3]
+                : theme.colors.gray[4],
+          }}
+        />
       </Group>
 
       <Group align="flex-end" spacing="xs" mt={25}>
@@ -203,6 +218,7 @@ export const StatsText = (stat: IStatsGrid) => {
             className={classes.diff}
           >
             <span>{stat.diff}%</span>
+            <DiffIcon />
           </Text>
         )}
       </Group>
@@ -237,14 +253,25 @@ const useStylesProgress = createStyles((theme) => ({
 interface IProgressCard {
   title?: string;
   max?: number;
+  maxDisplay?: string;
   value?: number;
+  valueDisplay?: string;
   descriptor?: string;
+  style?: any
 }
 
-export function ProgressCard({ title, max, value, descriptor }: IProgressCard) {
+export function ProgressCard({
+  title,
+  max,
+  value,
+  descriptor,
+  maxDisplay,
+  valueDisplay,
+  style
+}: IProgressCard) {
   const { classes } = useStylesProgress();
   return (
-    <Card withBorder radius="md" p="xl" className={classes.card}>
+    <Card withBorder radius="md" p="xl" className={classes.card} style={style}>
       <Text
         size="xs"
         transform="uppercase"
@@ -254,7 +281,7 @@ export function ProgressCard({ title, max, value, descriptor }: IProgressCard) {
         {title || "Loading..."}
       </Text>
       <Text size="lg" weight={500} className={classes.stats}>
-        {value || 0} / {max || 100} {descriptor}
+        {valueDisplay || value || 0} / {maxDisplay || max || 100} {descriptor}
       </Text>
       <Progress
         value={((value || 0) / (max || 100)) * 100}
