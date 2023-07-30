@@ -1,34 +1,108 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<br/>
+<p align="center">
+  <a href="https://github.com/MinefactProgress/frontend">
+    <img src="public/BTE_NYC_Logo.webp" alt="Logo" width="80" height="80">
+  </a>
+
+  <h3 align="center">MinefactProgress/frontend</h3>
+
+  <p align="center">
+    Frontend for the MinefactProgress Website
+    <br/>
+    <br/>
+    <a href="https://progress.minefact.de"><strong>Open the Website »</strong></a>
+    <br/>
+    <br/>
+    <a href="https://github.com/MinefactProgress/frontend/issues">Report Bug</a>
+    .
+    <a href="https://github.com/MinefactProgress/frontend/issues">Request Feature</a>
+    </p>
+</p>
+
+![Contributors](https://img.shields.io/github/contributors/MinefactProgress/frontend?color=dark-green) 
+![License](https://img.shields.io/github/license/MinefactProgress/frontend)
+
+## About The Project
+
+![Screen Shot](public/screenshot.png)
+
+This project serves as a Website for tracking the progress made in the BuildTheEarth New York City supproject of [BuildTheEarth](https://buildtheearth.net). On it, the builders can claim their own plots and register the progess on them. Other features include:
+
+* An Overview of total Project build by everyone on the server
+* An Event System (In Progress)
+* List and Map views for Districts and Blocks of Districts
+* Staff Team / Builder List
+* BuildTheEarth.net Minecraft Network Status
+* Special Claim System for Landmarks
+
+## Built With
+
+This Project utilizes many different frameworks and packages from [npmjs](https://www.npmjs.com/):
+
+- [Next.js](https://nextjs.org/)
+- [Mantine](https://mantine.dev/)
+- [Chart.js](https://www.chartjs.org/)
+- [mapbox-gl](https://www.mapbox.com/)
 
 ## Getting Started
 
-First, run the development server:
+To get a local copy up and running follow these steps:
 
-```bash
-npm run dev
-# or
-yarn dev
+### Prerequisites
+
+- nodejs with npm
+
+We suggest you use yarn. Follow these steps to install it: [yarnpkg.com](https://yarnpkg.com/getting-started/install)
+
+### Installation
+
+1. Get a free API Key for mapbox at [https://mapbox.com/](https://account.mapbox.com/)
+
+2. Clone the repo
+
+```sh
+git clone https://github.com/MinefactProgress/frontend.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Install packages
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```sh
+yarn
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+4. Copy `example.env` and rename it to `.env`
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+5. Enter all required credentials, including the API Key from step 1
 
-## Learn More
+6. Run the project using `yarn dev` or `yarn serve`
 
-To learn more about Next.js, take a look at the following resources:
+## Contributing
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Contributions are what make the open source community such an amazing place to be learn, inspire, and create. **Any** contributions you make are greatly appreciated.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- If you have suggestions for adding or removing projects, feel free to open an issue to discuss it, or directly create a pull request after you edit the README.md file with necessary changes.
+- Please make sure you check your spelling and grammar.
+- Create individual PR for each suggestion.
 
-## Deploy on Vercel
+### Creating A Pull Request
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## License
+
+Distributed under the GNU GPL License. See [LICENSE](https://github.com/MinefactProgress/frontend/blob/main/LICENSE) for more information.
+
+## Authors
+
+- **Jannik0308** - ** - [Jannik0308](https://github.com//Jannik0308) - **
+- **Nudelsuppe42** - ** - [Nudelsuppe42](https://github.com/Nudelsuppe42) - **
+
+## Acknowledgements
+
+- [BuildTheEarth](https://buildtheearth.net/)
+- [BTE NYC](https://progress.minefact.de/)
+- [Vercel](https://vercel.com/)
