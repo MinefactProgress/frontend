@@ -100,7 +100,7 @@ export const Page = (props: {
   return (
     <>
       <Head>
-        <title>Minefact Progress - {props.name.toString()}</title>
+        <title>{props.name.toString()} - BTE New York City</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
