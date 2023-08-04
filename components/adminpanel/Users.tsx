@@ -75,7 +75,7 @@ export const Users = () => {
               />
               <Group mb={10} position="center">
                 {Ranks.map((rank) => (
-                  <Group mx={4} spacing="xs">
+                  <Group key={rank} mx={4} spacing="xs">
                     <Text fw={700}>{rank}</Text>
                     <Badge
                       style={{
