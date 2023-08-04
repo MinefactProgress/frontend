@@ -12,6 +12,9 @@ noscreen)
 	echo "[Web] Pulling source..."
     git pull
     echo "[Web] Source updated"
+    echo "[Web] Building..."
+    npm run build
+    echo "[Web] Build complete"
     echo "[Web] Starting server..."
     npm run start
 	;;
