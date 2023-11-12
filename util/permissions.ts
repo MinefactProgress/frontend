@@ -30,6 +30,10 @@ export function rankToColor(rank: string) {
       return "#5555FF";
     case "Architect":
       return "#0000AA";
+    case "Professional":
+      return "#55FF55";
+    case "Advanced":
+      return "#55FF55";
     case "Player":
       return "#55FF55";
     default:

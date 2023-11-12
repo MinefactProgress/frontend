@@ -2,10 +2,10 @@ import { Grid, Title, useMantineTheme } from "@mantine/core";
 
 import { IconBuildingCommunity } from "@tabler/icons";
 import type { NextPage } from "next";
-import { Page } from "../../components/Page";
-import { UserCard } from "../../components/user/UserCard";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import { Page } from "../../components/Page";
+import { UserCard } from "../../components/user/UserCard";
 import useUser from "../../hooks/useUser";
 
 const Staff: NextPage = ({}: any) => {
@@ -18,10 +18,12 @@ const Staff: NextPage = ({}: any) => {
     "Developer",
     "Supporter",
     "Architect",
+    "Professional",
+    "Advanced",
   ];
 
   const data = dataRaw
-    ?.filter((user: any) => user.rank !== null && user.rank !== "Player")
+    ?.filter((user: any) => user.rank !== null && rankSort.includes(user.rank))
     .sort((a: any, b: any) => {
       const indexA = rankSort.indexOf(a.rank);
       const indexB = rankSort.indexOf(b.rank);
