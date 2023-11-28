@@ -73,6 +73,7 @@ const BlockEdit: NextPage = ({}: any) => {
             color: "green",
             icon: <IconCheck />,
           });
+          setNewBlock(null);
         }
       });
   };
@@ -151,7 +152,10 @@ const BlockEdit: NextPage = ({}: any) => {
             my="md"
           >
             View the district map{" "}
-            <Anchor href="https://www.google.com/maps/d/u/0/edit?mid=1zVD-Rl7kMw3RQ_LSQQTAsrdG8NAB_526&usp=sharing" target="_blank">
+            <Anchor
+              href="https://www.google.com/maps/d/u/0/edit?mid=1zVD-Rl7kMw3RQ_LSQQTAsrdG8NAB_526&usp=sharing"
+              target="_blank"
+            >
               here
             </Anchor>
             .
