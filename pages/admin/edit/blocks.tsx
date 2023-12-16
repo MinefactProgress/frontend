@@ -84,7 +84,7 @@ const BlockEdit: NextPage = ({}: any) => {
         <Map
           geocoderControls={false}
           onMapLoaded={async (map: any) => {
-            const drawOpts: MapboxDrawOptions = {
+            const drawOpts = {
               modes: {
                 ...MapboxDraw.modes,
                 draw_point: SnapPointMode,
@@ -100,14 +100,14 @@ const BlockEdit: NextPage = ({}: any) => {
               },
               styles: SnapModeDrawStyles,
               userProperties: true,
-              // snap: true,
-              // snapOptions: {
-              // snapPx: 15,
-              // snapToMidPoints: true,
-              // snapVertexPriorityDistance: 0.0025,
-              // },
+              snap: true,
+              snapOptions: {
+                snapPx: 15,
+                snapToMidPoints: true,
+                snapVertexPriorityDistance: 0.0025,
+              },
               keybindings: true,
-              // guides: false,
+              guides: false,
             };
 
             const draw = new MapboxDraw(drawOpts);
