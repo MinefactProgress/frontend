@@ -14,8 +14,8 @@ import { IconLogin, IconLogout, IconMoonStars, IconSun } from "@tabler/icons";
 import useUser, { useAuth } from "../hooks/useUser";
 
 import Image from "next/image";
-import useCookie from "../hooks/useCookie";
 import { useRouter } from "next/router";
+import useCookie from "../hooks/useCookie";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -122,7 +122,7 @@ export function Navbar({
 
   return (
     <MNavbar width={{ base: 80 }} p="md">
-      <Center>
+      <Center component="a" href="/">
         <Image
           src="/BTE_NYC_Logo.webp"
           alt="logo"

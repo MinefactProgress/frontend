@@ -8,6 +8,7 @@ import {
   Select,
   useMantineTheme,
 } from "@mantine/core";
+import MapboxDraw, { MapboxDrawOptions } from "@mapbox/mapbox-gl-draw";
 import {
   IconAlertCircle,
   IconCheck,
@@ -23,7 +24,6 @@ import {
 import { useEffect, useState } from "react";
 
 import { showNotification } from "@mantine/notifications";
-import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
 import type { NextPage } from "next";
@@ -84,7 +84,7 @@ const BlockEdit: NextPage = ({}: any) => {
         <Map
           geocoderControls={false}
           onMapLoaded={async (map: any) => {
-            const drawOpts = {
+            const drawOpts: MapboxDrawOptions = {
               modes: {
                 ...MapboxDraw.modes,
                 draw_point: SnapPointMode,
@@ -100,13 +100,14 @@ const BlockEdit: NextPage = ({}: any) => {
               },
               styles: SnapModeDrawStyles,
               userProperties: true,
-              snap: true,
-              snapOptions: {
-                snapPx: 15,
-                snapToMidPoints: true,
-                snapVertexPriorityDistance: 0.0025,
-              },
-              guides: false,
+              // snap: true,
+              // snapOptions: {
+              // snapPx: 15,
+              // snapToMidPoints: true,
+              // snapVertexPriorityDistance: 0.0025,
+              // },
+              keybindings: true,
+              // guides: false,
             };
 
             const draw = new MapboxDraw(drawOpts);

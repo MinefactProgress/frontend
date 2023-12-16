@@ -1,26 +1,26 @@
+import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import "mapbox-gl-style-switcher/styles.css";
 import "mapbox-gl/dist/mapbox-gl.css";
-import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import * as React from "react";
 
 import { LoadingOverlay, useMantineTheme } from "@mantine/core";
+import axios, { AxiosResponse } from "axios";
+import { getCookie, hasCookie } from "cookies-next";
 import {
   MapboxStyleDefinition,
   MapboxStyleSwitcherControl,
 } from "mapbox-gl-style-switcher";
-import axios, { AxiosResponse } from "axios";
-import { getCookie, hasCookie } from "cookies-next";
 
-import { IconCheck } from "@tabler/icons";
-import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import Pin from "../../public/pin.svg";
-import { Socket } from "socket.io-client";
-import mapboxgl from "mapbox-gl";
 import { showNotification } from "@mantine/notifications";
-import useCookie from "../../hooks/useCookie";
+import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import { IconCheck } from "@tabler/icons";
+import mapboxgl from "mapbox-gl";
 import { useRouter } from "next/router";
+import { Socket } from "socket.io-client";
+import useCookie from "../../hooks/useCookie";
 import useSocket from "../../hooks/useSocket";
+import Pin from "../../public/pin.svg";
 
 interface IMap {
   initialOptions?: Omit<mapboxgl.MapboxOptions, "container">;
@@ -241,6 +241,7 @@ function Map({
           width: "100%",
           height: "100%",
           visibility: cookie.consent ? "visible" : "hidden",
+          border: "none",
         }}
       />
     </div>
