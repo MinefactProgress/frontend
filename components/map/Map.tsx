@@ -81,6 +81,12 @@ function Map({
   // Cookie Consent
   const cookie = useCookie();
 
+  // Presence map keyed by player uuid, for merging across servers
+  const playersByIdRef = React.useRef<
+    Record<string, { data: any; lastSeen: number }>
+  >({});
+  const PLAYER_TTL_MS = 15000; // consider a player "gone" if not seen within 15s
+
   // Setup Map
   React.useEffect(() => {
     const node = mapNode.current;
@@ -136,7 +142,7 @@ function Map({
               </span>
               </div>`;
             },
-          })
+          }),
         );
       if (allowFullscreen)
         mapboxMap.addControl(new mapboxgl.FullscreenControl());
@@ -144,7 +150,7 @@ function Map({
         mapboxMap.addControl(
           new MapboxStyleSwitcherControl(styles, {
             defaultStyle: theme.colorScheme == "dark" ? "Dark" : "Light",
-          })
+          }),
         );
     });
 
@@ -166,7 +172,7 @@ function Map({
         undefined,
         {
           shallow: true,
-        }
+        },
       );
     };
 
@@ -180,10 +186,54 @@ function Map({
 
   // Player Markers
   socket.off("player_location").on("player_location", (e: any) => {
-    if (showPlayers) {
-      setPlayers(JSON.parse(e));
+    if (!showPlayers) return;
+
+    const data = JSON.parse(e);
+    const now = Date.now();
+
+    for (const player of data) {
+      playersByIdRef.current[player.uuid] = { data: player, lastSeen: now };
+    }
+
+    setPlayers(Object.values(playersByIdRef.current).map((x) => x.data));
+  });
+
+  // Remove player on leave
+  socket.off("player_leave").on("player_leave", (e: any) => {
+    if (!showPlayers) return;
+
+    const data = JSON.parse(e);
+    const uuid = data.uuid;
+
+    if (playersByIdRef.current[uuid]) {
+      delete playersByIdRef.current[uuid];
+      setPlayers(Object.values(playersByIdRef.current).map((x) => x.data));
     }
   });
+
+  React.useEffect(() => {
+    if (!showPlayers) return;
+
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const ref = playersByIdRef.current;
+      let changed = false;
+
+      for (const uuid of Object.keys(ref)) {
+        if (now - ref[uuid].lastSeen > PLAYER_TTL_MS) {
+          delete ref[uuid];
+          changed = true;
+        }
+      }
+
+      if (changed) {
+        setPlayers(Object.values(ref).map((x) => x.data));
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [showPlayers]);
+
   React.useEffect(() => {
     if (players && map && showPlayers) {
       if (playerMarkers && playerMarkers.length > 0) {
@@ -255,7 +305,7 @@ export function mapHoverEffect(
   layer: string,
   source: string,
   text: (feature: any) => string,
-  statusFilter?: (status: number) => void
+  statusFilter?: (status: number) => void,
 ) {
   // Hover effect
   let hoveredStateId: string | number | undefined = undefined;
@@ -274,7 +324,7 @@ export function mapHoverEffect(
       if (hoveredStateId !== undefined) {
         map.setFeatureState(
           { source: source, id: hoveredStateId },
-          { hover: false }
+          { hover: false },
         );
       }
       hoveredStateId = e.features[0].id;
@@ -283,7 +333,7 @@ export function mapHoverEffect(
 
       map.setFeatureState(
         { source: source, id: hoveredStateId },
-        { hover: true }
+        { hover: true },
       );
 
       // Filter
@@ -305,7 +355,7 @@ export function mapHoverEffect(
     if (hoveredStateId !== undefined) {
       map.setFeatureState(
         { source: source, id: hoveredStateId },
-        { hover: false }
+        { hover: false },
       );
     }
     hoveredStateId = undefined;
@@ -320,7 +370,7 @@ export function mapHoverEffect(
 export function mapClickEvent(
   map: any,
   layer: string,
-  callback: (feature: any) => void
+  callback: (feature: any) => void,
 ) {
   map.on("click", (e: any) => {
     // Find features intersecting the bounding box.
@@ -367,7 +417,7 @@ export async function mapLoadGeoJson(
   paint: any,
   statusFilter?: number,
   outline?: boolean | any,
-  afterFetch?: (geojson: any) => void
+  afterFetch?: (geojson: any) => void,
 ) {
   var geojson = null;
   if (typeof url == "string") {
@@ -404,7 +454,7 @@ export async function mapLoadGeoJson(
       source,
       typeof outline == "boolean" ? paint : outline,
       statusFilter,
-      false
+      false,
     );
 }
 
